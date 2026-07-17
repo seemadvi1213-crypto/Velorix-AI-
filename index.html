@@ -1,166 +1,152 @@
-<!DOCTYPE html>
-<html lang="hi">
+         <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reelify AI - Premium Multi-Agent Video Engine</title>
-    <!-- Tailwind CSS v4 Build -->
-    <script src="https://jsdelivr.net"></script>
-    <!-- FontAwesome v6 Pro Icons -->
+    <meta name="google-site-verification" content="verification_code_here" />
+    <title>Reelify AI - Ultimate Multi-Agent Short Video Studio</title>
+    <!-- Tailwind CSS for Responsive Layouts -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- Premium Fonts for Futuristic Visual Comfort -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <!-- FontAwesome for High-Fidelity Animated Icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
+    
     <style>
-        @import url('https://googleapis.com');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: radial-gradient(circle at top, #0f172a 0%, #020617 100%); }
-        .glow-cyan { box-shadow: 0 0 20px rgba(6, 182, 212, 0.15); }
-        .glow-owner { box-shadow: 0 0 25px rgba(234, 179, 8, 0.3); }
-        .blur-panel { backdrop-filter: blur(16px); }
-        .animate-pop { animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at top right, #0c102b 0%, #05070f 60%, #020307 100%);
+            overflow-x: hidden;
+        }
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Anti-Strain Eye Comfort Translucent Panels */
+        .glass-studio-panel {
+            background: rgba(10, 15, 36, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+        .input-dark-lock {
+            background: rgba(3, 5, 15, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .input-dark-lock:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+        }
+        /* Cyberpunk Neon Micro-Glow Assets */
+        .neon-glow-amber {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+        }
+        .neon-text-amber {
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+        .neon-border-emerald {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        /* Smooth Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #04060d; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col justify-between p-3 md:p-6 select-none">
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black">
 
-    <!-- PLATFORM HEADER -->
-    <header class="max-w-5xl w-full mx-auto flex justify-between items-center border-b border-slate-800/80 pb-4 mb-4">
-        <div class="flex items-center gap-3">
-            <div class="bg-cyan-500/10 p-2 rounded-xl border border-cyan-500/30">
-                <i class="fa-solid fa-wand-magic-sparkles text-cyan-400 text-xl md:text-2xl animate-pulse"></i>
+    <!-- TOP PREMIUM NAVBAR -->
+    <header class="glass-studio-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center border-b border-white/5">
+        <div class="flex items-center space-x-3.5">
+            <!-- Sleek Minimalist "AI" Logo Module -->
+            <div class="relative group cursor-pointer">
+                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-violet-600 rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-300"></div>
+                <div class="relative w-11 h-11 bg-slate-950 border border-white/10 rounded-xl flex items-center justify-center transition-all group-hover:border-amber-500/50">
+                    <span class="heading-font font-black text-sm tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-amber-400 to-amber-200">AI</span>
+                </div>
             </div>
             <div>
-                <h1 class="text-lg md:text-2xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-400 bg-clip-text text-transparent">REELIFY AI</h1>
-                <p class="text-[10px] text-slate-500 font-medium tracking-wider uppercase">Next-Gen Multi-Agent Engine</p>
+                <span class="heading-font text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-400 to-violet-400">REELIFY AI</span>
+                <p class="text-[10px] text-slate-500 font-mono tracking-widest uppercase font-semibold">Skybound Multi-Agent Swarm</p>
             </div>
         </div>
-        <div id="tier-badge-container"></div>
+
+        <!-- Master Bypass Premium Badge Structure -->
+        <div id="owner-badge-container" class="hidden">
+            <span class="bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-black flex items-center space-x-2 shadow-2xl neon-glow-amber tracking-wider transition-all duration-300">
+                <i class="fa-solid fa-crown text-xs animate-bounce"></i>
+                <span>OWNER PRO ACCESS</span>
+            </span>
+        </div>
     </header>
 
-    <!-- MAIN CORE DASHBOARD -->
-    <main class="flex-1 max-w-4xl w-full mx-auto bg-slate-900/20 border border-slate-800/60 rounded-3xl p-5 md:p-8 blur-panel shadow-2xl relative my-2 flex flex-col justify-between min-h-[550px] glow-cyan" id="main-window">
+    <!-- CENTER CONTROL HUB -->
+    <main class="flex-grow max-w-2xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center my-6">
         
-        <!-- STEP CONTROLLER NODES -->
-        <div class="mb-6 flex justify-between items-center overflow-x-auto py-2 border-b border-slate-900 scrollbar-none">
-            <div id="progress-bar" class="flex justify-between w-full items-center min-w-[620px] md:min-w-0 gap-2"></div>
-        </div>
+        <!-- IDENTITY SECURITY GATEWAY & SELF-HEALING CARD -->
+        <div id="auth-card" class="glass-studio-panel rounded-3xl p-6 md:p-8 shadow-2xl transition-all duration-500 border border-white/10 relative overflow-hidden">
+            
+            <!-- LIVE SELF-HEALING DEFENDER MODULE (ANTI-VIRUS & DATA CLEANER) -->
+            <div class="mb-6 bg-slate-950/60 border border-emerald-500/20 rounded-2xl p-3.5 flex items-center justify-between neon-border-emerald">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                        <i id="shield-icon" class="fa-solid fa-shield-cat text-sm animate-pulse"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold text-emerald-400 tracking-wide heading-font">SELF-HEALING GUARD ACTIVE</span>
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
+                        </div>
+                        <p id="cleaner-status" class="text-[10px] text-slate-400 font-mono">Anti-Virus Core: Secure | Client Cache: Fully Cleaned</p>
+                    </div>
+                </div>
+                <button onclick="triggerManualHeal()" class="text-[10px] font-bold text-slate-400 hover:text-emerald-400 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 px-2.5 py-1.5 rounded-lg transition-all font-mono">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>SCAN NOW
+                </button>
+            </div>
 
-        <!-- CLIENT GATEWAY (AUTH PANEL) -->
-        <div id="login-panel" class="mb-6 bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all">
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center border border-slate-800">
-                    <i class="fa-solid fa-shield-halved text-cyan-400 text-xs"></i>
+            <div class="flex items-center space-x-4 mb-6 border-b border-white/5 pb-4">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 border border-amber-500/20">
+                    <i class="fa-solid fa-fingerprint text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-xs font-bold text-white tracking-wide">Gateway Authentication & Security</h3>
-                    <p class="text-[10px] text-slate-400">अपना क्रेडेंशियल डालें। मालिक मोड या यूजर वॉलेट स्वतः सिंक होगा।</p>
+                    <h2 class="text-lg font-bold text-white heading-font tracking-tight">Gateway Authentication & Security</h2>
+                    <p class="text-xs text-slate-400">अपना क्रेडेंशियल डालें। मालिक मोड या यूजर वॉलेट स्वतः सिंक होगा।</p>
                 </div>
             </div>
-            <div id="auth-interaction-box" class="flex gap-2 w-full sm:w-auto">
-                <input id="auth-input" type="text" placeholder="Email or Mobile Number" class="bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 w-full sm:w-52 transition-all">
-                <button onclick="initiateAuthVerification()" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-xs font-black px-5 py-2 rounded-xl transition-all whitespace-nowrap shadow-md">Verify Identity</button>
-            </div>
-        </div>
-
-        <!-- DYNAMIC CONFIGURATION WORKSPACE -->
-        <div id="step-content" class="flex-1 animate-pop py-2"></div>
-
-        <!-- INTELLIGENT ROUTING CONTROLS -->
-        <div id="navigation-bar" class="flex justify-between items-center pt-5 border-t border-slate-800/60 mt-6"></div>
-    </main>
-
-    <!-- PREMIUM PAYOUT INTERFACES (MODAL OUTLET) -->
-    <div id="payout-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl max-w-sm w-full text-center space-y-4 animate-pop shadow-2xl">
-            <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-receipt"></i>
-            </div>
-            <div>
-                <h3 class="text-sm font-black text-white">Instant Wallet Top-up / Unlock Pro</h3>
-                <p class="text-[11px] text-slate-400 mt-1">क्यूआर कोड स्कैन करें। हमारी स्क्रिप्ट पेमेंट को लाइव डिटेक्ट कर रही है।</p>
-            </div>
-            <div class="bg-white p-3 rounded-2xl inline-block mx-auto border-4 border-slate-800">
-                <!-- Dynamic QR API Point for Fast Loading -->
-                <img src="https://qrserver.com" alt="Secure Payout QR" class="w-36 h-36">
-            </div>
-            <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-[10px] text-left space-y-1">
-                <div class="flex justify-between text-slate-400"><span>UPI ID:</span> <span class="text-slate-200 font-bold">9079160994@ybl</span></div>
-                <div class="flex justify-between text-slate-400"><span>Plan Value:</span> <span class="text-emerald-400 font-bold">₹199 / Lifetime</span></div>
-            </div>
-            <div id="payout-status-tracker" class="flex items-center justify-center gap-2 text-[11px] text-yellow-400 bg-yellow-500/5 py-2 rounded-xl border border-yellow-500/10">
-                <i class="fa-solid fa-spinner animate-spin"></i> waiting for gateway response (55s)...
-            </div>
-            <button onclick="dismissPayoutEngine()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-all">Cancel Request</button>
-        </div>
-    </div>
-
-    <!-- DYNAMIC COMMERCIAL BRANDING FOOTER -->
-    <footer class="text-center text-[10px] text-slate-600 tracking-wider max-w-5xl w-full mx-auto mt-4 space-y-2">
-        <div id="footer-ad" class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800/40 p-2 rounded-xl text-slate-400 text-center text-[10px] flex items-center justify-center gap-2">
-            <span class="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-1.5 py-0.5 rounded text-[8px] font-black uppercase">Sponsored</span>
-            <span>Unleash Unlimited Multi-Agent Capabilities. Upgrade to Pro Network now!</span>
-        </div>
-        <div class="flex justify-between items-center px-1 text-slate-500 text-[9px]">
-            <span>ENGINE: GEMINI-PRO-1.5-FLASH COMPLIANT</span>
-            <span>© 2026 REELIFY AI SYSTEM INC.</span>
-            <span>FRAMEWORK: SECURE CLIENT LATCH</span>
-        </div>
-    </footer>
-
-    <!-- REELIFY AI CORE ENGINE LOGIC -->
-    <script>
-        const PLATFORM_MASTER = {
-            email: "seemadevi1213@gmail.com",
-            mobile: "9079160994"
-        };
-
-        let currentStep = 1;
-        let systemTier = "NORMAL_FREE";
-        let activeUserToken = "";
-        let uploadedAvatarData = ""; // Holds Base64 Image Strings Locally
-
-        let coreVideoSchema = {
-            prompt: "",
-            ratio: "9:16",
-            style: "CINEMATIC",
-            avatarMode: "DEFAULT",
-            language: "HI",
-            voiceEngine: "Kabir_11Labs",
-            subtitleString: "💥 WAIT FOR THE AMAZING TWIST! 💥",
-            subtitleTheme: "YOUTUBE_YELLOW"
-        };
-
-        // INTEGRATED OPT-IN OTP AUTH GATEWAY
-        function initiateAuthVerification() {
-            let inputRaw = document.getElementById('auth-input').value.trim();
-            if (!inputRaw) return alert("⚠️ कृपया कोई वैध ईमेल या मोबाइल नंबर दर्ज़ करें।");
             
-            activeUserToken = inputRaw;
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Master Bypass Phone Node</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-terminal absolute left-4 top-4 text-slate-600 text-sm"></i>
+                        <input type="text" id="auth-phone" placeholder="Enter Authorized Mobile Number..." class="w-full input-dark-lock rounded-xl pl-11 pr-4 py-3.5 text-white font-medium placeholder-slate-600 focus:outline-none transition-all text-base">
+                    </div>
+                </div>
+                
+                
+                    <span>Verify Identity Node</span>
+                    <i class="fa-solid fa-lock-open text-xs"></i>
+                </button>
+            </div>
 
-            // Direct Master Bypass Interface
-            if (inputRaw === PLATFORM_MASTER.email || inputRaw === PLATFORM_MASTER.mobile) {
-                systemTier = "PREMIUM_OWNER";
-                alert("⚡ स्वागत है मालिक! आपके ऑथेंटिकेशन टोकन से OWNER PRO का एक्सेस मिल गया है।");
-                syncApplicationWorkspace();
-                return;
-            }
-
-            // Standard Consumer OTP Prompt Flow
-            let mockOtp = Math.floor(1000 + Math.random() * 9000);
-            let inputOtp = prompt(`🔒 Security Node: हमने आपके पते पर एक 4-अंकों का वेरिफिकेशन कोड भेजा है। टेस्टिंग के लिए इस कोड का उपयोग करें: [ ${mockOtp} ]`);
-            
-            if (parseInt(inputOtp) === mockOtp) {
-                systemTier = "VERIFIED_USER";
-                alert("✅ वेरिफिकेशन सफल! आपके खाते को फ्री सर्वर पूल से सुरक्षित जोड़ दिया गया है।");
-            } else {
-                alert("❌ गलत सुरक्षा कोड! आइडेंटिटी वेरिफिकेशन निरस्त किया गया।");
-                systemTier = "NORMAL_FREE";
-            }
-            syncApplicationWorkspace();
-        }
-
-        // SMART LOCAL FILE COMPRESSION ENGINE (GALLERY UPLOAD)
-        function handleLocalGalleryUpload(inputNode) {
-            const file = inputNode.files[0];
-            if (!file) return;
-
-            const fileReader = new FileReader();
-            const uploadIndicator = document.getElementById('upload-status-indicator');
-            
+            <!-- SECURE PAYOUT VAULT (FIXED IMAGE ASSET) -->
+            <div class="mt-8 border-t border-white/5 pt-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 heading-font"><i class="fa-solid fa-wallet text-amber-500 mr-2"></i>Instant Wallet Top-up / Unlock Pro</h4>
+                <p class="text-xs text-slate-500 mb-4">क्यूआर कोड स्कैन करें। हमारी स्क्रिप्ट पेमेंट को लाइव डिटेक्ट कर रही है।</p>
+                
+                <div class="bg-slate-950/40 p-4 rounded-2xl border border-white/5 flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-5">
+                    <!-- SECURE HIGH-AVAILABILITY QR CODE GENERATION LINK -->
+                    <div class="bg-white p-2.5 rounded-xl shrink-0 shadow-lg">
+                        <img src="https://qrserver.com" alt="Secure Payout QR" class="w-28 h-28 block">
+                    </div>
+                    <div class="text-left space-y-1.5 w-full">
+                        <p class="text-xs text-slate-400 font-medium">UPI ID: <span class="text-amber-400 font-mono font-bold bg-amber-500/5 px-2 py-0.5 rounded border border-amber-500/10">9079160994@ybl</span></p>
+                        <p class="text-xs text-slate-400 font-medium">Plan Value: <span class="text-emerald-400 font-black">₹199 / Lifetime Ultimate Access</span></p>
+                        <div class="flex items-center space-x-2 pt-1.5">
+                            <span class="w-2 h-2 bg-amber-400 rounded-full animate-ping"></span>
+                            <span id="gateway-timer" class="text-[11px] text-slate-500 font-mono">waiting for gateway response (59s)...</span>
+                        </div>
+   
