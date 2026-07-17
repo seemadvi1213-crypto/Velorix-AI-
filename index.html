@@ -1,201 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="BMhp63y6-7_6I36CL" />
-    <title>Reelify AI - Ultimate Multi-Agent Short Video Studio</title>
-    
-    <!-- Tailwind CSS (Official Stable Browser CDN v4) -->
-    <script src="https://jsdelivr.net"></script>
-    
-    <!-- Google Fonts Cross-Origin Setup -->
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome Verified Icon CDN Pack -->
-    <link rel="stylesheet" href="https://cloudflare.com">
-    
+    <title>Reelify AI - Ultimate Short Video Studio</title>
     <style>
+        /* प्योर कोर CSS - बिना किसी फ्रेमवर्क के 100% स्टेबल */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
         body {
-            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at top right, #0c102b 0%, #05070f 60%, #020307 100%) !important;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: #05070f;
             color: #f1f5f9;
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
         }
-        .heading-font {
-            font-family: 'Space Grotesk', sans-serif;
+        header {
+            background: #0a0f24;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .glass-studio-panel {
-            background: rgba(10, 15, 36, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f59e0b;
+            letter-spacing: 1px;
         }
-        .input-dark-lock {
-            background: rgba(3, 5, 15, 0.9) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff !important;
+        .sub-logo {
+            font-size: 10px;
+            color: #64748b;
+            display: block;
+            margin-top: 2px;
+            text-transform: uppercase;
         }
-        .input-dark-lock:focus {
-            border-color: #f59e0b !important;
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+        .badge {
+            background: linear-gradient(to right, #f59e0b, #ea580c);
+            color: #05070f;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 900;
+            display: none;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
         }
-        .neon-glow-amber {
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+        main {
+            flex-grow: 1;
+            max-w: 550px;
+            width: 100%;
+            margin: 0 auto;
         }
-        .neon-border-emerald {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
-            border-color: rgba(16, 185, 129, 0.3) !important;
+        .card {
+            background: #0d1330;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        
-        /* QR Code Layout Core Styling */
-        .qr-image-wrapper {
-            background: #ffffff;
-            padding: 10px;
+        .status-bar {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 11px;
+            color: #10b981;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+        .card-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            background: #03050f;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            padding: 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: #f59e0b;
+        }
+        .btn-verify {
+            width: 100%;
+            background: linear-gradient(to right, #f59e0b, #ea580c);
+            color: #05070f;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-verify:active {
+            transform: scale(0.98);
+        }
+        .payout-section {
+            margin-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 18px;
+        }
+        .payout-box {
+            background: rgba(3, 5, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .qr-holder {
+            background: white;
+            padding: 6px;
+            border-radius: 10px;
+            width: 100px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
-        .qr-image-wrapper img {
-            width: 110px;
-            height: 110px;
-            display: block;
+        .qr-holder img {
+            width: 100%;
+            height: 100%;
         }
-        .qr-details {
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .upi-text {
+        .payout-details p {
             font-size: 12px;
-            color: #e2e8f0;
+            margin-bottom: 5px;
+            color: #cbd5e1;
         }
-        .upi-id-badge {
+        .payout-badge {
             color: #f59e0b;
             font-family: monospace;
-            font-weight: 700;
-            background: rgba(245, 158, 11, 0.05);
+            font-weight: bold;
+            background: rgba(245, 158, 11, 0.1);
             padding: 2px 6px;
             border-radius: 4px;
-            border: 1px solid rgba(245, 158, 11, 0.1);
         }
-        .plan-text { font-size: 12px; color: #94a3b8; }
-        .plan-val { color: #10b981; font-weight: 800; }
-        .pulse-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .payout-val {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .workflow {
+            display: none;
+            margin-top: 20px;
+        }
+        .workflow-msg {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn-deploy {
+            width: 100%;
+            background: #10b981;
+            color: #05070f;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
             font-size: 11px;
-            color: #64748b;
+            color: #475569;
             font-family: monospace;
-            margin-top: 4px;
         }
-        .pulse-dot {
-            width: 6px;
-            height: 6px;
-            background: #f59e0b;
-            border-radius: 50%;
-            animation: ping-effect 1s infinite alternate;
-        }
-        @keyframes ping-effect {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #04060d; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
     </style>
 </head>
-<body class="flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+<body>
 
-    <!-- TOP PREMIUM NAVBAR -->
-    <header class="glass-studio-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3.5">
-            <div class="relative group cursor-pointer">
-                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-violet-600 rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-300"></div>
-                <div class="relative w-11 h-11 bg-slate-950 border border-white/10 rounded-xl flex items-center justify-center">
-                    <span class="heading-font font-black text-sm tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-amber-400 to-amber-200">AI</span>
-                </div>
-            </div>
-            <div>
-                <span class="heading-font text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-400 to-violet-400">REELIFY AI</span>
-                <p class="text-[10px] text-slate-500 font-mono tracking-widest uppercase font-semibold">Skybound Multi-Agent Swarm</p>
-            </div>
+    <!-- NAVBAR -->
+    <header>
+        <div>
+            <div class="logo-text">REELIFY AI</div>
+            <div class="sub-logo">Multi-Agent Swarm Node</div>
         </div>
-
-        <!-- Master Bypass Premium Badge -->
-        <div id="owner-badge-container" class="hidden">
-            <span class="bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-black flex items-center space-x-2 shadow-2xl neon-glow-amber tracking-wider">
-                <i class="fa-solid fa-crown text-xs animate-bounce"></i>
-                <span>OWNER PRO ACCESS</span>
-            </span>
-        </div>
+        <div id="owner-badge" class="badge">OWNER PRO ACCESS</div>
     </header>
 
-    <!-- CENTER CONTROL HUB -->
-    <main class="flex-grow max-w-2xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center my-6">
+    <!-- HUB CONTAINER -->
+    <main>
         
-        <!-- IDENTITY SECURITY GATEWAY -->
-        <div id="auth-card" class="glass-studio-panel rounded-3xl p-6 md:p-8 shadow-2xl transition-all duration-500 border border-white/10 relative overflow-hidden">
+        <!-- SECURITY GATEWAY -->
+        <div id="auth-card" class="card">
             
-            <!-- LIVE SELF-HEALING DEFENDER MODULE -->
-            <div class="mb-6 bg-slate-950/60 border border-emerald-500/20 rounded-2xl p-3.5 flex items-center justify-between neon-border-emerald">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-                        <i id="shield-icon" class="fa-solid fa-shield-cat text-sm animate-pulse"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xs font-bold text-emerald-400 tracking-wide heading-font">SELF-HEALING GUARD ACTIVE</span>
-                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
-                        </div>
-                        <p id="cleaner-status" class="text-[10px] text-slate-400 font-mono">Anti-Virus Core: Secure | Client Cache: Fully Cleaned</p>
-                    </div>
-                </div>
-                <button onclick="triggerManualHeal()" class="text-[10px] font-bold text-slate-400 hover:text-emerald-400 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 px-2.5 py-1.5 rounded-lg transition-all font-mono">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>SCAN NOW
-                </button>
+            <div class="status-bar">
+                <div>🛡️ SELF-HEALING GUARD ACTIVE</div>
+                <div style="font-size: 10px; color: #94a3b8;">Cache Cleaned</div>
             </div>
 
-            <div class="flex items-center space-x-4 mb-6 border-b border-white/5 pb-4">
-                <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 border border-amber-500/20">
-                    <i class="fa-solid fa-fingerprint text-xl"></i>
-                </div>
-                <div>
-                    <h2 class="text-lg font-bold text-white heading-font tracking-tight">Gateway Authentication & Security</h2>
-                    <p class="text-xs text-slate-400">अपना क्रेडेंशियल डालें। मालिक मोड स्वतः सिंक होगा।</p>
-                </div>
+            <div class="card-title">Gateway Authentication</div>
+            <div class="card-desc">अपना क्रेडेंशियल डालें। मालिक मोड स्वतः सिंक होगा।</div>
+            
+            <div class="form-group">
+                <label>Master Bypass Node Input</label>
+                <input type="text" id="auth-phone" placeholder="Enter Authorized Mobile Number...">
             </div>
             
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Master Bypass Node Input</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-terminal absolute left-4 top-4 text-slate-500 text-sm"></i>
-                        <input type="text" id="auth-phone" placeholder="Enter Authorized Phone or Email..." class="w-full input-dark-lock rounded-xl pl-11 pr-4 py-3.5 text-white font-medium placeholder-slate-600 focus:outline-none transition-all text-base">
-                    </div>
-                </div>
+            <button id="verifyBtn" class="btn-verify">Verify Identity Node</button>
+
+            <!-- PAYOUT VAULT -->
+            <div class="payout-section">
+                <div class="card-title" style="font-size: 12px; color: #94a3b8;">Instant Wallet Top-up / Unlock Pro</div>
+                <div class="card-desc" style="margin-bottom: 10px;">क्यूआर कोड स्कैन करें। स्क्रिप्ट पेमेंट लाइव डिटेक्ट कर रही है।</div>
                 
-                <button id="verifyBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-extrabold py-3.5 px-4 rounded-xl transition shadow-lg flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]">
-                    <span>Verify Identity Node</span>
-                    <i class="fa-solid fa-lock-open text-xs"></i>
-                </button>
+                <div class="payout-box">
+                    <div class="qr-holder">
+                        <img src="https://qrserver.com" alt="QR Code">
+                    </div>
+                    <div class="payout-details">
+                        <p>UPI ID: <span class="payout-badge">9079160994@ybl</span></p>
+                        <p>Plan Value: <span class="payout-val">₹199 / Lifetime Access</span></p>
+                        <p style="font-size: 10px; color: #64748b; font-family: monospace;">● waiting for gateway response...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7 STEPS WORKFLOW Pipeline -->
+        <div id="app-workflow" class="workflow">
+            <div class="workflow-msg">⚡ PREMIUM MASTER SYSTEM ACTIVE: All AI Nodes Online.</div>
+
+            <div class="card">
+                <div class="card-title" style="font-size: 14px;">01 | AI Story & Script Agent</div>
+                <textarea rows="3" placeholder="अपनी रील की स्क्रिप्ट यहाँ दर्ज करें..."></textarea>
             </div>
 
-            <!-- SECURE PAYOUT VAULT -->
-            <div class="mt-8 border-t border-white/5 pt-6">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 heading-font"><i class="fa-solid fa-wallet text-amber-500 mr-2"></i>Instant Wallet Top-up / Unlock Pro</h4>
-                <p class="text-xs text-slate-500 mb-4">क्यूआर कोड स्कैन करें। हमारी स्क्रिप्ट पेमेंट को लाइविटेक्ट कर रही है।</p>
+            <div class="card">
+                <div class="card-title" style="font-size: 14px;">02 | Animation Style Config</div>
+                <div style="margin-top: 10px;">
+                    <select><option>3D Anime Render</option><option>Realistic Cinematic</option><option>Cyberpunk Retro</option></select>
+                </div>
+            </div>
 
-                    
+            <div class="card">
+                <div class="card-title" style="font-size: 14px;">03 | Voice Language Selector</div>
+                <div style="margin-top: 10px;">
+                    <select><option>Hindi (हिंदी)</option><option>English (Global Mode)</option></select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title" style="font-size: 14px;">04 | Voice Artist Engine</div>
+                <div style="margin-top: 12px; font-size: 13px;">
+                
+            
