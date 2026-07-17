@@ -2,122 +2,123 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="google-site-verification" content="BMhp63y6-7_6I36CL" />
     <title>Reelify AI - Ultimate Short Video Studio</title>
     <style>
-        /* प्योर कोर CSS - बिना किसी फ्रेमवर्क के 100% स्टेबल */
+        /* मोबाइल और सर्वर-फ्रेंडली प्योर स्टेबल कोर सीएसएस */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #05070f;
             color: #f1f5f9;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 15px;
+            padding: 12px;
         }
         header {
             background: #0a0f24;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 20px;
+            padding: 14px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .logo-text {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             color: #f59e0b;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .sub-logo {
-            font-size: 10px;
+            font-size: 9px;
             color: #64748b;
             display: block;
-            margin-top: 2px;
+            margin-top: 1px;
             text-transform: uppercase;
         }
         .badge {
             background: linear-gradient(to right, #f59e0b, #ea580c);
             color: #05070f;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 900;
             display: none;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
         }
         main {
             flex-grow: 1;
-            max-w: 550px;
+            max-w: 500px;
             width: 100%;
             margin: 0 auto;
         }
         .card {
             background: #0d1330;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
         .status-bar {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 12px;
-            padding: 10px 14px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 10px;
+            padding: 8px 12px;
             font-size: 11px;
             color: #10b981;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
         }
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: #ffffff;
         }
         .card-desc {
             font-size: 12px;
             color: #94a3b8;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             line-height: 1.4;
         }
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 15px;
         }
         label {
             display: block;
             font-size: 11px;
             color: #94a3b8;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: bold;
-            letter-spacing: 0.5px;
         }
-        input[type="text"], textarea, select {
+        input[type="tel"], textarea, select {
             width: 100%;
             background: #03050f;
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 12px;
-            padding: 14px;
+            padding: 12px;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
         }
-        input[type="text"]:focus, textarea:focus, select:focus {
+        input[type="tel"]:focus, textarea:focus, select:focus {
             border-color: #f59e0b;
         }
         .btn-verify {
@@ -126,35 +127,35 @@
             color: #05070f;
             border: none;
             border-radius: 12px;
-            padding: 15px;
+            padding: 14px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.1s;
+            user-select: none;
         }
         .btn-verify:active {
-            transform: scale(0.98);
+            opacity: 0.9;
         }
         .payout-section {
-            margin-top: 22px;
+            margin-top: 18px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding-top: 18px;
+            padding-top: 15px;
         }
         .payout-box {
-            background: rgba(3, 5, 15, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 14px;
+            background: rgba(3, 5, 15, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         .qr-holder {
-            background: white;
+            background: #ffffff;
             padding: 6px;
             border-radius: 10px;
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -163,10 +164,11 @@
         .qr-holder img {
             width: 100%;
             height: 100%;
+            object-fit: contain;
         }
         .payout-details p {
             font-size: 12px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: #cbd5e1;
         }
         .payout-badge {
@@ -174,7 +176,7 @@
             font-family: monospace;
             font-weight: bold;
             background: rgba(245, 158, 11, 0.1);
-            padding: 2px 6px;
+            padding: 1px 5px;
             border-radius: 4px;
         }
         .payout-val {
@@ -183,17 +185,17 @@
         }
         .workflow {
             display: none;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         .workflow-msg {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
             color: #f59e0b;
-            padding: 14px;
+            padding: 12px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
         }
         .btn-deploy {
@@ -202,17 +204,16 @@
             color: #05070f;
             border: none;
             border-radius: 12px;
-            padding: 15px;
+            padding: 14px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         footer {
             text-align: center;
-            padding: 20px;
-            font-size: 11px;
+            padding: 15px;
+            font-size: 10px;
             color: #475569;
             font-family: monospace;
         }
@@ -245,7 +246,8 @@
             
             <div class="form-group">
                 <label>Master Bypass Node Input</label>
-                <input type="text" id="auth-phone" placeholder="Enter Authorized Mobile Number...">
+                <!-- मोबाइल फ़ोन के लिए कीबोर्ड ऑप्टिमाइज़्ड इनपुट फ़ील्ड -->
+                <input type="tel" id="auth-phone" placeholder="Enter Authorized Mobile Number..." pattern="[0-9]*" inputmode="numeric">
             </div>
             
             <button id="verifyBtn" class="btn-verify">Verify Identity Node</button>
@@ -257,10 +259,11 @@
                 
                 <div class="payout-box">
                     <div class="qr-holder">
-                        <img src="https://qrserver.com" alt="QR Code">
+                        <!-- फिक्स यूआरएल एनकोडेड स्टेबल क्यूआर इमेज -->
+                        <img src="https://qrserver.com" alt="Secure Payment QR">
                     </div>
                     <div class="payout-details">
-                        <p>UPI ID: <span class="payout-badge">9079160994@ybl</span></p>
+                        <p>UPI ID: <span class="payout-badge">reelifyai@ybl</span></p>
                         <p>Plan Value: <span class="payout-val">₹199 / Lifetime Access</span></p>
                         <p style="font-size: 10px; color: #64748b; font-family: monospace;">● waiting for gateway response...</p>
                     </div>
@@ -288,11 +291,5 @@
                 <div class="card-title" style="font-size: 14px;">03 | Voice Language Selector</div>
                 <div style="margin-top: 10px;">
                     <select><option>Hindi (हिंदी)</option><option>English (Global Mode)</option></select>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title" style="font-size: 14px;">04 | Voice Artist Engine</div>
-                <div style="margin-top: 12px; font-size: 13px;">
-                
-            
+                    </div>
+                    
