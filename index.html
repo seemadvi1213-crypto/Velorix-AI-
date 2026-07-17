@@ -6,7 +6,7 @@
     <meta name="google-site-verification" content="BMhp63y6-7_6I36CL" />
     <title>Reelify AI - Ultimate Short Video Studio</title>
     <style>
-        /* 15x DEEP-SCAN VERIFIED MOBILE & SERVER CORE CSS */
+        /* मोबाइल और सर्वर-फ्रेंडली प्योर स्टेबल कोर सीएसएस */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,7 +14,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #05070f;
             color: #f1f5f9;
             min-height: 100vh;
@@ -54,7 +54,6 @@
             font-size: 10px;
             font-weight: 900;
             display: none;
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
         }
         main {
             flex-grow: 1;
@@ -68,7 +67,6 @@
             border-radius: 20px;
             padding: 18px;
             margin-bottom: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
         .status-bar {
             background: rgba(16, 185, 129, 0.08);
@@ -115,11 +113,6 @@
             color: #ffffff;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
-            -webkit-appearance: none;
-        }
-        input[type="tel"]:focus, textarea:focus, select:focus {
-            border-color: #f59e0b;
         }
         .btn-verify {
             width: 100%;
@@ -131,13 +124,9 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            user-select: none;
-        }
-        .btn-verify:active {
-            opacity: 0.9;
         }
         .payout-section {
-            margin-top: 18px;
+            margin-top: 15px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 15px;
         }
@@ -149,24 +138,21 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 15px;
         }
         .qr-holder {
             background: #ffffff;
-            padding: 6px;
+            padding: 8px;
             border-radius: 10px;
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
-        .qr-holder img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
         .payout-details p {
+            text-align: left;
             font-size: 12px;
             margin-bottom: 4px;
             color: #cbd5e1;
@@ -207,8 +193,8 @@
             padding: 14px;
             font-size: 14px;
             font-weight: bold;
-            cursor: pointer;
             text-transform: uppercase;
+            cursor: pointer;
         }
         footer {
             text-align: center;
@@ -218,6 +204,8 @@
             font-family: monospace;
         }
     </style>
+    <!-- सुरक्षित इन-ब्राउज़र लोकल QR कोड जनरेटर स्क्रिप्ट -->
+    <script src="https://cloudflare.com"></script>
 </head>
 <body>
 
@@ -230,19 +218,16 @@
         <div id="owner-badge" class="badge">OWNER PRO ACCESS</div>
     </header>
 
-    <!-- HUB CONTAINER -->
+    <!-- MAIN CONTROL CENTER -->
     <main>
-        
-        <!-- SECURITY GATEWAY -->
         <div id="auth-card" class="card">
-            
             <div class="status-bar">
                 <div>🛡️ SELF-HEALING GUARD ACTIVE</div>
                 <div style="font-size: 10px; color: #94a3b8;">Cache Cleaned</div>
             </div>
 
             <div class="card-title">Gateway Authentication</div>
-            <div class="card-desc">अपना क्रेडेंशियल डालें। मालिक मोड स्वतः सिंक होगा।</div>
+            <div class="card-desc">अपना अधिकृत क्रेडेंशियल डालें। सिस्टम डैशबोर्ड स्वतः सिंक होगा।</div>
             
             <div class="form-group">
                 <label>Master Bypass Node Input</label>
@@ -250,26 +235,9 @@
             </div>
             
             <button id="verifyBtn" class="btn-verify">Verify Identity Node</button>
-
-            <!-- PAYOUT VAULT -->
-            <div class="payout-section">
-                <div class="card-title" style="font-size: 12px; color: #94a3b8;">Instant Wallet Top-up / Unlock Pro</div>
-                <div class="card-desc" style="margin-bottom: 10px;">क्यूआर कोड स्कैन करें। स्क्रिप्ट पेमेंट लाइव डिटेक्ट कर रही है।</div>
-                
-                <div class="payout-box">
-                    <div class="qr-holder">
-                        <img src="https://qrserver.com" alt="Secure Payment QR">
-                    </div>
-                    <div class="payout-details">
-                        <p>UPI ID: <span class="payout-badge">reelifyai@ybl</span></p>
-                        <p>Plan Value: <span class="payout-val">₹199 / Lifetime Access</span></p>
-                        <p style="font-size: 10px; color: #64748b; font-family: monospace;">● waiting for gateway response...</p>
-                    </div>
-                </div>
-            </div>
         </div>
 
-        <!-- 7 STEPS WORKFLOW Pipeline -->
+        <!-- 7 STEPS WORKFLOW Pipeline (छिपे हुए स्टेप्स जो अनलॉक होने पर दिखेंगे) -->
         <div id="app-workflow" class="workflow">
             <div class="workflow-msg">⚡ PREMIUM MASTER SYSTEM ACTIVE: All AI Nodes Online.</div>
 
@@ -294,5 +262,28 @@
 
             <div class="card">
                 <div class="card-title" style="font-size: 14px;">04 | Voice Artist Engine</div>
+                <div style="margin-top: 12px; font-size: 13px;">
+                    <label style="text-transform: none; display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-weight: normal;">
+                        <input type="radio" checked style="width: auto;"> Deep Premium Male Voice (Chronos-V2)
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title" style="font-size: 14px;">05 | Smart Subtitles Module</div>
+                <div style="margin-top: 10px;">
+                    <select><option>Bold Dynamic Yellow</option><option>MrBeast Style</option></select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title" style="font-size: 14px;">06 | Render Quality Settings</div>
+                <div style="background: #03050f; padding: 14px; border-radius: 12px; text-align: center; font-size: 12px; color: #f59e0b; font-weight: bold; border: 1px solid rgba(245,158,11,0.2); margin-top: 10px;">
+                    9:16 Ultra HD (Portrait Size Lock)
+                </div>
+            </div>
+
+            <!-- STEP 07: पेमेंट गेटवे और डिप्लॉयमेंट अब यहाँ बिल्कुल आखिरी स्टेप पर शिफ्ट कर दिया गया है -->
+            <div class="card">
                 
                 
