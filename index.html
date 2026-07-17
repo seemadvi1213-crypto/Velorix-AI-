@@ -1,14 +1,23 @@
-                <!DOCTYPE html>
+                        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="BMhp63y6-7_6I36CL" />
     <title>Reelify AI - Ultimate Multi-Agent Short Video Studio</title>
-    <!-- FontAwesome for Premium Icons -->
+    
+    <!-- Tailwind CSS (v4 CDN Component) -->
+    <script src="https://jsdelivr.net"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Core Icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
     
-    <!-- PURE CSS ARCHITECTURE - TAILWIND INDEPENDENT LOCK -->
+    <!-- COMPLETE ARCHITECTURE STYLE SYSTEM -->
     <style>
         * {
             box-sizing: border-box;
@@ -16,243 +25,40 @@
             padding: 0;
         }
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
             background: radial-gradient(circle at top right, #0c102b 0%, #05070f 60%, #020307 100%) !important;
             color: #f1f5f9;
-            min-height: 100/v h;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            min-height: 100vh;
             overflow-x: hidden;
         }
-        header {
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass-studio-panel {
             background: rgba(10, 15, 36, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-b: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-box {
-            width: 42px;
-            height: 42px;
-            background: #03050f;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
-        }
-        .logo-box span {
-            font-weight: 900;
-            color: #f59e0b;
-            font-size: 14px;
-            letter-spacing: -0.5px;
-        }
-        .brand-title {
-            font-size: 22px;
-            font-weight: 800;
-            background: linear-gradient(to right, #fbbf24, #f97316, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .brand-subtitle {
-            font-size: 10px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-            margin-top: 1px;
-        }
-        .owner-badge {
-            background: linear-gradient(to right, #fbbf24, #f59e0b, #ea580c);
-            color: #020307;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
-        }
-        main {
-            flex-grow: 1;
-            max-w: 600px;
-            width: 100%;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .glass-panel {
-            background: rgba(10, 15, 36, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 30px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            margin-bottom: 25px;
         }
-        .guard-banner {
-            background: rgba(3, 5, 15, 0.6);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 16px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.08);
-        }
-        .guard-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .guard-icon-box {
-            width: 36px;
-            height: 36px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #10b981;
-        }
-        .guard-title {
-            font-size: 11px;
-            font-weight: 800;
-            color: #10b981;
-            letter-spacing: 0.5px;
-        }
-        .guard-text {
-            font-size: 10px;
-            color: #94a3b8;
-            font-family: monospace;
-        }
-        .scan-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #94a3b8;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .scan-btn:hover {
-            color: #10b981;
-            border-color: rgba(16, 185, 129, 0.3);
-            background: rgba(16, 185, 129, 0.05);
-        }
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 15px;
-        }
-        .icon-header-box {
-            width: 44px;
-            height: 44px;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #f59e0b;
-            font-size: 18px;
-        }
-        .main-heading {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-        .sub-heading {
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 2px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        .input-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        .input-field {
-            width: 100%;
-            background: rgba(3, 5, 15, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 14px 16px;
+        .input-dark-lock {
+            background: rgba(3, 5, 15, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
             color: #ffffff !important;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.2s;
         }
-        .input-field:focus {
-            outline: none;
-            border-color: #f59e0b;
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+        .input-dark-lock:focus {
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
         }
-        .action-btn {
-            width: 100%;
-            background: linear-gradient(to right, #f59e0b, #d97706);
-            color: #020307;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 10px 20px rgba(217, 119, 6, 0.15);
-            transition: all 0.2s;
+        .neon-glow-amber {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
         }
-        .action-btn:active {
-            transform: scale(0.99);
+        .neon-border-emerald {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3) !important;
         }
-        .qr-section {
-            margin-top: 25px;
-            border-t: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 20px;
-        }
-        .qr-box-container {
-            background: rgba(3, 5, 15, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        
+        /* SCREENSHOT COPIED CLASS ASSETS */
         .qr-image-wrapper {
             background: #ffffff;
             padding: 10px;
@@ -285,14 +91,8 @@
             border-radius: 4px;
             border: 1px solid rgba(245, 158, 11, 0.1);
         }
-        .plan-text {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        .plan-val {
-            color: #10b981;
-            font-weight: 800;
-        }
+        .plan-text { font-size: 12px; color: #94a3b8; }
+        .plan-val { color: #10b981; font-weight: 800; }
         .pulse-status {
             display: flex;
             align-items: center;
@@ -313,14 +113,90 @@
             0% { opacity: 0.3; }
             100% { opacity: 1; }
         }
-        .cancel-btn {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: max-content;
-             
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #04060d; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+
+    <!-- TOP PREMIUM NAVBAR -->
+    <header class="glass-studio-panel sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3.5">
+            <div class="relative group cursor-pointer">
+                <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-violet-600 rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-300"></div>
+                <div class="relative w-11 h-11 bg-slate-950 border border-white/10 rounded-xl flex items-center justify-center">
+                    <span class="heading-font font-black text-sm tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-amber-400 to-amber-200">AI</span>
+                </div>
+            </div>
+            <div>
+                <span class="heading-font text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-400 to-violet-400">REELIFY AI</span>
+                <p class="text-[10px] text-slate-500 font-mono tracking-widest uppercase font-semibold">Skybound Multi-Agent Swarm</p>
+            </div>
+        </div>
+
+        <!-- Master Bypass Premium Badge -->
+        <div id="owner-badge-container" class="hidden">
+            <span class="bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-black flex items-center space-x-2 shadow-2xl neon-glow-amber tracking-wider">
+                <i class="fa-solid fa-crown text-xs animate-bounce"></i>
+                <span>OWNER PRO ACCESS</span>
+            </span>
+        </div>
+    </header>
+
+    <!-- CENTER CONTROL HUB -->
+    <main class="flex-grow max-w-2xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center my-6">
+        
+        <!-- IDENTITY SECURITY GATEWAY -->
+        <div id="auth-card" class="glass-studio-panel rounded-3xl p-6 md:p-8 shadow-2xl transition-all duration-500 border border-white/10 relative overflow-hidden">
+            
+            <!-- LIVE SELF-HEALING DEFENDER MODULE -->
+            <div class="mb-6 bg-slate-950/60 border border-emerald-500/20 rounded-2xl p-3.5 flex items-center justify-between neon-border-emerald">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                        <i id="shield-icon" class="fa-solid fa-shield-cat text-sm animate-pulse"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold text-emerald-400 tracking-wide heading-font">SELF-HEALING GUARD ACTIVE</span>
+                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
+                        </div>
+                        <p id="cleaner-status" class="text-[10px] text-slate-400 font-mono">Anti-Virus Core: Secure | Client Cache: Fully Cleaned</p>
+                    </div>
+                </div>
+                <button onclick="triggerManualHeal()" class="text-[10px] font-bold text-slate-400 hover:text-emerald-400 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 px-2.5 py-1.5 rounded-lg transition-all font-mono">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>SCAN NOW
+                </button>
+            </div>
+
+            <div class="flex items-center space-x-4 mb-6 border-b border-white/5 pb-4">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-400 border border-amber-500/20">
+                    <i class="fa-solid fa-fingerprint text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white heading-font tracking-tight">Gateway Authentication & Security</h2>
+                    <p class="text-xs text-slate-400">अपना क्रेडेंशियल डालें। मालिक मोड स्वतः सिंक होगा।</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Master Bypass Node Input</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-terminal absolute left-4 top-4 text-slate-500 System-Fix"></i >
+                        <input type="text" id="auth-phone" placeholder="Enter Authorized Phone or Email..." class="w-full input-dark-lock rounded-xl pl-11 pr-4 py-3.5 text-white font-medium placeholder-slate-600 focus:outline-none transition-all text-base">
+                    </div>
+                </div>
+                
+                <button id="verifyBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-extrabold py-3.5 px-4 rounded-xl transition shadow-lg flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]">
+                    <span>Verify Identity Node</span>
+                    <i class="fa-solid fa-lock-open text-xs"></i>
+                </button>
+            </div>
+
+            <!-- SECURE PAYOUT VAULT -->
+            <div class="mt-8 border-t border-white/5 pt-6">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 heading-font"><i class="fa-solid fa-wallet text-amber-500 mr-2"></i>Instant Wallet Top-up / Unlock Pro</h4>
+                <p class="text-xs text-slate-500 mb-4">क्यूआर कोड स्कैन करें। हमारी स्क्रिप्ट पेमेंट को लाइव डिटेक्ट कर रही है।</p>
+
+  
