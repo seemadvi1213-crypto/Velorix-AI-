@@ -77,11 +77,6 @@
       justify-content: center;
       gap: 12px;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .google-btn:active {
-      transform: scale(0.98);
     }
 
     .google-btn img {
@@ -117,7 +112,6 @@
       margin: 0 8px;
     }
 
-    /* Dashboard */
     .dashboard {
       display: none;
     }
@@ -148,11 +142,6 @@
       margin-bottom: 12px;
       cursor: pointer;
       text-align: left;
-      transition: 0.2s;
-    }
-
-    .menu-btn:active {
-      background: rgba(255, 255, 255, 0.12);
     }
 
     .logout-btn {
@@ -166,6 +155,14 @@
       margin-top: 20px;
       cursor: pointer;
     }
+
+    .loading {
+      text-align: center;
+      color: #a1a1aa;
+      font-size: 14px;
+      margin-top: 20px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -178,13 +175,14 @@
     </div>
 
     <div class="card">
-      <button class="google-btn" onclick="loginWithGoogle()">
+      <button class="google-btn" id="loginBtn" onclick="loginWithGoogle()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
         Google से लॉगिन करें
       </button>
 
       <p class="note">फोन OTP ऑप्शन जल्द जोड़ा जाएगा</p>
       <div class="error" id="errorMsg"></div>
+      <div class="loading" id="loadingMsg">लॉगिन हो रहा है, कृपया प्रतीक्षा करें...</div>
     </div>
 
     <div class="footer">
@@ -211,7 +209,6 @@
   </div>
 
   <script>
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
       authDomain: "best-47108.firebaseapp.com",
@@ -224,15 +221,16 @@
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    // Google Login (Redirect - Mobile friendly)
     function loginWithGoogle() {
+      document.getElementById("loadingMsg").style.display = "block";
+      document.getElementById("errorMsg").style.display = "none";
+
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithRedirect(provider);
     }
 
-    // Redirect के बाद रिजल्ट लेना
+    // Redirect रिजल्ट चेक करना
     auth.getRedirectResult()
       .then((result) => {
         if (result.user) {
@@ -240,21 +238,27 @@
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Redirect Error:", error);
+        document.getElementById("loadingMsg").style.display = "none";
         document.getElementById("errorMsg").style.display = "block";
         document.getElementById("errorMsg").innerText = "लॉगिन में समस्या आई";
       });
 
-    // पहले से लॉगिन है या नहीं
+    // सबसे महत्वपूर्ण: यूजर लॉगिन है या नहीं लगातार चेक करना
     auth.onAuthStateChanged((user) => {
       if (user) {
         showDashboard(user);
+      } else {
+        document.getElementById("loginScreen").style.display = "flex";
+        document.getElementById("dashboardScreen").style.display = "none";
       }
     });
 
     function showDashboard(user) {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("dashboardScreen").style.display = "flex";
+      document.getElementById("loadingMsg").style.display = "none";
+
       document.getElementById("userName").innerText = "नमस्ते, " + (user.displayName || "यूजर");
       document.getElementById("userEmail").innerText = user.email;
     }
@@ -268,4 +272,4 @@
   </script>
 
 </body>
-        </html>
+  </html>    
