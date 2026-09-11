@@ -19,7 +19,7 @@
     }
 
     body {
-      background: #0b0b0f;
+      background: linear-gradient(135deg, #0b0b0f, #15151f);
       color: white;
       min-height: 100vh;
     }
@@ -28,35 +28,39 @@
       width: 100%;
       max-width: 420px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 24px 20px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    h1 {
-      font-size: 32px;
+    .logo {
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 40px;
+    }
+
+    .logo h1 {
+      font-size: 34px;
+      font-weight: 700;
       background: linear-gradient(90deg, #a855f7, #6366f1);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
     }
 
-    .subtitle {
-      text-align: center;
+    .logo p {
       color: #a1a1aa;
-      margin-bottom: 40px;
       font-size: 15px;
     }
 
     .card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 30px 20px;
-      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 32px 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .google-btn {
@@ -64,8 +68,8 @@
       background: white;
       color: #222;
       border: none;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 16px;
+      border-radius: 14px;
       font-size: 16px;
       font-weight: 600;
       display: flex;
@@ -73,16 +77,21 @@
       justify-content: center;
       gap: 12px;
       cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .google-btn:active {
+      transform: scale(0.98);
     }
 
     .google-btn img {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
     }
 
     .note {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 18px;
       font-size: 13px;
       color: #777;
     }
@@ -90,23 +99,36 @@
     .error {
       color: #ff6b6b;
       text-align: center;
-      margin-top: 15px;
+      margin-top: 16px;
       font-size: 14px;
       display: none;
     }
 
-    /* Dashboard Styles */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .footer a {
+      color: #888;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    /* Dashboard */
     .dashboard {
       display: none;
     }
 
     .welcome {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 32px;
     }
 
     .welcome h2 {
-      font-size: 22px;
+      font-size: 24px;
       margin-bottom: 6px;
     }
 
@@ -117,15 +139,20 @@
 
     .menu-btn {
       width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: white;
-      padding: 16px;
-      border-radius: 14px;
+      padding: 18px;
+      border-radius: 16px;
       font-size: 16px;
       margin-bottom: 12px;
       cursor: pointer;
       text-align: left;
+      transition: 0.2s;
+    }
+
+    .menu-btn:active {
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .logout-btn {
@@ -133,8 +160,8 @@
       background: transparent;
       border: 1px solid #ff6b6b;
       color: #ff6b6b;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 15px;
+      border-radius: 14px;
       font-size: 15px;
       margin-top: 20px;
       cursor: pointer;
@@ -143,10 +170,12 @@
 </head>
 <body>
 
-  <!-- ========== LOGIN SCREEN ========== -->
+  <!-- LOGIN SCREEN -->
   <div class="container" id="loginScreen">
-    <h1>REELIFY AI</h1>
-    <p class="subtitle">Premium AI Short Video Studio</p>
+    <div class="logo">
+      <h1>REELIFY AI</h1>
+      <p>Premium AI Short Video Studio</p>
+    </div>
 
     <div class="card">
       <button class="google-btn" onclick="loginWithGoogle()">
@@ -157,9 +186,14 @@
       <p class="note">फोन OTP ऑप्शन जल्द जोड़ा जाएगा</p>
       <div class="error" id="errorMsg"></div>
     </div>
+
+    <div class="footer">
+      <a href="#">Privacy Policy</a> • 
+      <a href="#">Terms</a>
+    </div>
   </div>
 
-  <!-- ========== DASHBOARD SCREEN ========== -->
+  <!-- DASHBOARD SCREEN -->
   <div class="container dashboard" id="dashboardScreen">
     <div class="welcome">
       <h2 id="userName">स्वागत है</h2>
@@ -177,7 +211,7 @@
   </div>
 
   <script>
-    // Firebase Config (तुम्हारी Keys)
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
       authDomain: "best-47108.firebaseapp.com",
@@ -192,46 +226,46 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Google Login
+    // Google Login (Redirect - Mobile friendly)
     function loginWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
-
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          const user = result.user;
-          showDashboard(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          document.getElementById("errorMsg").style.display = "block";
-          document.getElementById("errorMsg").innerText = "लॉगिन में समस्या आई";
-        });
+      auth.signInWithRedirect(provider);
     }
 
-    // Dashboard दिखाना
+    // Redirect के बाद रिजल्ट लेना
+    auth.getRedirectResult()
+      .then((result) => {
+        if (result.user) {
+          showDashboard(result.user);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        document.getElementById("errorMsg").style.display = "block";
+        document.getElementById("errorMsg").innerText = "लॉगिन में समस्या आई";
+      });
+
+    // पहले से लॉगिन है या नहीं
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        showDashboard(user);
+      }
+    });
+
     function showDashboard(user) {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("dashboardScreen").style.display = "flex";
-
       document.getElementById("userName").innerText = "नमस्ते, " + (user.displayName || "यूजर");
       document.getElementById("userEmail").innerText = user.email;
     }
 
-    // Logout
     function logout() {
       auth.signOut().then(() => {
         document.getElementById("dashboardScreen").style.display = "none";
         document.getElementById("loginScreen").style.display = "flex";
       });
     }
-
-    // पहले से लॉगिन चेक करना
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        showDashboard(user);
-      }
-    });
   </script>
 
 </body>
-  </html>
+        </html>
