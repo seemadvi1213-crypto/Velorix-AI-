@@ -21,7 +21,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Premium Animated Background */
     .bg {
       position: fixed;
       inset: 0;
@@ -41,7 +40,6 @@
       opacity: 0.4;
     }
 
-    /* Main Container */
     .container {
       position: relative;
       z-index: 10;
@@ -53,7 +51,6 @@
       padding: 24px 16px;
     }
 
-    /* Logo */
     .logo {
       text-align: center;
       margin-bottom: 32px;
@@ -74,10 +71,8 @@
       font-size: 15px;
       color: rgba(255,255,255,0.55);
       font-weight: 400;
-      letter-spacing: 0.3px;
     }
 
-    /* Glass Card */
     .card {
       width: 100%;
       max-width: 400px;
@@ -87,9 +82,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
       padding: 36px 28px;
-      box-shadow: 
-        0 0 0 1px rgba(255,255,255,0.05),
-        0 20px 50px -12px rgba(0,0,0,0.6);
+      box-shadow: 0 20px 50px -12px rgba(0,0,0,0.6);
     }
 
     .card h2 {
@@ -106,7 +99,6 @@
       margin-bottom: 28px;
     }
 
-    /* Buttons */
     .btn {
       width: 100%;
       padding: 14px 20px;
@@ -160,7 +152,6 @@
       background: rgba(255,255,255,0.1);
     }
 
-    /* Email Form */
     #emailForm {
       display: none;
     }
@@ -191,7 +182,6 @@
       transform: translateY(-1px);
     }
 
-    /* Footer */
     .footer {
       margin-top: 40px;
       text-align: center;
@@ -209,7 +199,6 @@
       color: #fff;
     }
 
-    /* Dashboard */
     #dashboard {
       display: none;
       width: 100%;
@@ -241,7 +230,6 @@
       border: 1px solid rgba(255,80,80,0.25);
     }
 
-    /* Loading */
     .loading {
       display: none;
       text-align: center;
@@ -331,9 +319,9 @@
 
   <script>
     // ======================
-    // CLERK SETUP
+    // CLERK SETUP - LIVE KEY
     // ======================
-    const PUBLISHABLE_KEY = "pk_test_Zm9uZC1tdXR0LTE0Ni5jbGVyay5hY2NvdW50cy5kZXYk";
+    const PUBLISHABLE_KEY = "pk_live_Y2xlcmsudW5vb3JpeC1haS13ZWIudmVyY2VsLmFwC0";
 
     const clerk = window.Clerk;
     let isLoaded = false;
@@ -345,12 +333,10 @@
         });
         isLoaded = true;
 
-        // Check if user is already signed in
         if (clerk.user) {
           showDashboard(clerk.user);
         }
 
-        // Listen for auth changes
         clerk.addListener(({ user }) => {
           if (user) {
             showDashboard(user);
@@ -423,15 +409,7 @@
         document.getElementById("loadingMsg").innerText = "Magic link sent! Check your email.";
       } catch (err) {
         console.error(err);
-        // Fallback to email code if link fails
-        try {
-          await clerk.client.signIn.create({
-            identifier: email
-          });
-          document.getElementById("loadingMsg").innerText = "Check your email for the code.";
-        } catch (e) {
-          document.getElementById("loadingMsg").innerText = "Something went wrong. Try Google login.";
-        }
+        document.getElementById("loadingMsg").innerText = "Something went wrong. Try Google login.";
       }
     }
 
@@ -444,5 +422,4 @@
     initClerk();
   </script>
 </body>
-  </html>
-      
+    </html>            
