@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/_clerk/:path*",
+      "destination": "https://clerk.com*"
+    }
+  ]
+}
