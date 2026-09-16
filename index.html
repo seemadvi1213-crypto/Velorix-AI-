@@ -80,21 +80,33 @@
   </div>
 
   <script>
-    const PUBLISHABLE_KEY = "pk_test_Zm9uZC1tdXR0LTE0Ni5jbGVyay5hY2NvdW50cy5kZXYk";
+    // ======================
+    // PRODUCTION KEY + PROXY
+    // ======================
+    const PUBLISHABLE_KEY = "pk_live_Y2xlcmsudW5vb3JpeC1haS13ZWIudmVyY2VsLmFwC0";
+
     const clerk = window.Clerk;
     let isLoaded = false;
 
     async function initClerk() {
       try {
-        await clerk.load({ publishableKey: PUBLISHABLE_KEY });
+        await clerk.load({
+          publishableKey: PUBLISHABLE_KEY,
+          proxyUrl: "https://velorix-ai-web.vercel.app/__clerk"
+        });
         isLoaded = true;
-        if (clerk.user) showDashboard(clerk.user);
+
+        if (clerk.user) {
+          showDashboard(clerk.user);
+        }
+
         clerk.addListener(({ user }) => {
           if (user) showDashboard(user);
           else showLogin();
         });
+
       } catch (err) {
-        console.error(err);
+        console.error("Clerk load error:", err);
         document.getElementById("loadingMsg").style.display = "block";
         document.getElementById("loadingMsg").innerText = "Loading error. Please refresh.";
       }
@@ -158,4 +170,4 @@
     initClerk();
   </script>
 </body>
-  </html>
+  </html>       
