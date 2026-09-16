@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/_clerk/:path*",
-      "destination": "https://clerk.com*"
+      "source": "/__clerk/:path*",
+      "destination": "/api/__clerk/:path*"
     }
   ]
 }
