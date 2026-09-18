@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Velorix AI</title>
-  <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{
@@ -31,7 +35,7 @@
       background:linear-gradient(135deg,#fff 0%,#a78bfa 45%,#60a5fa 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
     }
-    .logo p{margin-top:10px;font-size:15px;color:rgba(255,255,255,.55);font-weight:400}
+    .logo p{margin-top:10px;font-size:15px;color:rgba(255,255,255,.55)}
     .card{
       width:100%;max-width:400px;
       background:rgba(255,255,255,.045);
@@ -49,27 +53,12 @@
     }
     .btn-google{background:#fff;color:#111}
     .btn-google:hover{background:#f2f2f2;transform:translateY(-1px)}
-    .btn-email{
-      background:rgba(255,255,255,.08);color:#fff;
-      border:1px solid rgba(255,255,255,.13);
+    .btn-logout{
+      margin-top:26px;background:rgba(255,80,80,.15);color:#ff6b6b;
+      border:1px solid rgba(255,80,80,.25);
     }
-    .btn-email:hover{background:rgba(255,255,255,.13)}
-    .divider{
-      display:flex;align-items:center;gap:12px;margin:18px 0;
-      color:rgba(255,255,255,.3);font-size:13px;
-    }
-    .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.1)}
-    #emailForm{display:none}
-    .input{
-      width:100%;padding:14px 16px;border-radius:12px;
-      border:1px solid rgba(255,255,255,.13);background:rgba(0,0,0,.35);
-      color:#fff;font-size:15px;outline:none;margin-bottom:12px;
-    }
-    .input:focus{border-color:rgba(167,139,250,.65)}
-    .btn-primary{background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff}
     .footer{margin-top:42px;text-align:center;font-size:13px;color:rgba(255,255,255,.35)}
     .footer a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 11px}
-    .footer a:hover{color:#fff}
     #dashboard{display:none;width:100%;max-width:480px;text-align:center}
     .user-card{
       background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);
@@ -79,11 +68,8 @@
       width:76px;height:76px;border-radius:50%;margin:0 auto 18px;
       border:2px solid rgba(167,139,250,.45);object-fit:cover;
     }
-    .btn-logout{
-      margin-top:26px;background:rgba(255,80,80,.15);color:#ff6b6b;
-      border:1px solid rgba(255,80,80,.25);
-    }
     .loading{display:none;text-align:center;color:rgba(255,255,255,.6);font-size:14px;margin-top:16px}
+    .status{text-align:center;font-size:13px;color:rgba(255,255,255,.45);margin-top:12px}
     @media(max-width:480px){
       .logo h1{font-size:36px}
       .card{padding:32px 22px}
@@ -94,7 +80,7 @@
   <div class="bg"></div>
   <div class="container">
 
-    <!-- LOGIN -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen">
       <div class="logo">
         <h1>Velorix AI</h1>
@@ -105,7 +91,7 @@
         <h2>Welcome back</h2>
         <p class="subtitle">Sign in to continue creating</p>
 
-        <button class="btn btn-google" onclick="signInWithGoogle()">
+        <button class="btn btn-google" onclick="loginWithGoogle()">
           <svg width="18" height="18" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -115,16 +101,8 @@
           Continue with Google
         </button>
 
-        <div class="divider">or</div>
-
-        <button class="btn btn-email" onclick="showEmailForm()">Continue with Email</button>
-
-        <div id="emailForm">
-          <input type="email" id="emailInput" class="input" placeholder="Enter your email" />
-          <button class="btn btn-primary" onclick="signInWithEmail()">Send Magic Link</button>
-        </div>
-
         <div class="loading" id="loadingMsg">Please wait...</div>
+        <div class="status" id="statusMsg"></div>
       </div>
 
       <div class="footer">
@@ -134,7 +112,7 @@
       </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD SCREEN -->
     <div id="dashboard">
       <div class="logo"><h1>Velorix AI</h1></div>
       <div class="user-card">
@@ -144,7 +122,7 @@
         <p style="margin-top:22px;color:rgba(255,255,255,.6);font-size:15px">
           You are successfully logged in
         </p>
-        <button class="btn btn-logout" onclick="signOut()">Logout</button>
+        <button class="btn btn-logout" onclick="logout()">Logout</button>
       </div>
     </div>
 
@@ -152,37 +130,24 @@
 
   <script>
     // ======================
-    // DEVELOPMENT KEY
+    // FIREBASE CONFIG
     // ======================
-    const PUBLISHABLE_KEY = "pk_test_Zm9uZC1tdXR0LTE0Ni5jbGVyay5hY2NvdW50cy5kZXYk";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
+      authDomain: "best-47108.firebaseapp.com",
+      projectId: "best-47108",
+      storageBucket: "best-47108.firebasestorage.app",
+      messagingSenderId: "995954423710",
+      appId: "1:995954423710:web:9b3458af61b99e6fb6088f",
+      measurementId: "G-CPCRTBG42V"
+    };
 
-    const clerk = window.Clerk;
-    let isLoaded = false;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    async function initClerk() {
-      try {
-        await clerk.load({
-          publishableKey: PUBLISHABLE_KEY
-        });
-        isLoaded = true;
-
-        if (clerk.user) {
-          showDashboard(clerk.user);
-        }
-
-        clerk.addListener(({ user }) => {
-          if (user) showDashboard(user);
-          else showLogin();
-        });
-
-      } catch (err) {
-        console.error("Clerk error:", err);
-        const msg = document.getElementById("loadingMsg");
-        msg.style.display = "block";
-        msg.innerText = "Loading error. Please refresh.";
-      }
-    }
-
+    // ======================
+    // UI HELPERS
+    // ======================
     function showLogin() {
       document.getElementById("loginScreen").style.display = "block";
       document.getElementById("dashboard").style.display = "none";
@@ -192,65 +157,70 @@
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
 
-      document.getElementById("userName").innerText = user.fullName || user.firstName || "Creator";
-      document.getElementById("userEmail").innerText = user.primaryEmailAddress?.emailAddress || "";
-      document.getElementById("userAvatar").src = user.imageUrl || "https://www.gravatar.com/avatar/?d=mp";
+      document.getElementById("userName").innerText = user.displayName || "Creator";
+      document.getElementById("userEmail").innerText = user.email || "";
+      document.getElementById("userAvatar").src = user.photoURL || "https://www.gravatar.com/avatar/?d=mp";
     }
 
-    function showEmailForm() {
-      document.getElementById("emailForm").style.display = "block";
+    function setLoading(text) {
+      const el = document.getElementById("loadingMsg");
+      el.style.display = "block";
+      el.innerText = text;
     }
 
-    async function signInWithGoogle() {
-      if (!isLoaded) return;
-      const msg = document.getElementById("loadingMsg");
-      msg.style.display = "block";
-      msg.innerText = "Redirecting to Google...";
+    function setStatus(text) {
+      document.getElementById("statusMsg").innerText = text;
+    }
 
-      try {
-        await clerk.authenticateWithRedirect({
-          strategy: "oauth_google",
-          redirectUrl: window.location.href,
-          redirectUrlComplete: window.location.href
+    // ======================
+    // AUTH FUNCTIONS
+    // ======================
+    function loginWithGoogle() {
+      setLoading("Opening Google...");
+      setStatus("");
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      // Mobile के लिए redirect बेहतर रहता है
+      auth.signInWithRedirect(provider)
+        .catch((error) => {
+          console.error(error);
+          setLoading("");
+          setStatus("Error: " + error.message);
         });
-      } catch (err) {
-        console.error(err);
-        msg.innerText = "Google login failed. Try again.";
-      }
     }
 
-    async function signInWithEmail() {
-      if (!isLoaded) return;
-      const email = document.getElementById("emailInput").value.trim();
-      if (!email) {
-        alert("Please enter your email");
-        return;
-      }
-
-      const msg = document.getElementById("loadingMsg");
-      msg.style.display = "block";
-      msg.innerText = "Sending magic link...";
-
-      try {
-        await clerk.client.signIn.create({
-          identifier: email,
-          strategy: "email_link",
-          redirectUrl: window.location.href
-        });
-        msg.innerText = "Magic link sent! Check your email.";
-      } catch (err) {
-        console.error(err);
-        msg.innerText = "Something went wrong. Try Google login.";
-      }
+    function logout() {
+      auth.signOut().then(() => {
+        showLogin();
+        setStatus("");
+        document.getElementById("loadingMsg").style.display = "none";
+      });
     }
 
-    async function signOut() {
-      await clerk.signOut();
-      showLogin();
-    }
+    // ======================
+    // CHECK LOGIN STATE
+    // ======================
+    // पहले redirect result चेक करो
+    auth.getRedirectResult()
+      .then((result) => {
+        if (result.user) {
+          showDashboard(result.user);
+        }
+      })
+      .catch((error) => {
+        console.error("Redirect error:", error);
+        setStatus("Login error: " + error.message);
+      });
 
-    // Start
-    initClerk();
+    // continuously watch auth state
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        showDashboard(user);
+      } else {
+        showLogin();
+      }
+    });
   </script>
 </body>
-  </html>
+          </html>
