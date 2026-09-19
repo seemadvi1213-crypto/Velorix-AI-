@@ -8,32 +8,121 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;background:#050505;color:#fff;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-    .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 50% at 20% -20%,rgba(120,40,200,.28),transparent),radial-gradient(ellipse 60% 40% at 80% 10%,rgba(0,180,255,.18),transparent),radial-gradient(ellipse 50% 30% at 50% 100%,rgba(255,50,120,.14),transparent),#050505}
-    .container{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px}
-    .logo{text-align:center;margin-bottom:36px}
-    .logo h1{font-size:44px;font-weight:700;letter-spacing:-1.5px;background:linear-gradient(135deg,#fff 0%,#a78bfa 45%,#60a5fa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .logo p{margin-top:10px;font-size:15px;color:rgba(255,255,255,.55)}
-    .card{width:100%;max-width:400px;background:rgba(255,255,255,.045);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:40px 28px;box-shadow:0 25px 50px -12px rgba(0,0,0,.65)}
-    .card h2{font-size:23px;font-weight:600;text-align:center;margin-bottom:8px}
-    .card .subtitle{text-align:center;font-size:14px;color:rgba(255,255,255,.5);margin-bottom:30px}
-    .btn{width:100%;padding:15px 20px;border-radius:14px;font-size:15px;font-weight:500;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:11px;transition:all .2s ease;margin-bottom:12px}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+      background:#050505;color:#fff;min-height:100vh;overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+    .bg{
+      position:fixed;inset:0;z-index:0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -20%,rgba(120,40,200,.22),transparent),
+        radial-gradient(ellipse 60% 40% at 80% 10%,rgba(0,160,255,.12),transparent),
+        #050505;
+    }
+    .container{
+      position:relative;z-index:10;min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:24px 16px;
+    }
+
+    /* ===== LOGIN ===== */
+    #loginScreen{width:100%;max-width:400px}
+    .logo{text-align:center;margin-bottom:32px}
+    .logo h1{
+      font-size:40px;font-weight:700;letter-spacing:-1.2px;
+      background:linear-gradient(135deg,#fff 0%,#a78bfa 50%,#60a5fa 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .logo p{margin-top:8px;font-size:14px;color:rgba(255,255,255,.5)}
+    .card{
+      background:rgba(255,255,255,.04);
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;padding:36px 24px;
+      box-shadow:0 20px 40px -12px rgba(0,0,0,.5);
+    }
+    .card h2{font-size:21px;font-weight:600;text-align:center;margin-bottom:6px}
+    .card .subtitle{text-align:center;font-size:13px;color:rgba(255,255,255,.45);margin-bottom:26px}
+    .btn{
+      width:100%;padding:14px 18px;border-radius:13px;font-size:15px;font-weight:500;
+      border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+      transition:all .2s ease;
+    }
     .btn-google{background:#fff;color:#111}
-    .btn-google:hover{background:#f2f2f2;transform:translateY(-1px)}
-    .btn-logout{margin-top:26px;background:rgba(255,80,80,.15);color:#ff6b6b;border:1px solid rgba(255,80,80,.25)}
-    .footer{margin-top:42px;text-align:center;font-size:13px;color:rgba(255,255,255,.35)}
-    .footer a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 11px}
-    #dashboard{display:none;width:100%;max-width:480px;text-align:center}
-    .user-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:36px 24px;backdrop-filter:blur(24px)}
-    .avatar{width:76px;height:76px;border-radius:50%;margin:0 auto 18px;border:2px solid rgba(167,139,250,.45);object-fit:cover}
-    .loading{display:none;text-align:center;color:rgba(255,255,255,.6);font-size:14px;margin-top:16px}
-    .status{text-align:center;font-size:13px;color:rgba(255,255,255,.45);margin-top:12px}
-    @media(max-width:480px){.logo h1{font-size:36px}.card{padding:32px 22px}}
+    .btn-google:active{transform:scale(.98)}
+    .btn-primary{
+      background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;
+      margin-top:18px;opacity:.5;pointer-events:none;
+    }
+    .btn-primary.active{opacity:1;pointer-events:auto}
+    .btn-logout{
+      margin-top:20px;background:rgba(255,80,80,.12);color:#ff6b6b;
+      border:1px solid rgba(255,80,80,.2);
+    }
+    .footer{margin-top:36px;text-align:center;font-size:12px;color:rgba(255,255,255,.3)}
+    .footer a{color:rgba(255,255,255,.45);text-decoration:none;margin:0 10px}
+    .loading{display:none;text-align:center;color:rgba(255,255,255,.55);font-size:13px;margin-top:14px}
+    .status{text-align:center;font-size:12px;color:rgba(255,255,255,.4);margin-top:10px}
+
+    /* ===== LANGUAGE PAGE ===== */
+    #languageScreen{display:none;width:100%;max-width:420px;padding-bottom:40px}
+    .lang-header{text-align:center;margin-bottom:24px}
+    .lang-header h2{font-size:24px;font-weight:600;margin-bottom:6px}
+    .lang-header p{font-size:13px;color:rgba(255,255,255,.45)}
+
+    .search-box{
+      width:100%;padding:13px 16px 13px 42px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
+      color:#fff;font-size:15px;outline:none;margin-bottom:18px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M14 14l-3-3'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:14px center;
+    }
+    .search-box:focus{border-color:rgba(167,139,250,.5)}
+
+    .lang-list{
+      max-height:52vh;overflow-y:auto;border-radius:16px;
+      border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);
+      -webkit-overflow-scrolling:touch;
+    }
+    .lang-item{
+      display:flex;align-items:center;gap:14px;padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;
+      transition:background .15s ease;
+    }
+    .lang-item:last-child{border-bottom:none}
+    .lang-item:active{background:rgba(255,255,255,.06)}
+    .lang-item.selected{background:rgba(124,58,237,.18)}
+    .lang-flag{font-size:22px;width:32px;text-align:center}
+    .lang-name{font-size:15px;font-weight:500;flex:1}
+    .lang-native{font-size:12px;color:rgba(255,255,255,.4)}
+    .check{
+      width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);
+      display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;
+    }
+    .lang-item.selected .check{opacity:1;background:#7c3aed;border-color:#7c3aed;color:#fff}
+
+    .user-mini{
+      display:flex;align-items:center;gap:10px;margin-bottom:20px;
+      padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .user-mini img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+    .user-mini .info{flex:1}
+    .user-mini .name{font-size:14px;font-weight:500}
+    .user-mini .email{font-size:11px;color:rgba(255,255,255,.4)}
+
+    @media(max-width:480px){
+      .logo h1{font-size:34px}
+      .lang-header h2{font-size:22px}
+    }
   </style>
 </head>
 <body>
   <div class="bg"></div>
   <div class="container">
+
+    <!-- ========== LOGIN ========== -->
     <div id="loginScreen">
       <div class="logo">
         <h1>Velorix AI</h1>
@@ -46,7 +135,7 @@
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
-        <div class="loading" id="loadingMsg">Please wait...</div>
+        <div class="loading" id="loadingMsg"></div>
         <div class="status" id="statusMsg"></div>
       </div>
       <div class="footer">
@@ -56,19 +145,33 @@
       </div>
     </div>
 
-    <div id="dashboard">
-      <div class="logo"><h1>Velorix AI</h1></div>
-      <div class="user-card">
-        <img id="userAvatar" class="avatar" src="" alt="User" />
-        <h2 id="userName" style="font-size:21px;margin-bottom:6px">User</h2>
-        <p id="userEmail" style="color:rgba(255,255,255,.5);font-size:14px"></p>
-        <p style="margin-top:22px;color:rgba(255,255,255,.6);font-size:15px">You are successfully logged in</p>
-        <button class="btn btn-logout" onclick="logout()">Logout</button>
+    <!-- ========== LANGUAGE ========== -->
+    <div id="languageScreen">
+      <div class="user-mini">
+        <img id="miniAvatar" src="" alt="" />
+        <div class="info">
+          <div class="name" id="miniName">User</div>
+          <div class="email" id="miniEmail"></div>
+        </div>
+        <button onclick="logout()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer">Logout</button>
       </div>
+
+      <div class="lang-header">
+        <h2>Select Language</h2>
+        <p>Choose your preferred language to continue</p>
+      </div>
+
+      <input type="text" class="search-box" id="langSearch" placeholder="Search languages..." oninput="filterLanguages()" />
+
+      <div class="lang-list" id="langList"></div>
+
+      <button class="btn btn-primary" id="continueBtn" onclick="continueWithLanguage()">Continue</button>
     </div>
+
   </div>
 
   <script>
+    // ===== FIREBASE =====
     const firebaseConfig = {
       apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
       authDomain: "best-47108.firebaseapp.com",
@@ -78,68 +181,126 @@
       appId: "1:995954423710:web:9b3458af61b99e6fb6088f",
       measurementId: "G-CPCRTBG42V"
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // ===== LANGUAGES =====
+    const languages = [
+      { code:"hi", name:"Hindi", native:"हिन्दी", flag:"🇮🇳" },
+      { code:"en", name:"English", native:"English", flag:"🇬🇧" },
+      { code:"ta", name:"Tamil", native:"தமிழ்", flag:"🇮🇳" },
+      { code:"te", name:"Telugu", native:"తెలుగు", flag:"🇮🇳" },
+      { code:"pa", name:"Punjabi", native:"ਪੰਜਾਬੀ", flag:"🇮🇳" },
+      { code:"gu", name:"Gujarati", native:"ગુજરાતી", flag:"🇮🇳" },
+      { code:"bn", name:"Bengali", native:"বাংলা", flag:"🇮🇳" },
+      { code:"mr", name:"Marathi", native:"मराठी", flag:"🇮🇳" },
+      { code:"kn", name:"Kannada", native:"ಕನ್ನಡ", flag:"🇮🇳" },
+      { code:"ml", name:"Malayalam", native:"മലയാളം", flag:"🇮🇳" },
+      { code:"or", name:"Odia", native:"ଓଡ଼ିଆ", flag:"🇮🇳" },
+      { code:"ur", name:"Urdu", native:"اردو", flag:"🇮🇳" },
+      { code:"es", name:"Spanish", native:"Español", flag:"🇪🇸" },
+      { code:"fr", name:"French", native:"Français", flag:"🇫🇷" },
+      { code:"de", name:"German", native:"Deutsch", flag:"🇩🇪" },
+      { code:"ar", name:"Arabic", native:"العربية", flag:"🇸🇦" },
+      { code:"pt", name:"Portuguese", native:"Português", flag:"🇵🇹" },
+      { code:"zh", name:"Chinese", native:"中文", flag:"🇨🇳" },
+      { code:"ja", name:"Japanese", native:"日本語", flag:"🇯🇵" },
+      { code:"ru", name:"Russian", native:"Русский", flag:"🇷🇺" },
+      { code:"id", name:"Indonesian", native:"Bahasa Indonesia", flag:"🇮🇩" },
+      { code:"tr", name:"Turkish", native:"Türkçe", flag:"🇹🇷" }
+    ];
+
+    let selectedLang = null;
+
+    function renderLanguages(list) {
+      const container = document.getElementById("langList");
+      container.innerHTML = "";
+      list.forEach(lang => {
+        const div = document.createElement("div");
+        div.className = "lang-item" + (selectedLang === lang.code ? " selected" : "");
+        div.onclick = () => selectLanguage(lang.code);
+        div.innerHTML = `
+          <div class="lang-flag">${lang.flag}</div>
+          <div style="flex:1">
+            <div class="lang-name">${lang.name}</div>
+            <div class="lang-native">${lang.native}</div>
+          </div>
+          <div class="check">✓</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectLanguage(code) {
+      selectedLang = code;
+      renderLanguages(filterCurrentList());
+      const btn = document.getElementById("continueBtn");
+      btn.classList.add("active");
+    }
+
+    function filterCurrentList() {
+      const q = document.getElementById("langSearch").value.toLowerCase().trim();
+      if (!q) return languages;
+      return languages.filter(l =>
+        l.name.toLowerCase().includes(q) ||
+        l.native.toLowerCase().includes(q) ||
+        l.code.includes(q)
+      );
+    }
+
+    function filterLanguages() {
+      renderLanguages(filterCurrentList());
+    }
+
+    function continueWithLanguage() {
+      if (!selectedLang) return;
+      localStorage.setItem("velorix_lang", selectedLang);
+      alert("Language selected: " + selectedLang + "\n\nNext page will come soon.");
+      // यहाँ आगे का पेज जोड़ेगे
+    }
+
+    // ===== AUTH =====
     function showLogin() {
       document.getElementById("loginScreen").style.display = "block";
-      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("languageScreen").style.display = "none";
     }
 
-    function showDashboard(user) {
+    function showLanguage(user) {
       document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      document.getElementById("userName").innerText = user.displayName || "Creator";
-      document.getElementById("userEmail").innerText = user.email || "";
-      document.getElementById("userAvatar").src = user.photoURL || "https://www.gravatar.com/avatar/?d=mp";
+      document.getElementById("languageScreen").style.display = "block";
+      document.getElementById("miniName").innerText = user.displayName || "Creator";
+      document.getElementById("miniEmail").innerText = user.email || "";
+      document.getElementById("miniAvatar").src = user.photoURL || "https://www.gravatar.com/avatar/?d=mp";
+      renderLanguages(languages);
     }
 
-    function setLoading(text) {
-      const el = document.getElementById("loadingMsg");
-      el.style.display = text ? "block" : "none";
-      el.innerText = text || "";
-    }
-
-    function setStatus(text) {
-      document.getElementById("statusMsg").innerText = text || "";
-    }
-
-    // ========== POPUP METHOD ==========
     function loginWithGoogle() {
-      setLoading("Opening Google...");
-      setStatus("");
-
+      const msg = document.getElementById("loadingMsg");
+      msg.style.display = "block";
+      msg.innerText = "Opening Google...";
       const provider = new firebase.auth.GoogleAuthProvider();
-
       auth.signInWithPopup(provider)
-        .then((result) => {
-          setLoading("");
-          showDashboard(result.user);
+        .then(result => {
+          msg.style.display = "none";
+          showLanguage(result.user);
         })
-        .catch((error) => {
-          console.error(error);
-          setLoading("");
-          setStatus("Error: " + error.message);
+        .catch(err => {
+          msg.style.display = "none";
+          document.getElementById("statusMsg").innerText = err.message;
         });
     }
 
     function logout() {
       auth.signOut().then(() => {
+        selectedLang = null;
         showLogin();
-        setStatus("");
-        setLoading("");
       });
     }
 
-    // Check if already logged in
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        showDashboard(user);
-      } else {
-        showLogin();
-      }
+    auth.onAuthStateChanged(user => {
+      if (user) showLanguage(user);
+      else showLogin();
     });
   </script>
 </body>
-          </html>
+</html>
