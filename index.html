@@ -3,171 +3,207 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Velorix AI</title>
+  <title>Velorix AI — Create Stunning AI Videos</title>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
-      background:#050505;color:#fff;min-height:100vh;overflow-x:hidden;
+      background:#030303;color:#fff;min-height:100vh;overflow-x:hidden;
       -webkit-font-smoothing:antialiased;
     }
-    .bg{
+
+    /* ===== BACKGROUND ===== */
+    .bg-grid{
       position:fixed;inset:0;z-index:0;
       background:
-        radial-gradient(ellipse 80% 50% at 20% -20%,rgba(120,40,200,.22),transparent),
-        radial-gradient(ellipse 60% 40% at 80% 10%,rgba(0,160,255,.12),transparent),
-        #050505;
+        radial-gradient(ellipse 70% 50% at 15% 10%,rgba(124,58,237,.18),transparent),
+        radial-gradient(ellipse 50% 40% at 85% 20%,rgba(59,130,246,.12),transparent),
+        #030303;
     }
-    .container{
-      position:relative;z-index:10;min-height:100vh;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:24px 16px;
+    .bg-grid::after{
+      content:"";position:absolute;inset:0;
+      background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+      background-size:48px 48px;opacity:.4;
     }
 
-    /* ===== LOGIN ===== */
-    #loginScreen{width:100%;max-width:400px}
-    .logo{text-align:center;margin-bottom:32px}
-    .logo h1{
-      font-size:40px;font-weight:700;letter-spacing:-1.2px;
-      background:linear-gradient(135deg,#fff 0%,#a78bfa 50%,#60a5fa 100%);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    /* ===== SCREENS ===== */
+    .screen{display:none;position:relative;z-index:10;min-height:100vh}
+    .screen.active{display:flex;flex-direction:column}
+
+    /* ===== LANDING / LOGIN ===== */
+    #landingScreen{
+      justify-content:space-between;align-items:center;
+      padding:28px 20px 32px;text-align:center;
     }
-    .logo p{margin-top:8px;font-size:14px;color:rgba(255,255,255,.5)}
-    .card{
-      background:rgba(255,255,255,.04);
-      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:22px;padding:36px 24px;
-      box-shadow:0 20px 40px -12px rgba(0,0,0,.5);
+    .top-bar{
+      width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:auto;
     }
-    .card h2{font-size:21px;font-weight:600;text-align:center;margin-bottom:6px}
-    .card .subtitle{text-align:center;font-size:13px;color:rgba(255,255,255,.45);margin-bottom:26px}
-    .btn{
-      width:100%;padding:14px 18px;border-radius:13px;font-size:15px;font-weight:500;
-      border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
-      transition:all .2s ease;
+    .brand{
+      font-size:20px;font-weight:700;letter-spacing:-0.5px;
+      background:linear-gradient(135deg,#fff,#c4b5fd);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
     }
-    .btn-google{background:#fff;color:#111}
+    .hero{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;max-width:420px;margin:40px 0}
+    .hero h1{
+      font-size:36px;font-weight:700;line-height:1.2;letter-spacing:-1px;margin-bottom:14px;
+      background:linear-gradient(135deg,#ffffff 0%,#e0e7ff 40%,#a78bfa 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hero p{font-size:15px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:36px;max-width:320px}
+    .login-card{
+      width:100%;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);border-radius:20px;
+      padding:28px 22px;backdrop-filter:blur(20px);
+    }
+    .btn-google{
+      width:100%;padding:15px;border-radius:14px;border:none;cursor:pointer;
+      background:#fff;color:#111;font-size:15px;font-weight:600;
+      display:flex;align-items:center;justify-content:center;gap:12px;
+      transition:transform .15s ease;
+    }
     .btn-google:active{transform:scale(.98)}
-    .btn-primary{
-      background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;
-      margin-top:18px;opacity:.5;pointer-events:none;
+    .loading{display:none;margin-top:14px;font-size:13px;color:rgba(255,255,255,.5)}
+    .error-msg{margin-top:12px;font-size:12px;color:#f87171}
+    .footer-links{
+      margin-top:28px;font-size:12px;color:rgba(255,255,255,.35);
     }
-    .btn-primary.active{opacity:1;pointer-events:auto}
-    .btn-logout{
-      margin-top:20px;background:rgba(255,80,80,.12);color:#ff6b6b;
-      border:1px solid rgba(255,80,80,.2);
+    .footer-links a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 8px}
+    .footer-links a:hover{color:#fff}
+
+    /* ===== LANGUAGE ===== */
+    #languageScreen{padding:20px 16px 40px;align-items:center}
+    .lang-wrap{width:100%;max-width:420px}
+    .user-row{
+      display:flex;align-items:center;gap:12px;padding:12px 14px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+      border-radius:14px;margin-bottom:22px;
     }
-    .footer{margin-top:36px;text-align:center;font-size:12px;color:rgba(255,255,255,.3)}
-    .footer a{color:rgba(255,255,255,.45);text-decoration:none;margin:0 10px}
-    .loading{display:none;text-align:center;color:rgba(255,255,255,.55);font-size:13px;margin-top:14px}
-    .status{text-align:center;font-size:12px;color:rgba(255,255,255,.4);margin-top:10px}
-
-    /* ===== LANGUAGE PAGE ===== */
-    #languageScreen{display:none;width:100%;max-width:420px;padding-bottom:40px}
-    .lang-header{text-align:center;margin-bottom:24px}
-    .lang-header h2{font-size:24px;font-weight:600;margin-bottom:6px}
-    .lang-header p{font-size:13px;color:rgba(255,255,255,.45)}
-
+    .user-row img{width:38px;height:38px;border-radius:50%;object-fit:cover}
+    .user-row .name{font-size:14px;font-weight:500}
+    .user-row .email{font-size:11px;color:rgba(255,255,255,.4)}
+    .logout-btn{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer}
+    .lang-title{text-align:center;margin-bottom:20px}
+    .lang-title h2{font-size:23px;font-weight:600;margin-bottom:6px}
+    .lang-title p{font-size:13px;color:rgba(255,255,255,.45)}
     .search-box{
-      width:100%;padding:13px 16px 13px 42px;border-radius:14px;
+      width:100%;padding:13px 16px 13px 42px;border-radius:13px;
       border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
-      color:#fff;font-size:15px;outline:none;margin-bottom:18px;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M14 14l-3-3'/%3E%3C/svg%3E");
+      color:#fff;font-size:15px;outline:none;margin-bottom:16px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%23888' stroke-width='2'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M14 14l-3-3'/%3E%3C/svg%3E");
       background-repeat:no-repeat;background-position:14px center;
     }
-    .search-box:focus{border-color:rgba(167,139,250,.5)}
-
+    .search-box:focus{border-color:rgba(167,139,250,.45)}
     .lang-list{
-      max-height:52vh;overflow-y:auto;border-radius:16px;
+      max-height:48vh;overflow-y:auto;border-radius:14px;
       border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);
       -webkit-overflow-scrolling:touch;
     }
     .lang-item{
-      display:flex;align-items:center;gap:14px;padding:14px 16px;
+      display:flex;align-items:center;gap:13px;padding:13px 15px;
       border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;
-      transition:background .15s ease;
     }
     .lang-item:last-child{border-bottom:none}
-    .lang-item:active{background:rgba(255,255,255,.06)}
-    .lang-item.selected{background:rgba(124,58,237,.18)}
-    .lang-flag{font-size:22px;width:32px;text-align:center}
-    .lang-name{font-size:15px;font-weight:500;flex:1}
+    .lang-item.selected{background:rgba(124,58,237,.2)}
+    .lang-flag{font-size:20px;width:28px;text-align:center}
+    .lang-name{font-size:15px;font-weight:500}
     .lang-native{font-size:12px;color:rgba(255,255,255,.4)}
     .check{
-      width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);
-      display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;
+      width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);
+      margin-left:auto;display:flex;align-items:center;justify-content:center;
+      font-size:11px;opacity:0;
     }
-    .lang-item.selected .check{opacity:1;background:#7c3aed;border-color:#7c3aed;color:#fff}
+    .lang-item.selected .check{opacity:1;background:#7c3aed;border-color:#7c3aed}
+    .btn-continue{
+      width:100%;margin-top:18px;padding:15px;border-radius:13px;border:none;
+      background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;
+      font-size:15px;font-weight:600;cursor:pointer;opacity:.45;pointer-events:none;
+    }
+    .btn-continue.active{opacity:1;pointer-events:auto}
 
-    .user-mini{
-      display:flex;align-items:center;gap:10px;margin-bottom:20px;
-      padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.06);
+    /* ===== SIMPLE PAGES (Privacy / Terms / Help) ===== */
+    #infoScreen{padding:24px 18px 40px;align-items:center}
+    .info-card{
+      width:100%;max-width:440px;background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px 22px;
     }
-    .user-mini img{width:36px;height:36px;border-radius:50%;object-fit:cover}
-    .user-mini .info{flex:1}
-    .user-mini .name{font-size:14px;font-weight:500}
-    .user-mini .email{font-size:11px;color:rgba(255,255,255,.4)}
+    .info-card h2{font-size:22px;margin-bottom:16px}
+    .info-card p,.info-card li{font-size:14px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:10px}
+    .info-card ul{padding-left:18px;margin-bottom:12px}
+    .back-btn{
+      display:inline-block;margin-bottom:18px;font-size:13px;color:rgba(255,255,255,.5);
+      background:none;border:none;cursor:pointer;
+    }
 
     @media(max-width:480px){
-      .logo h1{font-size:34px}
-      .lang-header h2{font-size:22px}
+      .hero h1{font-size:30px}
     }
   </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="container">
+  <div class="bg-grid"></div>
 
-    <!-- ========== LOGIN ========== -->
-    <div id="loginScreen">
-      <div class="logo">
-        <h1>Velorix AI</h1>
-        <p>Next-Gen AI Video Creation</p>
-      </div>
-      <div class="card">
-        <h2>Welcome back</h2>
-        <p class="subtitle">Sign in to continue creating</p>
-        <button class="btn btn-google" onclick="loginWithGoogle()">
+  <!-- ========== LANDING / LOGIN ========== -->
+  <div id="landingScreen" class="screen active">
+    <div class="top-bar">
+      <div class="brand">Velorix AI</div>
+    </div>
+
+    <div class="hero">
+      <h1>Create stunning<br>AI videos in minutes</h1>
+      <p>Turn your ideas into professional short videos with the power of AI.</p>
+
+      <div class="login-card">
+        <button class="btn-google" onclick="loginWithGoogle()">
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
-        <div class="loading" id="loadingMsg"></div>
-        <div class="status" id="statusMsg"></div>
+        <div class="loading" id="loadingMsg">Opening Google...</div>
+        <div class="error-msg" id="errorMsg"></div>
       </div>
-      <div class="footer">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Help</a>
-        <a href="#">Terms</a>
+
+      <div class="footer-links">
+        <a href="#" onclick="showInfo('privacy');return false;">Privacy Policy</a>
+        <a href="#" onclick="showInfo('terms');return false;">Terms</a>
+        <a href="#" onclick="showInfo('help');return false;">Help</a>
       </div>
     </div>
+  </div>
 
-    <!-- ========== LANGUAGE ========== -->
-    <div id="languageScreen">
-      <div class="user-mini">
-        <img id="miniAvatar" src="" alt="" />
-        <div class="info">
-          <div class="name" id="miniName">User</div>
-          <div class="email" id="miniEmail"></div>
+  <!-- ========== LANGUAGE ========== -->
+  <div id="languageScreen" class="screen">
+    <div class="lang-wrap">
+      <div class="user-row">
+        <img id="userAvatar" src="" alt="" />
+        <div>
+          <div class="name" id="userName">User</div>
+          <div class="email" id="userEmail"></div>
         </div>
-        <button onclick="logout()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer">Logout</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
       </div>
 
-      <div class="lang-header">
+      <div class="lang-title">
         <h2>Select Language</h2>
-        <p>Choose your preferred language to continue</p>
+        <p>Choose your preferred language</p>
       </div>
 
       <input type="text" class="search-box" id="langSearch" placeholder="Search languages..." oninput="filterLanguages()" />
 
       <div class="lang-list" id="langList"></div>
 
-      <button class="btn btn-primary" id="continueBtn" onclick="continueWithLanguage()">Continue</button>
+      <button class="btn-continue" id="continueBtn" onclick="continueWithLanguage()">Continue</button>
     </div>
+  </div>
 
+  <!-- ========== INFO PAGES ========== -->
+  <div id="infoScreen" class="screen">
+    <div class="info-card">
+      <button class="back-btn" onclick="backToLanding()">← Back</button>
+      <div id="infoContent"></div>
+    </div>
   </div>
 
   <script>
@@ -186,121 +222,154 @@
 
     // ===== LANGUAGES =====
     const languages = [
-      { code:"hi", name:"Hindi", native:"हिन्दी", flag:"🇮🇳" },
-      { code:"en", name:"English", native:"English", flag:"🇬🇧" },
-      { code:"ta", name:"Tamil", native:"தமிழ்", flag:"🇮🇳" },
-      { code:"te", name:"Telugu", native:"తెలుగు", flag:"🇮🇳" },
-      { code:"pa", name:"Punjabi", native:"ਪੰਜਾਬੀ", flag:"🇮🇳" },
-      { code:"gu", name:"Gujarati", native:"ગુજરાતી", flag:"🇮🇳" },
-      { code:"bn", name:"Bengali", native:"বাংলা", flag:"🇮🇳" },
-      { code:"mr", name:"Marathi", native:"मराठी", flag:"🇮🇳" },
-      { code:"kn", name:"Kannada", native:"ಕನ್ನಡ", flag:"🇮🇳" },
-      { code:"ml", name:"Malayalam", native:"മലയാളം", flag:"🇮🇳" },
-      { code:"or", name:"Odia", native:"ଓଡ଼ିଆ", flag:"🇮🇳" },
-      { code:"ur", name:"Urdu", native:"اردو", flag:"🇮🇳" },
-      { code:"es", name:"Spanish", native:"Español", flag:"🇪🇸" },
-      { code:"fr", name:"French", native:"Français", flag:"🇫🇷" },
-      { code:"de", name:"German", native:"Deutsch", flag:"🇩🇪" },
-      { code:"ar", name:"Arabic", native:"العربية", flag:"🇸🇦" },
-      { code:"pt", name:"Portuguese", native:"Português", flag:"🇵🇹" },
-      { code:"zh", name:"Chinese", native:"中文", flag:"🇨🇳" },
-      { code:"ja", name:"Japanese", native:"日本語", flag:"🇯🇵" },
-      { code:"ru", name:"Russian", native:"Русский", flag:"🇷🇺" },
-      { code:"id", name:"Indonesian", native:"Bahasa Indonesia", flag:"🇮🇩" },
-      { code:"tr", name:"Turkish", native:"Türkçe", flag:"🇹🇷" }
+      {code:"hi",name:"Hindi",native:"हिन्दी",flag:"🇮🇳"},
+      {code:"en",name:"English",native:"English",flag:"🇬🇧"},
+      {code:"ta",name:"Tamil",native:"தமிழ்",flag:"🇮🇳"},
+      {code:"te",name:"Telugu",native:"తెలుగు",flag:"🇮🇳"},
+      {code:"pa",name:"Punjabi",native:"ਪੰਜਾਬੀ",flag:"🇮🇳"},
+      {code:"gu",name:"Gujarati",native:"ગુજરાતી",flag:"🇮🇳"},
+      {code:"bn",name:"Bengali",native:"বাংলা",flag:"🇮🇳"},
+      {code:"mr",name:"Marathi",native:"मराठी",flag:"🇮🇳"},
+      {code:"kn",name:"Kannada",native:"ಕನ್ನಡ",flag:"🇮🇳"},
+      {code:"ml",name:"Malayalam",native:"മലയാളം",flag:"🇮🇳"},
+      {code:"or",name:"Odia",native:"ଓଡ଼ିଆ",flag:"🇮🇳"},
+      {code:"ur",name:"Urdu",native:"اردو",flag:"🇮🇳"},
+      {code:"es",name:"Spanish",native:"Español",flag:"🇪🇸"},
+      {code:"fr",name:"French",native:"Français",flag:"🇫🇷"},
+      {code:"de",name:"German",native:"Deutsch",flag:"🇩🇪"},
+      {code:"ar",name:"Arabic",native:"العربية",flag:"🇸🇦"},
+      {code:"pt",name:"Portuguese",native:"Português",flag:"🇵🇹"},
+      {code:"zh",name:"Chinese",native:"中文",flag:"🇨🇳"},
+      {code:"ja",name:"Japanese",native:"日本語",flag:"🇯🇵"},
+      {code:"ru",name:"Russian",native:"Русский",flag:"🇷🇺"},
+      {code:"id",name:"Indonesian",native:"Bahasa Indonesia",flag:"🇮🇩"},
+      {code:"tr",name:"Turkish",native:"Türkçe",flag:"🇹🇷"}
     ];
-
     let selectedLang = null;
 
+    // ===== SCREENS =====
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    // ===== LANGUAGE UI =====
     function renderLanguages(list) {
-      const container = document.getElementById("langList");
-      container.innerHTML = "";
+      const box = document.getElementById("langList");
+      box.innerHTML = "";
       list.forEach(lang => {
         const div = document.createElement("div");
         div.className = "lang-item" + (selectedLang === lang.code ? " selected" : "");
-        div.onclick = () => selectLanguage(lang.code);
+        div.onclick = () => {
+          selectedLang = lang.code;
+          renderLanguages(filterCurrent());
+          document.getElementById("continueBtn").classList.add("active");
+        };
         div.innerHTML = `
           <div class="lang-flag">${lang.flag}</div>
-          <div style="flex:1">
+          <div>
             <div class="lang-name">${lang.name}</div>
             <div class="lang-native">${lang.native}</div>
           </div>
           <div class="check">✓</div>
         `;
-        container.appendChild(div);
+        box.appendChild(div);
       });
     }
-
-    function selectLanguage(code) {
-      selectedLang = code;
-      renderLanguages(filterCurrentList());
-      const btn = document.getElementById("continueBtn");
-      btn.classList.add("active");
-    }
-
-    function filterCurrentList() {
+    function filterCurrent() {
       const q = document.getElementById("langSearch").value.toLowerCase().trim();
       if (!q) return languages;
       return languages.filter(l =>
-        l.name.toLowerCase().includes(q) ||
-        l.native.toLowerCase().includes(q) ||
-        l.code.includes(q)
+        l.name.toLowerCase().includes(q) || l.native.toLowerCase().includes(q)
       );
     }
-
-    function filterLanguages() {
-      renderLanguages(filterCurrentList());
-    }
+    function filterLanguages() { renderLanguages(filterCurrent()); }
 
     function continueWithLanguage() {
       if (!selectedLang) return;
       localStorage.setItem("velorix_lang", selectedLang);
-      alert("Language selected: " + selectedLang + "\n\nNext page will come soon.");
-      // यहाँ आगे का पेज जोड़ेगे
+      alert("Language saved: " + selectedLang + "\n\nMain app coming next.");
     }
 
     // ===== AUTH =====
-    function showLogin() {
-      document.getElementById("loginScreen").style.display = "block";
-      document.getElementById("languageScreen").style.display = "none";
-    }
-
-    function showLanguage(user) {
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("languageScreen").style.display = "block";
-      document.getElementById("miniName").innerText = user.displayName || "Creator";
-      document.getElementById("miniEmail").innerText = user.email || "";
-      document.getElementById("miniAvatar").src = user.photoURL || "https://www.gravatar.com/avatar/?d=mp";
-      renderLanguages(languages);
-    }
-
     function loginWithGoogle() {
-      const msg = document.getElementById("loadingMsg");
-      msg.style.display = "block";
-      msg.innerText = "Opening Google...";
+      document.getElementById("loadingMsg").style.display = "block";
+      document.getElementById("errorMsg").innerText = "";
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
-        .then(result => {
-          msg.style.display = "none";
-          showLanguage(result.user);
+        .then(res => {
+          document.getElementById("loadingMsg").style.display = "none";
+          goToLanguage(res.user);
         })
         .catch(err => {
-          msg.style.display = "none";
-          document.getElementById("statusMsg").innerText = err.message;
+          document.getElementById("loadingMsg").style.display = "none";
+          document.getElementById("errorMsg").innerText = err.message;
         });
+    }
+
+    function goToLanguage(user) {
+      document.getElementById("userName").innerText = user.displayName || "Creator";
+      document.getElementById("userEmail").innerText = user.email || "";
+      document.getElementById("userAvatar").src = user.photoURL || "https://www.gravatar.com/avatar/?d=mp";
+      renderLanguages(languages);
+      showScreen("languageScreen");
     }
 
     function logout() {
       auth.signOut().then(() => {
         selectedLang = null;
-        showLogin();
+        showScreen("landingScreen");
       });
     }
 
     auth.onAuthStateChanged(user => {
-      if (user) showLanguage(user);
-      else showLogin();
+      if (user) goToLanguage(user);
+      else showScreen("landingScreen");
     });
+
+    // ===== INFO PAGES =====
+    const infoData = {
+      privacy: `
+        <h2>Privacy Policy</h2>
+        <p>Velorix AI respects your privacy. We only collect the information needed to provide the service.</p>
+        <ul>
+          <li>We use Google Sign-In for authentication.</li>
+          <li>We do not sell your personal data.</li>
+          <li>Generated videos and projects remain under your control.</li>
+          <li>You can request account deletion at any time.</li>
+        </ul>
+        <p>For any questions, contact us through the Help section.</p>
+      `,
+      terms: `
+        <h2>Terms of Service</h2>
+        <p>By using Velorix AI you agree to the following:</p>
+        <ul>
+          <li>You will not use the platform for illegal or harmful content.</li>
+          <li>You are responsible for the content you generate.</li>
+          <li>We may update features and limits as the service grows.</li>
+          <li>Premium features may require a paid plan in the future.</li>
+        </ul>
+        <p>Continued use of the service means you accept these terms.</p>
+      `,
+      help: `
+        <h2>Help & Support</h2>
+        <p>Need help getting started?</p>
+        <ul>
+          <li>Sign in with Google to create your account.</li>
+          <li>Select your preferred language.</li>
+          <li>Start creating AI videos from the main dashboard (coming soon).</li>
+        </ul>
+        <p>For more support, reach out through our official channels once the full platform is live.</p>
+      `
+    };
+
+    function showInfo(type) {
+      document.getElementById("infoContent").innerHTML = infoData[type] || "";
+      showScreen("infoScreen");
+    }
+    function backToLanding() {
+      showScreen("landingScreen");
+    }
   </script>
 </body>
-</html>
+            </html>
