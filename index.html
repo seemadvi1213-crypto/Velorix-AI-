@@ -6,151 +6,282 @@
   <title>Velorix AI</title>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#030303;color:#fff;min-height:100vh}
-    .bg{position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 0%,rgba(124,58,237,.22),transparent 50%),radial-gradient(ellipse 60% 50% at 90% 10%,rgba(59,130,246,.14),transparent 45%),#030303}
-    .screen{display:none;position:relative;z-index:10;min-height:100vh;padding:24px 18px;flex-direction:column;align-items:center}
+    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;background:#030303;color:#fff;min-height:100vh;overflow-x:hidden}
+    .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 55% at 15% 5%,rgba(124,58,237,.28),transparent 50%),radial-gradient(ellipse 60% 45% at 90% 15%,rgba(59,130,246,.18),transparent 45%),radial-gradient(ellipse 50% 40% at 50% 100%,rgba(236,72,153,.1),transparent 40%),#030303}
+    .orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.4;pointer-events:none;z-index:1}
+    .o1{width:260px;height:260px;background:#7c3aed;top:-70px;left:-50px}
+    .o2{width:200px;height:200px;background:#3b82f6;top:45%;right:-70px}
+    .o3{width:160px;height:160px;background:#ec4899;bottom:8%;left:15%}
+    .screen{display:none;position:relative;z-index:10;min-height:100vh;flex-direction:column;align-items:center;padding:22px 16px 32px}
     .screen.active{display:flex}
-    .brand{font-size:19px;font-weight:700;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;align-self:flex-start;max-width:400px;width:100%;margin-bottom:auto}
+    .brand{font-size:18px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;align-self:flex-start;width:100%;max-width:400px;margin-bottom:12px}
     .hero{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;max-width:400px;text-align:center}
-    .hero h1{font-size:32px;font-weight:700;line-height:1.25;margin-bottom:12px;background:linear-gradient(135deg,#fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .hero p{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px}
-    .login-card{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 18px}
-    .btn-google{width:100%;padding:14px;border-radius:12px;border:none;background:#fff;color:#111;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
-    .loading,.error{margin-top:12px;font-size:13px;text-align:center}
-    .error{color:#f87171}
-    .footer{margin-top:24px;font-size:12px;color:rgba(255,255,255,.4)}
-    .footer a{color:rgba(255,255,255,.5);margin:0 8px;text-decoration:none}
-    .user-row{display:flex;align-items:center;gap:10px;width:100%;max-width:400px;padding:12px;background:rgba(255,255,255,.05);border-radius:12px;margin-bottom:20px}
-    .user-row img{width:36px;height:36px;border-radius:50%}
-    .lang-list{width:100%;max-width:400px;max-height:50vh;overflow-y:auto;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
-    .lang-item{padding:14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
-    .lang-item.selected{background:rgba(124,58,237,.2)}
-    .btn{width:100%;max-width:400px;margin-top:16px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:15px;font-weight:600;cursor:pointer;opacity:.5;pointer-events:none}
-    .btn.active{opacity:1;pointer-events:auto}
+    .hero h1{font-size:32px;font-weight:700;line-height:1.22;margin-bottom:12px;background:linear-gradient(135deg,#fff 0%,#e0e7ff 40%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero p{font-size:14px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:28px;max-width:290px}
+    .card{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 18px;backdrop-filter:blur(20px)}
+    .btn-g{width:100%;padding:14px;border-radius:12px;border:none;background:#fff;color:#111;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
+    .msg{margin-top:12px;font-size:13px;text-align:center}
+    .err{color:#f87171}
+    .report{margin-top:14px;background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;text-decoration:underline;cursor:pointer}
+    .links{margin-top:22px;font-size:12px;color:rgba(255,255,255,.35)}
+    .links a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 8px}
+
+    .urow{display:flex;align-items:center;gap:10px;width:100%;max-width:400px;padding:11px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:13px;margin-bottom:18px}
+    .urow img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+    .urow .n{font-size:13.5px;font-weight:500}
+    .urow .e{font-size:11px;color:rgba(255,255,255,.4)}
+    .out{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.45);font-size:12px;cursor:pointer}
+
+    .title{text-align:center;margin-bottom:16px}
+    .title h2{font-size:21px;font-weight:600;margin-bottom:4px}
+    .title p{font-size:13px;color:rgba(255,255,255,.45)}
+
+    .search{width:100%;max-width:400px;padding:12px 14px 12px 38px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23888' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M12 12l-2.5-2.5'/%3E%3C/svg%3E") no-repeat 12px center;color:#fff;font-size:14px;outline:none;margin-bottom:12px}
+    .llist{width:100%;max-width:400px;max-height:46vh;overflow-y:auto;border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+    .litem{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
+    .litem:last-child{border-bottom:none}
+    .litem.sel{background:rgba(124,58,237,.22)}
+    .flag{font-size:20px;width:28px;text-align:center}
+    .ln{font-size:14.5px;font-weight:500}
+    .lv{font-size:11.5px;color:rgba(255,255,255,.4)}
+    .chk{margin-left:auto;width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);font-size:10px;display:flex;align-items:center;justify-content:center;opacity:0}
+    .litem.sel .chk{opacity:1;background:#7c3aed;border-color:#7c3aed}
+
+    .btn{width:100%;max-width:400px;margin-top:16px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:15px;font-weight:600;cursor:pointer;opacity:.45;pointer-events:none}
+    .btn.on{opacity:1;pointer-events:auto}
+
+    .av{width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid rgba(167,139,250,.45);margin:0 auto 20px;display:block}
+    .fld{width:100%;max-width:400px;margin-bottom:16px}
+    .fld label{display:block;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px}
+    .fld input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:15px;outline:none}
+    .uid{padding:12px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.55);word-break:break-all}
+    .perr{font-size:12px;color:#f87171;min-height:16px;margin-top:6px}
+
+    .ibox{width:100%;max-width:400px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:22px 18px}
+    .ibox h2{font-size:20px;margin-bottom:12px}
+    .ibox p,.ibox li{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.5;margin-bottom:8px}
+    .ibox ul{padding-left:16px}
+    .back{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;margin-bottom:14px;cursor:pointer}
   </style>
 </head>
 <body>
   <div class="bg"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
 
+  <!-- LANDING -->
   <div id="landing" class="screen active">
     <div class="brand">Velorix AI</div>
     <div class="hero">
       <h1>Create stunning<br>AI videos in minutes</h1>
       <p>Turn your ideas into professional short videos with the power of AI.</p>
-      <div class="login-card">
-        <button class="btn-google" id="googleBtn">
+      <div class="card">
+        <button class="btn-g" id="gBtn">
           <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
-        <div class="loading" id="loading" style="display:none">Opening Google...</div>
-        <div class="error" id="error"></div>
+        <div class="msg" id="load" style="display:none">Opening Google...</div>
+        <div class="msg err" id="err"></div>
+        <button class="report" id="repBtn">Login not working? Report</button>
       </div>
-      <div class="footer">
-        <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Help</a>
+      <div class="links">
+        <a href="#" id="priv">Privacy Policy</a>
+        <a href="#" id="term">Terms</a>
+        <a href="#" id="help">Help</a>
       </div>
     </div>
   </div>
 
-  <div id="language" class="screen">
-    <div class="user-row">
-      <img id="avatar" src="" />
-      <div>
-        <div id="uname" style="font-size:14px"></div>
-        <div id="uemail" style="font-size:11px;color:rgba(255,255,255,.4)"></div>
-      </div>
-      <button onclick="logout()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);font-size:12px">Logout</button>
+  <!-- LANGUAGE -->
+  <div id="lang" class="screen">
+    <div class="urow">
+      <img id="av1" src="" />
+      <div><div class="n" id="nm1"></div><div class="e" id="em1"></div></div>
+      <button class="out" id="out1">Logout</button>
     </div>
-    <h2 style="margin:10px 0 16px;font-size:20px">Select Language</h2>
-    <div class="lang-list" id="langList"></div>
-    <button class="btn" id="continueBtn">Continue</button>
+    <div class="title"><h2>Select Language</h2><p>Choose your preferred language</p></div>
+    <input class="search" id="search" placeholder="Search languages..." />
+    <div class="llist" id="llist"></div>
+    <button class="btn" id="cont">Continue</button>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="prof" class="screen">
+    <div class="title"><h2>Set up your profile</h2><p>Choose a unique name</p></div>
+    <img class="av" id="av2" src="" />
+    <div class="fld">
+      <label>Display Name</label>
+      <input id="dname" placeholder="Enter your name" maxlength="20" />
+      <div class="perr" id="nerr"></div>
+    </div>
+    <div class="fld">
+      <label>Your UID</label>
+      <div class="uid" id="uid"></div>
+    </div>
+    <button class="btn on" id="save">Save & Continue</button>
+  </div>
+
+  <!-- INFO -->
+  <div id="info" class="screen">
+    <div class="ibox">
+      <button class="back" id="back">← Back</button>
+      <div id="icont"></div>
+    </div>
   </div>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
-      authDomain: "best-47108.firebaseapp.com",
-      projectId: "best-47108",
-      storageBucket: "best-47108.firebasestorage.app",
-      messagingSenderId: "995954423710",
-      appId: "1:995954423710:web:9b3458af61b99e6fb6088f",
-      measurementId: "G-CPCRTBG42V"
+    const cfg = {
+      apiKey:"AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
+      authDomain:"best-47108.firebaseapp.com",
+      projectId:"best-47108",
+      storageBucket:"best-47108.firebasestorage.app",
+      messagingSenderId:"995954423710",
+      appId:"1:995954423710:web:9b3458af61b99e6fb6088f",
+      measurementId:"G-CPCRTBG42V"
     };
-
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(cfg);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const languages = [
-      {code:"hi",name:"Hindi",native:"हिन्दी"},
-      {code:"en",name:"English",native:"English"},
-      {code:"ta",name:"Tamil",native:"தமிழ்"},
-      {code:"te",name:"Telugu",native:"తెలుగు"},
-      {code:"pa",name:"Punjabi",native:"ਪੰਜਾਬੀ"},
-      {code:"gu",name:"Gujarati",native:"ગુજરાતી"},
-      {code:"bn",name:"Bengali",native:"বাংলা"},
-      {code:"mr",name:"Marathi",native:"मराठी"},
-      {code:"kn",name:"Kannada",native:"ಕನ್ನಡ"},
-      {code:"ml",name:"Malayalam",native:"മലയാളം"}
+    const langs = [
+      {c:"hi",n:"Hindi",v:"हिन्दी",f:"🇮🇳"},
+      {c:"en",n:"English",v:"English",f:"🇬🇧"},
+      {c:"ta",n:"Tamil",v:"தமிழ்",f:"🇮🇳"},
+      {c:"te",n:"Telugu",v:"తెలుగు",f:"🇮🇳"},
+      {c:"pa",n:"Punjabi",v:"ਪੰਜਾਬੀ",f:"🇮🇳"},
+      {c:"gu",n:"Gujarati",v:"ગુજરાતી",f:"🇮🇳"},
+      {c:"bn",n:"Bengali",v:"বাংলা",f:"🇮🇳"},
+      {c:"mr",n:"Marathi",v:"मराठी",f:"🇮🇳"},
+      {c:"kn",n:"Kannada",v:"ಕನ್ನಡ",f:"🇮🇳"},
+      {c:"ml",n:"Malayalam",v:"മലയാളം",f:"🇮🇳"},
+      {c:"or",n:"Odia",v:"ଓଡ଼ିଆ",f:"🇮🇳"},
+      {c:"ur",n:"Urdu",v:"اردو",f:"🇮🇳"},
+      {c:"es",n:"Spanish",v:"Español",f:"🇪🇸"},
+      {c:"fr",n:"French",v:"Français",f:"🇫🇷"},
+      {c:"de",n:"German",v:"Deutsch",f:"🇩🇪"},
+      {c:"ar",n:"Arabic",v:"العربية",f:"🇸🇦"},
+      {c:"pt",n:"Portuguese",v:"Português",f:"🇵🇹"},
+      {c:"zh",n:"Chinese",v:"中文",f:"🇨🇳"},
+      {c:"ja",n:"Japanese",v:"日本語",f:"🇯🇵"},
+      {c:"ru",n:"Russian",v:"Русский",f:"🇷🇺"}
     ];
 
-    let selected = null;
+    let sel = null, user = null;
 
-    function show(id) {
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    function show(id){
+      document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
       document.getElementById(id).classList.add("active");
     }
 
-    document.getElementById("googleBtn").onclick = function() {
-      document.getElementById("loading").style.display = "block";
-      document.getElementById("error").innerText = "";
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(function(result) {
-          document.getElementById("loading").style.display = "none";
-          goLanguage(result.user);
-        })
-        .catch(function(err) {
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("error").innerText = err.message;
-        });
-    };
-
-    function goLanguage(user) {
-      document.getElementById("avatar").src = user.photoURL || "";
-      document.getElementById("uname").innerText = user.displayName || "User";
-      document.getElementById("uemail").innerText = user.email || "";
-      const list = document.getElementById("langList");
-      list.innerHTML = "";
-      languages.forEach(function(l) {
-        const div = document.createElement("div");
-        div.className = "lang-item";
-        div.innerHTML = "<b>" + l.name + "</b> <span style='color:rgba(255,255,255,.4);font-size:12px'>" + l.native + "</span>";
-        div.onclick = function() {
-          selected = l.code;
-          document.querySelectorAll(".lang-item").forEach(function(i){i.classList.remove("selected")});
-          div.classList.add("selected");
-          document.getElementById("continueBtn").classList.add("active");
+    function render(list){
+      const box = document.getElementById("llist");
+      box.innerHTML = "";
+      list.forEach(l=>{
+        const d = document.createElement("div");
+        d.className = "litem" + (sel===l.c?" sel":"");
+        d.innerHTML = '<div class="flag">'+l.f+'</div><div><div class="ln">'+l.n+'</div><div class="lv">'+l.v+'</div></div><div class="chk">✓</div>';
+        d.onclick = ()=>{
+          sel = l.c;
+          render(filter());
+          document.getElementById("cont").classList.add("on");
         };
-        list.appendChild(div);
+        box.appendChild(d);
       });
-      show("language");
+    }
+    function filter(){
+      const q = document.getElementById("search").value.toLowerCase().trim();
+      if(!q) return langs;
+      return langs.filter(l=>l.n.toLowerCase().includes(q)||l.v.toLowerCase().includes(q));
     }
 
-    document.getElementById("continueBtn").onclick = function() {
-      if (!selected) return;
-      localStorage.setItem("velorix_lang", selected);
-      alert("Language saved: " + selected + "\n\nProfile page next.");
+    document.getElementById("gBtn").onclick = ()=>{
+      document.getElementById("load").style.display="block";
+      document.getElementById("err").innerText="";
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then(r=>{document.getElementById("load").style.display="none"; goLang(r.user);})
+        .catch(e=>{document.getElementById("load").style.display="none"; document.getElementById("err").innerText=e.message;});
     };
 
-    function logout() {
-      auth.signOut().then(function(){ show("landing"); });
+    function goLang(u){
+      user = u;
+      document.getElementById("av1").src = u.photoURL||"";
+      document.getElementById("nm1").innerText = u.displayName||"User";
+      document.getElementById("em1").innerText = u.email||"";
+      document.getElementById("av2").src = u.photoURL||"";
+      document.getElementById("uid").innerText = u.uid;
+      document.getElementById("dname").value = u.displayName||"";
+      render(langs);
+      show("lang");
     }
 
-    auth.onAuthStateChanged(function(user) {
-      if (user) goLanguage(user);
+    document.getElementById("search").oninput = ()=>render(filter());
+    document.getElementById("cont").onclick = ()=>{
+      if(!sel) return;
+      localStorage.setItem("velorix_lang", sel);
+      show("prof");
+    };
+
+    document.getElementById("save").onclick = async ()=>{
+      const name = document.getElementById("dname").value.trim();
+      const err = document.getElementById("nerr");
+      const btn = document.getElementById("save");
+      err.innerText="";
+      if(name.length<2){err.innerText="Name must be at least 2 characters";return;}
+      btn.disabled=true; btn.innerText="Saving...";
+      try{
+        const snap = await db.collection("users").where("username","==",name).get();
+        if(!snap.empty && !snap.docs.some(d=>d.id===user.uid)){
+          err.innerText="This name is already taken";
+          btn.disabled=false; btn.innerText="Save & Continue"; return;
+        }
+        await db.collection("users").doc(user.uid).set({
+          username:name,
+          email:user.email||"",
+          photoURL:user.photoURL||"",
+          language:sel||"en",
+          isPremium:false,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        },{merge:true});
+        localStorage.setItem("velorix_username",name);
+        alert("Profile saved!\n\nMain app coming next.");
+      }catch(e){
+        err.innerText="Error saving. Check Firestore.";
+        console.error(e);
+      }
+      btn.disabled=false; btn.innerText="Save & Continue";
+    };
+
+    document.getElementById("out1").onclick = ()=>auth.signOut().then(()=>show("landing"));
+
+    auth.onAuthStateChanged(u=>{
+      if(u) goLang(u);
       else show("landing");
     });
+
+    const pages = {
+      privacy:`<h2>Privacy Policy</h2><p>Velorix AI respects your privacy.</p><ul><li>We use Google Sign-In.</li><li>We do not sell your data.</li><li>You control your content.</li></ul>`,
+      terms:`<h2>Terms of Service</h2><p>By using Velorix AI you agree:</p><ul><li>No illegal content.</li><li>You are responsible for what you create.</li><li>Premium features may require payment later.</li></ul>`,
+      help:`<h2>Help & Support</h2><p>Getting started:</p><ul><li>Sign in with Google</li><li>Select language</li><li>Set your unique name</li><li>Start creating videos (coming soon)</li></ul>`,
+      report:`<h2>Report Login Issue</h2><p>Describe the problem:</p><textarea id="rtxt" style="width:100%;min-height:80px;margin:10px 0;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff"></textarea><button onclick="sendRep()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-weight:600">Send</button>`
+    };
+
+    function openInfo(t){document.getElementById("icont").innerHTML=pages[t];show("info");}
+    document.getElementById("priv").onclick=e=>{e.preventDefault();openInfo("privacy");};
+    document.getElementById("term").onclick=e=>{e.preventDefault();openInfo("terms");};
+    document.getElementById("help").onclick=e=>{e.preventDefault();openInfo("help");};
+    document.getElementById("repBtn").onclick=()=>openInfo("report");
+    document.getElementById("back").onclick=()=>show("landing");
+
+    function sendRep(){
+      const t=document.getElementById("rtxt").value.trim();
+      if(!t){alert("Write something");return;}
+      const r=JSON.parse(localStorage.getItem("velorix_reports")||"[]");
+      r.push({t,time:new Date().toISOString()});
+      localStorage.setItem("velorix_reports",JSON.stringify(r));
+      alert("Thank you. Report saved.");
+    }
   </script>
 </body>
-</html>
+  </html>
