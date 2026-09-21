@@ -9,62 +9,64 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;background:#030303;color:#fff;min-height:100vh;overflow-x:hidden}
-    .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 55% at 15% 5%,rgba(124,58,237,.28),transparent 50%),radial-gradient(ellipse 60% 45% at 90% 15%,rgba(59,130,246,.18),transparent 45%),radial-gradient(ellipse 50% 40% at 50% 100%,rgba(236,72,153,.1),transparent 40%),#030303}
-    .orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.4;pointer-events:none;z-index:1}
-    .o1{width:260px;height:260px;background:#7c3aed;top:-70px;left:-50px}
-    .o2{width:200px;height:200px;background:#3b82f6;top:45%;right:-70px}
-    .o3{width:160px;height:160px;background:#ec4899;bottom:8%;left:15%}
-    .screen{display:none;position:relative;z-index:10;min-height:100vh;flex-direction:column;align-items:center;padding:22px 16px 32px}
+    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;background:#050505;color:#fff;min-height:100vh;overflow-x:hidden}
+    .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 90% 60% at 10% 0%,rgba(124,58,237,.32),transparent 55%),radial-gradient(ellipse 70% 50% at 95% 10%,rgba(59,130,246,.2),transparent 50%),radial-gradient(ellipse 50% 40% at 50% 100%,rgba(236,72,153,.12),transparent 45%),#050505}
+    .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.45;pointer-events:none;z-index:1}
+    .o1{width:280px;height:280px;background:#7c3aed;top:-80px;left:-60px}
+    .o2{width:220px;height:220px;background:#3b82f6;top:40%;right:-80px}
+    .o3{width:180px;height:180px;background:#ec4899;bottom:5%;left:10%}
+    .screen{display:none;position:relative;z-index:10;min-height:100vh;flex-direction:column;align-items:center;padding:24px 18px 36px}
     .screen.active{display:flex}
-    .brand{font-size:18px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;align-self:flex-start;width:100%;max-width:400px;margin-bottom:12px}
+    .brand{font-size:19px;font-weight:700;letter-spacing:-.4px;background:linear-gradient(135deg,#fff 0%,#c4b5fd 60%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;align-self:flex-start;width:100%;max-width:400px;margin-bottom:14px}
     .hero{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;max-width:400px;text-align:center}
-    .hero h1{font-size:32px;font-weight:700;line-height:1.22;margin-bottom:12px;background:linear-gradient(135deg,#fff 0%,#e0e7ff 40%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .hero p{font-size:14px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:28px;max-width:290px}
-    .card{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 18px;backdrop-filter:blur(20px)}
-    .btn-g{width:100%;padding:14px;border-radius:12px;border:none;background:#fff;color:#111;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}
-    .msg{margin-top:12px;font-size:13px;text-align:center}
+    .hero h1{font-size:33px;font-weight:700;line-height:1.2;margin-bottom:14px;background:linear-gradient(135deg,#fff 0%,#e0e7ff 45%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero p{font-size:14.5px;color:rgba(255,255,255,.55);line-height:1.55;margin-bottom:30px;max-width:300px}
+    .card{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:26px 20px;backdrop-filter:blur(24px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+    .btn-g{width:100%;padding:15px;border-radius:14px;border:none;background:#fff;color:#111;font-size:15.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:11px;cursor:pointer;transition:.15s}
+    .btn-g:active{transform:scale(.98)}
+    .msg{margin-top:14px;font-size:13px;text-align:center}
     .err{color:#f87171}
-    .report{margin-top:14px;background:none;border:none;color:rgba(255,255,255,.4);font-size:12px;text-decoration:underline;cursor:pointer}
-    .links{margin-top:22px;font-size:12px;color:rgba(255,255,255,.35)}
-    .links a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 8px}
+    .report{margin-top:16px;background:none;border:none;color:rgba(255,255,255,.45);font-size:12.5px;text-decoration:underline;cursor:pointer}
+    .links{margin-top:26px;font-size:12.5px;color:rgba(255,255,255,.35)}
+    .links a{color:rgba(255,255,255,.55);text-decoration:none;margin:0 10px}
 
-    .urow{display:flex;align-items:center;gap:10px;width:100%;max-width:400px;padding:11px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:13px;margin-bottom:18px}
-    .urow img{width:36px;height:36px;border-radius:50%;object-fit:cover}
-    .urow .n{font-size:13.5px;font-weight:500}
-    .urow .e{font-size:11px;color:rgba(255,255,255,.4)}
-    .out{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.45);font-size:12px;cursor:pointer}
+    .urow{display:flex;align-items:center;gap:11px;width:100%;max-width:400px;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;margin-bottom:20px}
+    .urow img{width:38px;height:38px;border-radius:50%;object-fit:cover}
+    .urow .n{font-size:14px;font-weight:500}
+    .urow .e{font-size:11.5px;color:rgba(255,255,255,.4)}
+    .out{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.45);font-size:12.5px;cursor:pointer}
 
-    .title{text-align:center;margin-bottom:16px}
-    .title h2{font-size:21px;font-weight:600;margin-bottom:4px}
-    .title p{font-size:13px;color:rgba(255,255,255,.45)}
+    .title{text-align:center;margin-bottom:18px}
+    .title h2{font-size:22px;font-weight:600;margin-bottom:5px}
+    .title p{font-size:13.5px;color:rgba(255,255,255,.45)}
 
-    .search{width:100%;max-width:400px;padding:12px 14px 12px 38px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23888' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M12 12l-2.5-2.5'/%3E%3C/svg%3E") no-repeat 12px center;color:#fff;font-size:14px;outline:none;margin-bottom:12px}
-    .llist{width:100%;max-width:400px;max-height:46vh;overflow-y:auto;border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
-    .litem{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
+    .search{width:100%;max-width:400px;padding:13px 14px 13px 40px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M12 12l-2.5-2.5'/%3E%3C/svg%3E") no-repeat 13px center;color:#fff;font-size:14.5px;outline:none;margin-bottom:14px}
+    .llist{width:100%;max-width:400px;max-height:48vh;overflow-y:auto;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+    .litem{display:flex;align-items:center;gap:13px;padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
     .litem:last-child{border-bottom:none}
-    .litem.sel{background:rgba(124,58,237,.22)}
-    .flag{font-size:20px;width:28px;text-align:center}
-    .ln{font-size:14.5px;font-weight:500}
-    .lv{font-size:11.5px;color:rgba(255,255,255,.4)}
-    .chk{margin-left:auto;width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);font-size:10px;display:flex;align-items:center;justify-content:center;opacity:0}
+    .litem.sel{background:rgba(124,58,237,.25)}
+    .flag{font-size:21px;width:30px;text-align:center}
+    .ln{font-size:15px;font-weight:500}
+    .lv{font-size:12px;color:rgba(255,255,255,.4)}
+    .chk{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);font-size:11px;display:flex;align-items:center;justify-content:center;opacity:0}
     .litem.sel .chk{opacity:1;background:#7c3aed;border-color:#7c3aed}
 
-    .btn{width:100%;max-width:400px;margin-top:16px;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:15px;font-weight:600;cursor:pointer;opacity:.45;pointer-events:none}
+    .btn{width:100%;max-width:400px;margin-top:18px;padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:15.5px;font-weight:600;cursor:pointer;opacity:.4;pointer-events:none;transition:.15s}
     .btn.on{opacity:1;pointer-events:auto}
+    .btn:active{transform:scale(.98)}
 
-    .av{width:88px;height:88px;border-radius:50%;object-fit:cover;border:3px solid rgba(167,139,250,.45);margin:0 auto 20px;display:block}
-    .fld{width:100%;max-width:400px;margin-bottom:16px}
-    .fld label{display:block;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px}
-    .fld input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:15px;outline:none}
-    .uid{padding:12px;border-radius:11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:12px;color:rgba(255,255,255,.55);word-break:break-all}
-    .perr{font-size:12px;color:#f87171;min-height:16px;margin-top:6px}
+    .av{width:92px;height:92px;border-radius:50%;object-fit:cover;border:3px solid rgba(167,139,250,.5);margin:0 auto 22px;display:block;box-shadow:0 0 24px rgba(124,58,237,.25)}
+    .fld{width:100%;max-width:400px;margin-bottom:18px}
+    .fld label{display:block;font-size:12.5px;color:rgba(255,255,255,.5);margin-bottom:7px}
+    .fld input{width:100%;padding:14px 15px;border-radius:13px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:15.5px;outline:none}
+    .uid{padding:13px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:12.5px;color:rgba(255,255,255,.55);word-break:break-all}
+    .perr{font-size:12.5px;color:#f87171;min-height:18px;margin-top:7px}
 
-    .ibox{width:100%;max-width:400px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:22px 18px}
-    .ibox h2{font-size:20px;margin-bottom:12px}
-    .ibox p,.ibox li{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.5;margin-bottom:8px}
-    .ibox ul{padding-left:16px}
-    .back{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;margin-bottom:14px;cursor:pointer}
+    .ibox{width:100%;max-width:400px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px 20px;backdrop-filter:blur(20px)}
+    .ibox h2{font-size:21px;margin-bottom:14px}
+    .ibox p,.ibox li{font-size:14px;color:rgba(255,255,255,.6);line-height:1.55;margin-bottom:9px}
+    .ibox ul{padding-left:18px}
+    .back{background:none;border:none;color:rgba(255,255,255,.5);font-size:13.5px;margin-bottom:16px;cursor:pointer}
   </style>
 </head>
 <body>
@@ -145,27 +147,26 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    /* ========== FUTURE API SPACE ==========
+       जब Feedback / Report API आएगी, सिर्फ यहाँ key डालना
+       बाकी सिस्टम अपने आप जुड़ जाएगा
+    */
+    const FUTURE_APIS = {
+      feedback: null,   // later: "your-feedback-api-key"
+      analytics: null
+    };
+
     const langs = [
-      {c:"hi",n:"Hindi",v:"हिन्दी",f:"🇮🇳"},
-      {c:"en",n:"English",v:"English",f:"🇬🇧"},
-      {c:"ta",n:"Tamil",v:"தமிழ்",f:"🇮🇳"},
-      {c:"te",n:"Telugu",v:"తెలుగు",f:"🇮🇳"},
-      {c:"pa",n:"Punjabi",v:"ਪੰਜਾਬੀ",f:"🇮🇳"},
-      {c:"gu",n:"Gujarati",v:"ગુજરાતી",f:"🇮🇳"},
-      {c:"bn",n:"Bengali",v:"বাংলা",f:"🇮🇳"},
-      {c:"mr",n:"Marathi",v:"मराठी",f:"🇮🇳"},
-      {c:"kn",n:"Kannada",v:"ಕನ್ನಡ",f:"🇮🇳"},
-      {c:"ml",n:"Malayalam",v:"മലയാളം",f:"🇮🇳"},
-      {c:"or",n:"Odia",v:"ଓଡ଼ିଆ",f:"🇮🇳"},
-      {c:"ur",n:"Urdu",v:"اردو",f:"🇮🇳"},
-      {c:"es",n:"Spanish",v:"Español",f:"🇪🇸"},
-      {c:"fr",n:"French",v:"Français",f:"🇫🇷"},
-      {c:"de",n:"German",v:"Deutsch",f:"🇩🇪"},
-      {c:"ar",n:"Arabic",v:"العربية",f:"🇸🇦"},
-      {c:"pt",n:"Portuguese",v:"Português",f:"🇵🇹"},
-      {c:"zh",n:"Chinese",v:"中文",f:"🇨🇳"},
-      {c:"ja",n:"Japanese",v:"日本語",f:"🇯🇵"},
-      {c:"ru",n:"Russian",v:"Русский",f:"🇷🇺"}
+      {c:"hi",n:"Hindi",v:"हिन्दी",f:"🇮🇳"},{c:"en",n:"English",v:"English",f:"🇬🇧"},
+      {c:"ta",n:"Tamil",v:"தமிழ்",f:"🇮🇳"},{c:"te",n:"Telugu",v:"తెలుగు",f:"🇮🇳"},
+      {c:"pa",n:"Punjabi",v:"ਪੰਜਾਬੀ",f:"🇮🇳"},{c:"gu",n:"Gujarati",v:"ગુજરાતી",f:"🇮🇳"},
+      {c:"bn",n:"Bengali",v:"বাংলা",f:"🇮🇳"},{c:"mr",n:"Marathi",v:"मराठी",f:"🇮🇳"},
+      {c:"kn",n:"Kannada",v:"ಕನ್ನಡ",f:"🇮🇳"},{c:"ml",n:"Malayalam",v:"മലയാളം",f:"🇮🇳"},
+      {c:"or",n:"Odia",v:"ଓଡ଼ିଆ",f:"🇮🇳"},{c:"ur",n:"Urdu",v:"اردو",f:"🇮🇳"},
+      {c:"es",n:"Spanish",v:"Español",f:"🇪🇸"},{c:"fr",n:"French",v:"Français",f:"🇫🇷"},
+      {c:"de",n:"German",v:"Deutsch",f:"🇩🇪"},{c:"ar",n:"Arabic",v:"العربية",f:"🇸🇦"},
+      {c:"pt",n:"Portuguese",v:"Português",f:"🇵🇹"},{c:"zh",n:"Chinese",v:"中文",f:"🇨🇳"},
+      {c:"ja",n:"Japanese",v:"日本語",f:"🇯🇵"},{c:"ru",n:"Russian",v:"Русский",f:"🇷🇺"}
     ];
 
     let sel = null, user = null;
@@ -180,28 +181,23 @@
       box.innerHTML = "";
       list.forEach(l=>{
         const d = document.createElement("div");
-        d.className = "litem" + (sel===l.c?" sel":"");
+        d.className = "litem"+(sel===l.c?" sel":"");
         d.innerHTML = '<div class="flag">'+l.f+'</div><div><div class="ln">'+l.n+'</div><div class="lv">'+l.v+'</div></div><div class="chk">✓</div>';
-        d.onclick = ()=>{
-          sel = l.c;
-          render(filter());
-          document.getElementById("cont").classList.add("on");
-        };
+        d.onclick = ()=>{ sel=l.c; render(filter()); document.getElementById("cont").classList.add("on"); };
         box.appendChild(d);
       });
     }
     function filter(){
       const q = document.getElementById("search").value.toLowerCase().trim();
-      if(!q) return langs;
-      return langs.filter(l=>l.n.toLowerCase().includes(q)||l.v.toLowerCase().includes(q));
+      return q ? langs.filter(l=>l.n.toLowerCase().includes(q)||l.v.toLowerCase().includes(q)) : langs;
     }
 
     document.getElementById("gBtn").onclick = ()=>{
       document.getElementById("load").style.display="block";
       document.getElementById("err").innerText="";
       auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-        .then(r=>{document.getElementById("load").style.display="none"; goLang(r.user);})
-        .catch(e=>{document.getElementById("load").style.display="none"; document.getElementById("err").innerText=e.message;});
+        .then(r=>{ document.getElementById("load").style.display="none"; goLang(r.user); })
+        .catch(e=>{ document.getElementById("load").style.display="none"; document.getElementById("err").innerText=e.message; });
     };
 
     function goLang(u){
@@ -228,7 +224,7 @@
       const err = document.getElementById("nerr");
       const btn = document.getElementById("save");
       err.innerText="";
-      if(name.length<2){err.innerText="Name must be at least 2 characters";return;}
+      if(name.length<2){ err.innerText="Name must be at least 2 characters"; return; }
       btn.disabled=true; btn.innerText="Saving...";
       try{
         const snap = await db.collection("users").where("username","==",name).get();
@@ -237,20 +233,17 @@
           btn.disabled=false; btn.innerText="Save & Continue"; return;
         }
         await db.collection("users").doc(user.uid).set({
-          username:name,
-          email:user.email||"",
-          photoURL:user.photoURL||"",
-          language:sel||"en",
-          isPremium:false,
+          username:name, email:user.email||"", photoURL:user.photoURL||"",
+          language:sel||"en", isPremium:false,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         },{merge:true});
-        localStorage.setItem("velorix_username",name);
-        alert("Profile saved!\n\nMain app coming next.");
+        localStorage.setItem("velorix_username", name);
+        window.location.href = "home.html";
       }catch(e){
-        err.innerText="Error saving. Check Firestore.";
+        err.innerText="Error saving. Try again.";
         console.error(e);
+        btn.disabled=false; btn.innerText="Save & Continue";
       }
-      btn.disabled=false; btn.innerText="Save & Continue";
     };
 
     document.getElementById("out1").onclick = ()=>auth.signOut().then(()=>show("landing"));
@@ -260,28 +253,55 @@
       else show("landing");
     });
 
+    /* ===== Feedback / Report System (Future-ready) ===== */
+    async function sendFeedback(text, type="login_issue"){
+      const payload = {
+        text, type,
+        time: new Date().toISOString(),
+        user: user ? user.uid : "guest",
+        page: "index"
+      };
+      // 1. Local save (हमेशा)
+      const list = JSON.parse(localStorage.getItem("velorix_reports")||"[]");
+      list.push(payload);
+      localStorage.setItem("velorix_reports", JSON.stringify(list));
+
+      // 2. अगर future API key मौजूद हो तो भेज दो
+      if(FUTURE_APIS.feedback){
+        try{
+          await fetch(FUTURE_APIS.feedback, {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify(payload)
+          });
+        }catch(e){ console.log("Feedback API not ready yet"); }
+      }
+      return true;
+    }
+
     const pages = {
-      privacy:`<h2>Privacy Policy</h2><p>Velorix AI respects your privacy.</p><ul><li>We use Google Sign-In.</li><li>We do not sell your data.</li><li>You control your content.</li></ul>`,
-      terms:`<h2>Terms of Service</h2><p>By using Velorix AI you agree:</p><ul><li>No illegal content.</li><li>You are responsible for what you create.</li><li>Premium features may require payment later.</li></ul>`,
-      help:`<h2>Help & Support</h2><p>Getting started:</p><ul><li>Sign in with Google</li><li>Select language</li><li>Set your unique name</li><li>Start creating videos (coming soon)</li></ul>`,
-      report:`<h2>Report Login Issue</h2><p>Describe the problem:</p><textarea id="rtxt" style="width:100%;min-height:80px;margin:10px 0;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff"></textarea><button onclick="sendRep()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-weight:600">Send</button>`
+      privacy:`<h2>Privacy Policy</h2><p>Velorix AI respects your privacy.</p><ul><li>We use Google Sign-In only.</li><li>We do not sell your data.</li><li>You control your content.</li></ul>`,
+      terms:`<h2>Terms of Service</h2><p>By using Velorix AI you agree:</p><ul><li>No illegal or harmful content.</li><li>You are responsible for what you create.</li><li>Premium features may require payment.</li></ul>`,
+      help:`<h2>Help & Support</h2><p>Getting started:</p><ul><li>Sign in with Google</li><li>Select your language</li><li>Set a unique name</li><li>Start creating videos</li></ul>`,
+      report:`<h2>Report Login Issue</h2><p>Describe the problem:</p>
+        <textarea id="rtxt" style="width:100%;min-height:90px;margin:12px 0;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:14px"></textarea>
+        <button onclick="doReport()" style="width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-weight:600;font-size:15px">Send Report</button>`
     };
 
-    function openInfo(t){document.getElementById("icont").innerHTML=pages[t];show("info");}
+    function openInfo(t){ document.getElementById("icont").innerHTML=pages[t]; show("info"); }
     document.getElementById("priv").onclick=e=>{e.preventDefault();openInfo("privacy");};
     document.getElementById("term").onclick=e=>{e.preventDefault();openInfo("terms");};
     document.getElementById("help").onclick=e=>{e.preventDefault();openInfo("help");};
     document.getElementById("repBtn").onclick=()=>openInfo("report");
     document.getElementById("back").onclick=()=>show("landing");
 
-    function sendRep(){
-      const t=document.getElementById("rtxt").value.trim();
-      if(!t){alert("Write something");return;}
-      const r=JSON.parse(localStorage.getItem("velorix_reports")||"[]");
-      r.push({t,time:new Date().toISOString()});
-      localStorage.setItem("velorix_reports",JSON.stringify(r));
-      alert("Thank you. Report saved.");
-    }
+    window.doReport = async function(){
+      const t = document.getElementById("rtxt").value.trim();
+      if(!t){ alert("Please write something"); return; }
+      await sendFeedback(t, "login_issue");
+      alert("Thank you! Report saved.");
+      show("landing");
+    };
   </script>
 </body>
-  </html>
+        </html>
