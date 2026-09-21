@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Velorix AI — Home</title>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;padding-bottom:80px}
+    
+    /* Header */
+    .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(10,10,10,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .header-right{display:flex;align-items:center;gap:10px}
+    .credits{font-size:13px;background:rgba(255,255,255,.08);padding:6px 12px;border-radius:20px;display:flex;align-items:center;gap:5px}
+    .sub-btn{font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;border:none;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;cursor:pointer}
+
+    /* Story Box */
+    .story-section{padding:20px 16px 8px}
+    .story-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px;position:relative}
+    .story-box textarea{width:100%;min-height:90px;background:transparent;border:none;outline:none;color:#fff;font-size:15px;resize:none;line-height:1.5}
+    .story-box textarea::placeholder{color:rgba(255,255,255,.35)}
+    .story-actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .story-hint{font-size:11px;color:rgba(255,255,255,.3)}
+    .go-btn{padding:10px 22px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+
+    /* Feature Cards */
+    .features{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .f-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 14px;cursor:pointer;transition:.2s}
+    .f-card:active{transform:scale(.97)}
+    .f-card .icon{font-size:28px;margin-bottom:10px}
+    .f-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+    .f-card p{font-size:11px;color:rgba(255,255,255,.4)}
+    .f-card.new{position:relative}
+    .f-card .badge{position:absolute;top:10px;right:10px;font-size:9px;background:#ec4899;padding:2px 7px;border-radius:8px;font-weight:600}
+
+    /* Categories */
+    .cats{padding:8px 16px 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+    .cats::-webkit-scrollbar{display:none}
+    .cat{flex-shrink:0;padding:8px 16px;border-radius:20px;font-size:13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6);cursor:pointer;white-space:nowrap}
+    .cat.active{background:rgba(124,58,237,.25);border-color:rgba(124,58,237,.5);color:#fff}
+
+    /* Trending */
+    .section-title{padding:18px 16px 10px;display:flex;justify-content:space-between;align-items:center}
+    .section-title h2{font-size:17px;font-weight:600}
+    .section-title span{font-size:13px;color:rgba(255,255,255,.4)}
+    .trending{padding:0 16px;display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+    .trending::-webkit-scrollbar{display:none}
+    .t-card{flex-shrink:0;width:160px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.05);cursor:pointer}
+    .t-card img,.t-card video{width:100%;height:200px;object-fit:cover;display:block}
+    .t-card .info{padding:10px}
+    .t-card .info h4{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .t-card .info p{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+    .loading-trend{padding:40px;text-align:center;color:rgba(255,255,255,.4);font-size:13px}
+
+    /* Bottom Nav */
+    .bottom{position:fixed;bottom:0;left:0;right:0;height:64px;background:rgba(12,12,12,.95);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-around;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+    .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:rgba(255,255,255,.4);cursor:pointer;min-width:56px}
+    .nav-item.active{color:#a78bfa}
+    .nav-item .ni{font-size:22px}
+    .nav-center{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;margin-top:-18px;box-shadow:0 4px 20px rgba(124,58,237,.4)}
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">Velorix AI</div>
+    <div class="header-right">
+      <div class="credits">⚡ <span id="creditCount">5</span></div>
+      <button class="sub-btn" id="subBtn">Premium</button>
+    </div>
+  </div>
+
+  <!-- Story Box -->
+  <div class="story-section">
+    <div class="story-box">
+      <textarea id="user-prompt" placeholder="अपनी कहानी या आइडिया यहाँ लिखें...&#10;Example: एक राजा और उसकी बहादुर बेटी की कहानी"></textarea>
+      <div class="story-actions">
+        <span class="story-hint">1 मिनट तक की स्टोरी लिखें</span>
+        <button class="go-btn" id="goBtn">Create →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Cards -->
+  <div class="features">
+    <div class="f-card" data-mode="text-to-video">
+      <div class="icon">🎬</div>
+      <h3>Text to Video</h3>
+      <p>Story se video banao</p>
+    </div>
+    <div class="f-card" data-mode="image-to-video">
+      <div class="icon">🖼️</div>
+      <h3>Image to Video</h3>
+      <p>Photo se video</p>
+    </div>
+    <div class="f-card" data-mode="create-image">
+      <div class="icon">✨</div>
+      <h3>Create Image</h3>
+      <p>AI se image banao</p>
+    </div>
+    <div class="f-card new" data-mode="full-story">
+      <div class="badge">MAIN</div>
+      <div class="icon">📖</div>
+      <h3>Full Story Video</h3>
+      <p>Complete pipeline</p>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="cats" id="cats">
+    <div class="cat active" data-q="ai art">Trending</div>
+    <div class="cat" data-q="3d character">3D</div>
+    <div class="cat" data-q="cartoon animation">2D / Cartoon</div>
+    <div class="cat" data-q="realistic portrait">Realistic</div>
+    <div class="cat" data-q="fantasy scene">Fantasy</div>
+    <div class="cat" data-q="cinematic">Cinematic</div>
+  </div>
+
+  <!-- Trending -->
+  <div class="section-title">
+    <h2>Trending</h2>
+    <span>Inspiration</span>
+  </div>
+  <div class="trending" id="trending">
+    <div class="loading-trend">Loading...</div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom">
+    <div class="nav-item active" data-tab="create">
+      <div class="ni">🏠</div>
+      <span>Create</span>
+    </div>
+    <div class="nav-item" data-tab="promo">
+      <div class="ni">📢</div>
+      <span>Promo</span>
+    </div>
+    <div class="nav-center" id="plusBtn">+</div>
+    <div class="nav-item" data-tab="memes">
+      <div class="ni">😂</div>
+      <span>Memes</span>
+    </div>
+    <div class="nav-item" data-tab="profile">
+      <div class="ni">👤</div>
+      <span>Profile</span>
+    </div>
+  </div>
+
+  <script>
+    // ===== Firebase =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
+      authDomain: "best-47108.firebaseapp.com",
+      projectId: "best-47108",
+      storageBucket: "best-47108.firebasestorage.app",
+      messagingSenderId: "995954423710",
+      appId: "1:995954423710:web:9b3458af61b99e6fb6088f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Route Protection
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "index.html";
+      }
+    });
+
+    // ===== Pexels API =====
+    const PEXELS_KEY = "DwhG2QLQ5ZR7bTvc9R78CUTrL3P9oHaUWaBnYQeqj2XtKzeJCVlfSBS2";
+
+    async function loadTrending(query = "ai art") {
+      const box = document.getElementById("trending");
+      box.innerHTML = '<div class="loading-trend">Loading...</div>';
+      try {
+        const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12&orientation=portrait`, {
+          headers: { Authorization: PEXELS_KEY }
+        });
+        const data = await res.json();
+        box.innerHTML = "";
+        if (!data.photos || data.photos.length === 0) {
+          box.innerHTML = '<div class="loading-trend">No results</div>';
+          return;
+        }
+        data.photos.forEach(p => {
+          const card = document.createElement("div");
+          card.className = "t-card";
+          card.innerHTML = `
+            <img src="\( {p.src.medium}" alt=" \){p.alt || ''}" loading="lazy" />
+            <div class="info">
+              <h4>${p.alt ? p.alt.slice(0, 40) : 'AI Inspiration'}</h4>
+              <p>${p.photographer || ''}</p>
+            </div>
+          `;
+          box.appendChild(card);
+        });
+      } catch (e) {
+        console.error(e);
+        box.innerHTML = '<div class="loading-trend">Failed to load</div>';
+      }
+    }
+
+    // Categories
+    document.querySelectorAll(".cat").forEach(c => {
+      c.onclick = () => {
+        document.querySelectorAll(".cat").forEach(x => x.classList.remove("active"));
+        c.classList.add("active");
+        loadTrending(c.dataset.q);
+      };
+    });
+
+    // Feature cards (placeholder for now)
+    document.querySelectorAll(".f-card").forEach(card => {
+      card.onclick = () => {
+        const mode = card.dataset.mode;
+        const prompt = document.getElementById("user-prompt").value.trim();
+        if (mode === "full-story" || mode === "text-to-video") {
+          if (!prompt) {
+            alert("Pehle story / idea likho");
+            return;
+          }
+          // Next: options page (size, duration, style...)
+          alert("Next step: Size + Quality + Style page\n\nStory saved. Coming next.");
+        } else {
+          alert(mode + " — jald hi active hoga");
+        }
+      };
+    });
+
+    // Create button
+    document.getElementById("goBtn").onclick = () => {
+      const prompt = document.getElementById("user-prompt").value.trim();
+      if (!prompt) {
+        alert("Pehle apni story likho");
+        return;
+      }
+      alert("Next: Options page (Size, Minutes, Quality, Style)\n\nComing next.");
+    };
+
+    // Bottom nav
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.onclick = () => {
+        const tab = item.dataset.tab;
+        if (tab === "create") return;
+        if (tab === "profile") {
+          // later profile page
+          alert("Profile page — next");
+          return;
+        }
+        alert(tab.toUpperCase() + " section — jald banega");
+      };
+    });
+
+    document.getElementById("plusBtn").onclick = () => {
+      document.getElementById("user-prompt").focus();
+    };
+
+    document.getElementById("subBtn").onclick = () => {
+      alert("Premium plans — jald active");
+    };
+
+    // Initial load
+    loadTrending("ai art");
+  </script>
+</body>
+</html>
