@@ -1,309 +1,296 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Velorix AI — Home</title>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;background:#050505;color:#fff;min-height:100vh;padding-bottom:82px;overflow-x:hidden}
-    .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 90% 60% at 10% 0%,rgba(124,58,237,.3),transparent 55%),radial-gradient(ellipse 70% 50% at 95% 10%,rgba(59,130,246,.18),transparent 50%),radial-gradient(ellipse 50% 40% at 50% 100%,rgba(236,72,153,.1),transparent 45%),#050505}
-    .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.4;pointer-events:none;z-index:1}
-    .o1{width:280px;height:280px;background:#7c3aed;top:-80px;left:-60px}
-    .o2{width:220px;height:220px;background:#3b82f6;top:38%;right:-80px}
-    .o3{width:170px;height:170px;background:#ec4899;bottom:8%;left:10%}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Velorix AI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07070c;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);
+  --p:#8b5cf6;--p2:#a78bfa;--t:#f4f4f8;--m:#9ca3af;--ok:#34d399;
+}
+html,body{height:100%;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 
-    .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(5,5,5,.92);backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,.07)}
-    .logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .sub-btn{display:none;font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;border:none;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;cursor:pointer}
-    .sub-btn.show{display:block}
+.orb{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
+.orb1{width:280px;height:280px;background:rgba(139,92,246,.35);top:-80px;right:-60px}
+.orb2{width:220px;height:220px;background:rgba(59,130,246,.2);bottom:120px;left:-80px}
 
-    .wrap{position:relative;z-index:10;padding:16px}
+.wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:14px 14px 20px}
 
-    .story-box{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:16px;backdrop-filter:blur(18px);margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.25)}
-    .story-box textarea{width:100%;min-height:88px;background:transparent;border:none;outline:none;color:#fff;font-size:15px;resize:none;line-height:1.5}
-    .story-box textarea::placeholder{color:rgba(255,255,255,.38)}
-    .story-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-    .story-hint{font-size:11px;color:rgba(255,255,255,.35)}
-    .go-btn{padding:11px 22px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+/* Header */
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.head-r{display:flex;gap:8px;align-items:center}
+.badge-prem{display:none;font-size:.7rem;font-weight:700;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
+.av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:grid;place-items:center;font-size:.75rem;font-weight:700;border:1px solid rgba(255,255,255,.15)}
 
-    /* 5 feature cards */
-    .features{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px}
-    .f-card{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;min-height:132px;border:1px solid rgba(255,255,255,.12);background:#111}
-    .f-card:active{transform:scale(.97)}
-    .f-card.wide{grid-column:1 / -1;min-height:100px}
-    .f-card .img{position:absolute;inset:0;background-size:cover;background-position:center}
-    .f-card .img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.5) 50%,rgba(0,0,0,.2) 100%)}
-    .f-card .body{position:relative;z-index:2;padding:12px 13px 13px;height:100%;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end}
-    .f-card.wide .body{min-height:100px}
-    .f-card h3{font-size:14px;font-weight:650;margin-bottom:2px}
-    .f-card p{font-size:11px;color:rgba(255,255,255,.58)}
-    .f-card .badge{position:absolute;top:10px;right:10px;z-index:3;font-size:9px;font-weight:700;padding:3px 8px;border-radius:8px;background:linear-gradient(135deg,#a78bfa,#ec4899)}
+/* Prompt */
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:14px;backdrop-filter:blur(16px)}
+.box textarea{width:100%;min-height:88px;background:transparent;border:0;outline:0;resize:none;color:var(--t);font-size:.95rem;line-height:1.45}
+.box textarea::placeholder{color:#6b7280}
+.row{display:flex;justify-content:flex-end;margin-top:8px}
+.btn{border:0;border-radius:12px;padding:10px 18px;font-weight:700;font-size:.9rem;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 8px 24px rgba(124,58,237,.35)}
+.btn:active{transform:scale(.97)}
 
-    /* Cinematic / character style images */
-    .img1{background-image:url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=700&q=80")}
-    .img2{background-image:url("https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=700&q=80")}
-    .img3{background-image:url("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80")}
-    .img4{background-image:url("https://images.unsplash.com/photo-1485846234645-a62644f84728?w=700&q=80")}
-    .img5{background-image:url("https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=700&q=80")}
+/* Feature cards */
+.sec-t{font-size:.72rem;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin:4px 0 10px}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fc{position:relative;border-radius:16px;overflow:hidden;min-height:118px;border:1px solid var(--line);cursor:pointer}
+.fc .bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.fc .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(0,0,0,.85))}
+.fc .tx{position:relative;z-index:1;padding:12px;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.fc h3{font-size:.88rem;font-weight:700}
+.fc p{font-size:.68rem;color:#c4c4d0;margin-top:2px}
+.fc .tag{position:absolute;top:8px;right:8px;z-index:2;font-size:.6rem;font-weight:800;padding:3px 7px;border-radius:6px;background:rgba(124,58,237,.9)}
+.fc.wide{grid-column:1/-1;min-height:96px}
+.fc.wide .tx{justify-content:center}
 
-    .cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px}
-    .cats::-webkit-scrollbar{display:none}
-    .cat{flex-shrink:0;padding:8px 15px;border-radius:20px;font-size:12.5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.55);cursor:pointer;white-space:nowrap}
-    .cat.active{background:rgba(124,58,237,.3);border-color:rgba(167,139,250,.55);color:#fff}
+/* Category chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:7px 14px;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--m);cursor:pointer}
+.chip.on{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:transparent}
 
-    .hot-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
-    .hot-row::-webkit-scrollbar{display:none}
-    .hot{flex-shrink:0;padding:6px 12px;border-radius:14px;font-size:11.5px;background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.25);color:#f9a8d4;cursor:pointer;white-space:nowrap}
+/* Hot row */
+.hot{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}
+.hot::-webkit-scrollbar{display:none}
+.hot span{flex:0 0 auto;font-size:.72rem;padding:5px 10px;border-radius:8px;background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
 
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .section-title h2{font-size:16px;font-weight:600}
-    .section-title span{font-size:12px;color:rgba(255,255,255,.35)}
+/* Trending grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#111;aspect-ratio:3/4;position:relative}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.card .cap{position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,.9));font-size:.75rem;font-weight:600}
+.skel{background:linear-gradient(90deg,#14141c,#1c1c28,#14141c);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-    .trending{display:flex;gap:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px}
-    .trending::-webkit-scrollbar{display:none}
-    .t-card{flex-shrink:0;width:152px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
-    .t-card img{width:100%;height:195px;object-fit:cover;display:block;background:#1a1a1a}
-    .t-card .info{padding:9px 10px}
-    .t-card .info h4{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .t-card .info p{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px}
+/* Bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(10,10,16,.92);backdrop-filter:blur(20px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;max-width:480px;margin:0 auto}
+.nav a{flex:1;text-align:center;text-decoration:none;color:var(--m);font-size:.65rem;font-weight:600;padding:4px 0}
+.nav a.on{color:var(--p2)}
+.nav svg{width:22px;height:22px;display:block;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8}
 
-    /* Better bottom nav */
-    .bottom{position:fixed;bottom:0;left:0;right:0;height:70px;background:rgba(8,8,8,.96);backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-around;z-index:100;padding:0 6px;padding-bottom:env(safe-area-inset-bottom)}
-    .nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:500;color:rgba(255,255,255,.38);cursor:pointer;min-width:56px;padding:6px 0}
-    .nav-item.active{color:#c4b5fd}
-    .nav-item .ni{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
-    .nav-item .ni svg{width:22px;height:22px;fill:currentColor}
-    .nav-center{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;margin-top:-18px;box-shadow:0 6px 22px rgba(124,58,237,.5);border:3px solid #0a0a0a}
-    .nav-center svg{width:24px;height:24px;fill:#fff}
-  </style>
+.empty{text-align:center;padding:24px;color:var(--m);font-size:.85rem;grid-column:1/-1}
+</style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
 
-  <div class="header">
+<div class="wrap">
+  <div class="head">
     <div class="logo">Velorix AI</div>
-    <button class="sub-btn" id="subBtn">Premium</button>
-  </div>
-
-  <div class="wrap">
-    <div class="story-box">
-      <textarea id="user-prompt" placeholder="अपनी कहानी या आइडिया यहाँ लिखें...&#10;Example: एक राजा और उसकी बहादुर बेटी की कहानी"></textarea>
-      <div class="story-actions">
-        <span class="story-hint">1 मिनट · Parts में भी बन सकती है</span>
-        <button class="go-btn" id="goBtn">Create →</button>
-      </div>
-    </div>
-
-    <div class="features">
-      <div class="f-card" data-mode="text-to-video">
-        <div class="img img1"></div>
-        <div class="body"><h3>Text to Video</h3><p>Story se short video</p></div>
-      </div>
-      <div class="f-card" data-mode="image-to-video">
-        <div class="img img2"></div>
-        <div class="body"><h3>Image to Video</h3><p>Photo se video</p></div>
-      </div>
-      <div class="f-card" data-mode="create-image">
-        <div class="img img3"></div>
-        <div class="body"><h3>Create Image</h3><p>AI se image</p></div>
-      </div>
-      <div class="f-card" data-mode="full-story">
-        <div class="badge">PARTS</div>
-        <div class="img img4"></div>
-        <div class="body"><h3>Full Story Video</h3><p>Badi video · Parts mein</p></div>
-      </div>
-      <div class="f-card wide" data-mode="gallery">
-        <div class="img img5"></div>
-        <div class="body"><h3>Gallery</h3><p>Apni banayi hui saari videos yahan</p></div>
-      </div>
-    </div>
-
-    <div class="cats" id="cats">
-      <div class="cat active" data-q="cinematic portrait">Trending</div>
-      <div class="cat" data-q="3d character">3D</div>
-      <div class="cat" data-q="cartoon character">2D / Cartoon</div>
-      <div class="cat" data-q="realistic portrait">Realistic</div>
-      <div class="cat" data-q="fantasy warrior">Fantasy</div>
-      <div class="cat" data-q="cinematic movie">Cinematic</div>
-    </div>
-
-    <div class="hot-row">
-      <div class="hot" data-q="viral portrait">🔥 Viral</div>
-      <div class="hot" data-q="mini character">Mini Character</div>
-      <div class="hot" data-q="cinematic look">Cinematic Look</div>
-      <div class="hot" data-q="fantasy art">Fantasy</div>
-    </div>
-
-    <div class="section-title">
-      <h2>Trending</h2>
-      <span id="apiSource">Inspiration</span>
-    </div>
-    <div class="trending" id="trending"></div>
-  </div>
-
-  <div class="bottom">
-    <div class="nav-item active" data-tab="create">
-      <div class="ni"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-      <span>Create</span>
-    </div>
-    <div class="nav-item" data-tab="promo">
-      <div class="ni"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
-      <span>Promo</span>
-    </div>
-    <div class="nav-center" id="plusBtn">
-      <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-    </div>
-    <div class="nav-item" data-tab="memes">
-      <div class="ni"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg></div>
-      <span>Memes</span>
-    </div>
-    <div class="nav-item" data-tab="profile">
-      <div class="ni"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
-      <span>Profile</span>
+    <div class="head-r">
+      <span class="badge-prem" id="premBadge">PREMIUM</span>
+      <div class="av" id="av">V</div>
     </div>
   </div>
 
-  <script>
-    var API_SLOTS = {
-      free1: { name: "Pexels", key: null },
-      free2: { name: "Pixabay", key: null },
-      free3: { name: "Unsplash", key: null },
-      prem1: { name: "ImageGen", key: null },
-      prem2: { name: "VideoGen", key: null },
-      prem3: { name: "VoiceMusic", key: null }
-    };
+  <div class="box">
+    <textarea id="user-prompt" placeholder="अपनी कहानी या आइडिया यहाँ लिखें..." maxlength="1200"></textarea>
+    <div class="row"><button class="btn" id="btnCreate" type="button">Create</button></div>
+  </div>
 
-    var firebaseConfig = {
-      apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
-      authDomain: "best-47108.firebaseapp.com",
-      projectId: "best-47108",
-      storageBucket: "best-47108.firebasestorage.app",
-      messagingSenderId: "995954423710",
-      appId: "1:995954423710:web:9b3458af61b99e6fb6088f"
-    };
-    firebase.initializeApp(firebaseConfig);
-    var auth = firebase.auth();
+  <div class="sec-t">Create</div>
+  <div class="feat" id="feat">
+    <div class="fc" data-mode="text-to-video">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80')"></div>
+      <div class="tx"><h3>Text to Video</h3><p>कहानी से वीडियो</p></div>
+    </div>
+    <div class="fc" data-mode="image-to-video">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&q=80')"></div>
+      <div class="tx"><h3>Image to Video</h3><p>फोटो से मोशन</p></div>
+    </div>
+    <div class="fc" data-mode="create-image">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80')"></div>
+      <div class="tx"><h3>Create Image</h3><p>AI इमेज</p></div>
+    </div>
+    <div class="fc" data-mode="full-story">
+      <span class="tag">PARTS</span>
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80')"></div>
+      <div class="tx"><h3>Full Story Video</h3><p>पार्ट्स में लंबी स्टोरी</p></div>
+    </div>
+    <div class="fc wide" data-mode="gallery">
+      <div class="bg" style="background-image:url('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=800&q=80')"></div>
+      <div class="tx"><h3>Gallery</h3><p>बनी हुई वीडियो / इमेज</p></div>
+    </div>
+  </div>
 
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function () {
-      auth.onAuthStateChanged(function (user) {
-        if (!user) window.location.href = "index.html";
-      });
-    });
+  <div class="sec-t">Explore</div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-cat="trending">Trending</button>
+    <button class="chip" data-cat="3d">3D</button>
+    <button class="chip" data-cat="cartoon">2D / Cartoon</button>
+    <button class="chip" data-cat="realistic">Realistic</button>
+    <button class="chip" data-cat="cinematic">Cinematic</button>
+  </div>
+  <div class="hot" id="hot">
+    <span>#ViralAI</span><span>#3DLook</span><span>#ShortStory</span>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
 
-    // Premium button only for premium accounts
-    if (localStorage.getItem("isPremium") === "true") {
-      document.getElementById("subBtn").classList.add("show");
-    }
+<nav class="nav">
+  <a href="home.html" class="on">
+    <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"/></svg>
+    Home
+  </a>
+  <a href="#promo">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9z"/></svg>
+    Promo
+  </a>
+  <a href="#memes">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 10h.01M15 10h.01"/></svg>
+    Memes
+  </a>
+  <a href="#share">
+    <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+    Share
+  </a>
+  <a href="#profile">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    Profile
+  </a>
+</nav>
 
-    // Real cinematic / portrait style (no code screens)
-    var SAFE_IMAGES = [
-      { url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80", title: "Portrait Glow", sub: "Realistic" },
-      { url: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=80", title: "Cinematic Look", sub: "HD" },
-      { url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80", title: "Character", sub: "Realistic" },
-      { url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80", title: "Soft Light", sub: "Portrait" },
-      { url: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&q=80", title: "Street Cinema", sub: "Cinematic" },
-      { url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&q=80", title: "Modern Face", sub: "HD" },
-      { url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&q=80", title: "Drama Look", sub: "Cinematic" },
-      { url: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=500&q=80", title: "Soft Portrait", sub: "Realistic" }
-    ];
+<script>
+/* ===== Premium badge only if premium ===== */
+(function(){
+  var p = localStorage.getItem("isPremium") === "1" || localStorage.getItem("isPremium") === "true";
+  var b = document.getElementById("premBadge");
+  if (p && b) b.style.display = "inline-block";
+  var name = localStorage.getItem("vxName") || "V";
+  document.getElementById("av").textContent = (name[0] || "V").toUpperCase();
+})();
 
-    function showCards(items, source) {
-      var box = document.getElementById("trending");
-      document.getElementById("apiSource").textContent = source || "Inspiration";
-      box.innerHTML = "";
-      for (var i = 0; i < items.length; i++) {
-        var it = items[i];
-        var d = document.createElement("div");
-        d.className = "t-card";
-        var img = document.createElement("img");
-        img.src = it.url;
-        img.loading = "lazy";
-        img.alt = it.title || "";
-        var info = document.createElement("div");
-        info.className = "info";
-        var h4 = document.createElement("h4");
-        h4.textContent = it.title || "AI Art";
-        var p = document.createElement("p");
-        p.textContent = it.sub || "";
-        info.appendChild(h4);
-        info.appendChild(p);
-        d.appendChild(img);
-        d.appendChild(info);
-        box.appendChild(d);
-      }
-    }
+/* ===== Category curated (temporary filler) ===== */
+var CURATED = {
+  trending: [
+    {t:"Portrait Glow", u:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80"},
+    {t:"Cinematic Look", u:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=80"},
+    {t:"Night Story", u:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"},
+    {t:"Soft Light", u:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"}
+  ],
+  "3d": [
+    {t:"3D Hero", u:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80"},
+    {t:"Sculpt Style", u:"https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=500&q=80"},
+    {t:"Digital Form", u:"https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&q=80"},
+    {t:"Neon Depth", u:"https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=500&q=80"}
+  ],
+  cartoon: [
+    {t:"Toon Face", u:"https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&q=80"},
+    {t:"Color Pop", u:"https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=80"},
+    {t:"Story Art", u:"https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80"},
+    {t:"Bright Cast", u:"https://images.unsplash.com/photo-1452587923054-e25c0e8f8c9a?w=500&q=80"}
+  ],
+  realistic: [
+    {t:"Real Portrait", u:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"},
+    {t:"Natural Light", u:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80"},
+    {t:"Street Mood", u:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80"},
+    {t:"Close Shot", u:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"}
+  ],
+  cinematic: [
+    {t:"Film Frame", u:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80"},
+    {t:"Drama Light", u:"https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500&q=80"},
+    {t:"Wide Scene", u:"https://images.unsplash.com/photo-1440404653329-42134de6d6d1?w=500&q=80"},
+    {t:"Mood Reel", u:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80"}
+  ]
+};
 
-    function loadTrending(query) {
-      showCards(SAFE_IMAGES, "Inspiration");
-      // बाद में Pexels / Pixabay / Unsplash keys आने पर यहाँ API call जुड़ेगी
-    }
+/* Pollinations prompts per category (no key) */
+var POLL_PROMPTS = {
+  trending: "cinematic AI character portrait, viral style, high detail",
+  "3d": "3d pixar style character render, studio lighting",
+  cartoon: "2d cartoon character, clean lines, vibrant colors",
+  realistic: "photorealistic portrait, natural skin, soft light",
+  cinematic: "cinematic film still, dramatic lighting, movie look"
+};
 
-    var cats = document.querySelectorAll(".cat");
-    for (var i = 0; i < cats.length; i++) {
-      cats[i].onclick = function () {
-        for (var j = 0; j < cats.length; j++) cats[j].classList.remove("active");
-        this.classList.add("active");
-        loadTrending(this.getAttribute("data-q"));
-      };
-    }
+var activeCat = "trending";
+var grid = document.getElementById("grid");
 
-    var hots = document.querySelectorAll(".hot");
-    for (var h = 0; h < hots.length; h++) {
-      hots[h].onclick = function () {
-        loadTrending(this.getAttribute("data-q"));
-      };
-    }
+function showList(list){
+  grid.innerHTML = "";
+  if (!list || !list.length){
+    grid.innerHTML = '<div class="empty">अभी कुछ नहीं — जल्द user creations यहाँ आएंगी</div>';
+    return;
+  }
+  list.forEach(function(it){
+    var d = document.createElement("div");
+    d.className = "card";
+    var img = document.createElement("img");
+    img.alt = it.t || "";
+    img.loading = "lazy";
+    img.src = it.u;
+    img.onerror = function(){ this.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=70"; };
+    var cap = document.createElement("div");
+    cap.className = "cap";
+    cap.textContent = it.t || "";
+    d.appendChild(img);
+    d.appendChild(cap);
+    grid.appendChild(d);
+  });
+}
 
-    var cards = document.querySelectorAll(".f-card");
-    for (var c = 0; c < cards.length; c++) {
-      cards[c].onclick = function () {
-        var mode = this.getAttribute("data-mode");
-        var prompt = document.getElementById("user-prompt").value.trim();
-        if (mode === "gallery") {
-          alert("Gallery — apni videos yahan dikhengi\n(Next step mein banega)");
-          return;
-        }
-        if (mode === "full-story") {
-          if (!prompt) { alert("Pehle story / idea likho"); return; }
-          alert("Full Story Video\nParts mode ON\nPrompt 1 min style, video parts mein banegi");
-          return;
-        }
-        if (mode === "text-to-video" || mode === "image-to-video" || mode === "create-image") {
-          if (mode !== "create-image" && !prompt) { alert("Pehle story / idea likho"); return; }
-          alert(mode + " — jald active");
-        }
-      };
-    }
+function loadCat(cat){
+  activeCat = cat;
+  var base = (CURATED[cat] || CURATED.trending).slice();
+  /* skeleton */
+  grid.innerHTML = "";
+  for (var i=0;i<4;i++){
+    var s = document.createElement("div");
+    s.className = "card skel";
+    grid.appendChild(s);
+  }
+  /* Try Pollinations (optional) — if fail, curated stays */
+  var prompt = encodeURIComponent(POLL_PROMPTS[cat] || POLL_PROMPTS.trending);
+  var seed = Date.now() % 99999;
+  var pollUrl = "https://image.pollinations.ai/prompt/" + prompt + "?width=512&height=768&nologo=true&seed=" + seed;
+  var mixed = base.slice();
+  /* first card try AI */
+  mixed[0] = { t: (cat === "3d" ? "AI 3D" : cat === "cartoon" ? "AI Cartoon" : "AI Look"), u: pollUrl };
+  setTimeout(function(){ showList(mixed); }, 280);
+}
 
-    document.getElementById("goBtn").onclick = function () {
-      var prompt = document.getElementById("user-prompt").value.trim();
-      if (!prompt) { alert("Pehle apni story likho"); return; }
-      alert("Next: Size + Quality + Style page");
-    };
+document.getElementById("chips").addEventListener("click", function(e){
+  var c = e.target.closest(".chip");
+  if (!c) return;
+  document.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
+  c.classList.add("on");
+  loadCat(c.getAttribute("data-cat"));
+});
 
-    var navs = document.querySelectorAll(".nav-item");
-    for (var n = 0; n < navs.length; n++) {
-      navs[n].onclick = function () {
-        var tab = this.getAttribute("data-tab");
-        if (tab === "create") return;
-        for (var k = 0; k < navs.length; k++) navs[k].classList.remove("active");
-        this.classList.add("active");
-        alert(tab.toUpperCase() + " — jald banega");
-      };
-    }
+/* Feature cards */
+document.getElementById("feat").addEventListener("click", function(e){
+  var fc = e.target.closest(".fc");
+  if (!fc) return;
+  var mode = fc.getAttribute("data-mode");
+  var prompt = (document.getElementById("user-prompt").value || "").trim();
+  if (mode === "gallery"){
+    alert("Gallery — जल्द आपकी बनी videos यहाँ दिखेंगी");
+    return;
+  }
+  if (mode === "full-story"){
+    localStorage.setItem("vxMode", "full-story-parts");
+    alert("Full Story (Parts mode)\nएक मिनट जैसा prompt → parts में लंबी video");
+    return;
+  }
+  localStorage.setItem("vxMode", mode);
+  if (prompt) localStorage.setItem("vxPrompt", prompt);
+  alert("Mode: " + mode + (prompt ? "\nPrompt save हो गया" : "\nपहले कहानी लिख सकते हो"));
+});
 
-    document.getElementById("plusBtn").onclick = function () {
-      document.getElementById("user-prompt").focus();
-    };
-    document.getElementById("subBtn").onclick = function () {
-      alert("Premium account");
-    };
+document.getElementById("btnCreate").addEventListener("click", function(){
+  var prompt = (document.getElementById("user-prompt").value || "").trim();
+  if (!prompt){ alert("पहले कहानी / आइडिया लिखो"); return; }
+  localStorage.setItem("vxPrompt", prompt);
+  localStorage.setItem("vxMode", localStorage.getItem("vxMode") || "text-to-video");
+  alert("Create start (अगला step: generation pipeline)");
+});
 
-    loadTrending("cinematic portrait");
-  </script>
+loadCat("trending");
+</script>
 </body>
-</html>
+  </html>
