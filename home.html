@@ -6,35 +6,25 @@
 <title>Velorix AI</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#07070c;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);
-  --p:#8b5cf6;--p2:#a78bfa;--t:#f4f4f8;--m:#9ca3af;--ok:#34d399;
-}
+:root{--bg:#06050c;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);--p:#8b5cf6;--p2:#a78bfa;--t:#f4f4f8;--m:#9ca3af}
 html,body{height:100%;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
-body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
-
+body{padding-bottom:calc(72px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at top,#1a1030 0%,#06050c 50%)}
 .orb{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
 .orb1{width:280px;height:280px;background:rgba(139,92,246,.35);top:-80px;right:-60px}
-.orb2{width:220px;height:220px;background:rgba(59,130,246,.2);bottom:120px;left:-80px}
-
+.orb2{width:220px;height:220px;background:rgba(99,102,241,.18);bottom:120px;left:-80px}
 .wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:14px 14px 20px}
-
-/* Header */
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .head-r{display:flex;gap:8px;align-items:center}
 .badge-prem{display:none;font-size:.7rem;font-weight:700;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
 .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:grid;place-items:center;font-size:.75rem;font-weight:700;border:1px solid rgba(255,255,255,.15)}
-
-/* Prompt */
 .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-bottom:14px;backdrop-filter:blur(16px)}
 .box textarea{width:100%;min-height:88px;background:transparent;border:0;outline:0;resize:none;color:var(--t);font-size:.95rem;line-height:1.45}
 .box textarea::placeholder{color:#6b7280}
-.row{display:flex;justify-content:flex-end;margin-top:8px}
-.btn{border:0;border-radius:12px;padding:10px 18px;font-weight:700;font-size:.9rem;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 8px 24px rgba(124,58,237,.35)}
+.row{display:flex;justify-content:flex-end;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:10px 18px;font-weight:700;font-size:.9rem;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 8px 28px rgba(139,92,246,.45)}
 .btn:active{transform:scale(.97)}
-
-/* Feature cards */
+.btn-g{background:rgba(255,255,255,.08);box-shadow:none;font-size:.75rem;padding:8px 12px}
 .sec-t{font-size:.72rem;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.06em;margin:4px 0 10px}
 .feat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
 .fc{position:relative;border-radius:16px;overflow:hidden;min-height:118px;border:1px solid var(--line);cursor:pointer}
@@ -46,39 +36,39 @@ body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 .fc .tag{position:absolute;top:8px;right:8px;z-index:2;font-size:.6rem;font-weight:800;padding:3px 7px;border-radius:6px;background:rgba(124,58,237,.9)}
 .fc.wide{grid-column:1/-1;min-height:96px}
 .fc.wide .tx{justify-content:center}
-
-/* Category chips */
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;padding:7px 14px;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--m);cursor:pointer}
-.chip.on{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:transparent}
-
-/* Hot row */
+.chip.on{background:linear-gradient(135deg,#7c3aed,#9333ea);color:#fff;border-color:transparent}
 .hot{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}
 .hot::-webkit-scrollbar{display:none}
 .hot span{flex:0 0 auto;font-size:.72rem;padding:5px 10px;border-radius:8px;background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
-
-/* Trending grid */
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#111;aspect-ratio:3/4;position:relative}
 .card img{width:100%;height:100%;object-fit:cover;display:block}
 .card .cap{position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,.9));font-size:.75rem;font-weight:600}
 .skel{background:linear-gradient(90deg,#14141c,#1c1c28,#14141c);background-size:200% 100%;animation:sh 1.2s infinite}
 @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* Bottom nav */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(10,10,16,.92);backdrop-filter:blur(20px);border-top:1px solid var(--line);padding:8px 6px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;max-width:480px;margin:0 auto}
 .nav a{flex:1;text-align:center;text-decoration:none;color:var(--m);font-size:.65rem;font-weight:600;padding:4px 0}
 .nav a.on{color:var(--p2)}
 .nav svg{width:22px;height:22px;display:block;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.8}
-
 .empty{text-align:center;padding:24px;color:var(--m);font-size:.85rem;grid-column:1/-1}
+#genOverlay{display:none;position:fixed;inset:0;z-index:200;background:#06050c;flex-direction:column;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
+#genOverlay.show{display:flex}
+.gen-top{display:flex;justify-content:space-between;padding:12px 0}
+.gen-top button{width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.06);color:#fff;font-size:1.1rem;cursor:pointer}
+.gen-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.gen-pct{font-size:1.6rem;font-weight:700;margin-bottom:14px;background:linear-gradient(90deg,#c4b5fd,#a78bfa,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.gen-bar-wrap{width:min(280px,80vw);height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:18px}
+.gen-bar{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#f59e0b,#ec4899,#8b5cf6,#6366f1);transition:width .35s ease}
+.gen-msg{font-size:.9rem;color:#9ca3af;max-width:280px;line-height:1.45}
+.gen-status{margin-top:24px;font-size:.78rem;color:#a78bfa;min-height:1.2em;max-width:90%;word-break:break-word}
 </style>
 </head>
 <body>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
-
 <div class="wrap">
   <div class="head">
     <div class="logo">Velorix AI</div>
@@ -87,12 +77,13 @@ body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
       <div class="av" id="av">V</div>
     </div>
   </div>
-
   <div class="box">
-    <textarea id="user-prompt" placeholder="अपनी कहानी या आइडिया यहाँ लिखें..." maxlength="1200"></textarea>
-    <div class="row"><button class="btn" id="btnCreate" type="button">Create</button></div>
+    <textarea id="user-prompt" placeholder="अपनी कहानी या आइडिया यहाँ लिखें..." maxlength="2000"></textarea>
+    <div class="row">
+      <button class="btn btn-g" id="btnKeys" type="button">API Keys</button>
+      <button class="btn" id="btnCreate" type="button">Create</button>
+    </div>
   </div>
-
   <div class="sec-t">Create</div>
   <div class="feat" id="feat">
     <div class="fc" data-mode="text-to-video">
@@ -117,180 +108,188 @@ body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
       <div class="tx"><h3>Gallery</h3><p>बनी हुई वीडियो / इमेज</p></div>
     </div>
   </div>
-
   <div class="sec-t">Explore</div>
   <div class="chips" id="chips">
-    <button class="chip on" data-cat="trending">Trending</button>
-    <button class="chip" data-cat="3d">3D</button>
-    <button class="chip" data-cat="cartoon">2D / Cartoon</button>
-    <button class="chip" data-cat="realistic">Realistic</button>
-    <button class="chip" data-cat="cinematic">Cinematic</button>
+    <button class="chip on" data-cat="trending" type="button">Trending</button>
+    <button class="chip" data-cat="3d" type="button">3D</button>
+    <button class="chip" data-cat="cartoon" type="button">2D / Cartoon</button>
+    <button class="chip" data-cat="realistic" type="button">Realistic</button>
+    <button class="chip" data-cat="cinematic" type="button">Cinematic</button>
   </div>
-  <div class="hot" id="hot">
-    <span>#ViralAI</span><span>#3DLook</span><span>#ShortStory</span>
-  </div>
+  <div class="hot"><span>#ViralAI</span><span>#3DLook</span><span>#ShortStory</span></div>
   <div class="grid" id="grid"></div>
 </div>
-
-<nav class="nav">
-  <a href="home.html" class="on">
-    <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"/></svg>
-    Home
-  </a>
-  <a href="#promo">
-    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9z"/></svg>
-    Promo
-  </a>
-  <a href="#memes">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 10h.01M15 10h.01"/></svg>
-    Memes
-  </a>
-  <a href="#share">
-    <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
-    Share
-  </a>
-  <a href="#profile">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    Profile
-  </a>
+<nav class="nav" id="bottomNav">
+  <a href="home.html" class="on"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"/></svg>Home</a>
+  <a href="#promo"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9z"/></svg>Promo</a>
+  <a href="#memes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 10h.01M15 10h.01"/></svg>Memes</a>
+  <a href="#share"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</a>
+  <a href="#profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
 </nav>
-
+<div id="genOverlay">
+  <div class="gen-top">
+    <button type="button" id="genBack">←</button>
+    <button type="button" id="genClose">×</button>
+  </div>
+  <div class="gen-mid">
+    <div class="gen-pct" id="genPct">0%</div>
+    <div class="gen-bar-wrap"><div class="gen-bar" id="genBar"></div></div>
+    <p class="gen-msg">Generation will take a few seconds. Feel free to explore and return later!</p>
+    <p class="gen-status" id="genStatus">Starting…</p>
+  </div>
+</div>
 <script>
-/* ===== Premium badge only if premium ===== */
+function getKey(name){ return (localStorage.getItem(name) || "").trim(); }
+function setKeysFromPrompt(){
+  var g = prompt("Groq API Key (gsk_...)\nखाली छोड़ो तो पुरानी रहेगी:", getKey("VX_GROQ") || "");
+  if (g !== null && g.trim()) localStorage.setItem("VX_GROQ", g.trim());
+  var m = prompt("Gemini API Key\nखाली = skip/पुरानी:", getKey("VX_GEMINI") || "");
+  if (m !== null && m.trim()) localStorage.setItem("VX_GEMINI", m.trim());
+  var o = prompt("OpenRouter Key (optional)\nखाली = skip:", getKey("VX_OR") || "");
+  if (o !== null && o.trim()) localStorage.setItem("VX_OR", o.trim());
+  alert("Keys save (सिर्फ इस browser में).\nGitHub पर नहीं जाएंगी।");
+}
+document.getElementById("btnKeys").onclick = setKeysFromPrompt;
+
 (function(){
   var p = localStorage.getItem("isPremium") === "1" || localStorage.getItem("isPremium") === "true";
-  var b = document.getElementById("premBadge");
-  if (p && b) b.style.display = "inline-block";
+  if (p) document.getElementById("premBadge").style.display = "inline-block";
   var name = localStorage.getItem("vxName") || "V";
   document.getElementById("av").textContent = (name[0] || "V").toUpperCase();
 })();
 
-/* ===== Category curated (temporary filler) ===== */
 var CURATED = {
   trending: [
-    {t:"Portrait Glow", u:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80"},
-    {t:"Cinematic Look", u:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=80"},
-    {t:"Night Story", u:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"},
-    {t:"Soft Light", u:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"}
+    {t:"Portrait Glow",u:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80"},
+    {t:"Cinematic Look",u:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=80"},
+    {t:"Night Story",u:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"},
+    {t:"Soft Light",u:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"}
   ],
   "3d": [
-    {t:"3D Hero", u:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80"},
-    {t:"Sculpt Style", u:"https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=500&q=80"},
-    {t:"Digital Form", u:"https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&q=80"},
-    {t:"Neon Depth", u:"https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=500&q=80"}
+    {t:"3D Hero",u:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80"},
+    {t:"Sculpt Style",u:"https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=500&q=80"},
+    {t:"Digital Form",u:"https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&q=80"},
+    {t:"Neon Depth",u:"https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=500&q=80"}
   ],
   cartoon: [
-    {t:"Toon Face", u:"https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&q=80"},
-    {t:"Color Pop", u:"https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=80"},
-    {t:"Story Art", u:"https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80"},
-    {t:"Bright Cast", u:"https://images.unsplash.com/photo-1452587923054-e25c0e8f8c9a?w=500&q=80"}
+    {t:"Toon Face",u:"https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&q=80"},
+    {t:"Color Pop",u:"https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=80"},
+    {t:"Story Art",u:"https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80"},
+    {t:"Bright Cast",u:"https://images.unsplash.com/photo-1452587923054-e25c0e8f8c9a?w=500&q=80"}
   ],
   realistic: [
-    {t:"Real Portrait", u:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"},
-    {t:"Natural Light", u:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80"},
-    {t:"Street Mood", u:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80"},
-    {t:"Close Shot", u:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"}
+    {t:"Real Portrait",u:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"},
+    {t:"Natural Light",u:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80"},
+    {t:"Street Mood",u:"https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80"},
+    {t:"Close Shot",u:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"}
   ],
   cinematic: [
-    {t:"Film Frame", u:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80"},
-    {t:"Drama Light", u:"https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500&q=80"},
-    {t:"Wide Scene", u:"https://images.unsplash.com/photo-1440404653329-42134de6d6d1?w=500&q=80"},
-    {t:"Mood Reel", u:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80"}
+    {t:"Film Frame",u:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80"},
+    {t:"Drama Light",u:"https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500&q=80"},
+    {t:"Wide Scene",u:"https://images.unsplash.com/photo-1440404653329-42134de6d6d1?w=500&q=80"},
+    {t:"Mood Reel",u:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80"}
   ]
 };
-
-/* Pollinations prompts per category (no key) */
-var POLL_PROMPTS = {
-  trending: "cinematic AI character portrait, viral style, high detail",
-  "3d": "3d pixar style character render, studio lighting",
-  cartoon: "2d cartoon character, clean lines, vibrant colors",
-  realistic: "photorealistic portrait, natural skin, soft light",
-  cinematic: "cinematic film still, dramatic lighting, movie look"
-};
-
-var activeCat = "trending";
+var POLL = {trending:"cinematic AI character portrait", "3d":"3d pixar character", cartoon:"2d cartoon character", realistic:"photorealistic portrait", cinematic:"cinematic film still"};
 var grid = document.getElementById("grid");
-
 function showList(list){
   grid.innerHTML = "";
-  if (!list || !list.length){
-    grid.innerHTML = '<div class="empty">अभी कुछ नहीं — जल्द user creations यहाँ आएंगी</div>';
-    return;
-  }
+  if (!list||!list.length){ grid.innerHTML='<div class="empty">अभी कुछ नहीं</div>'; return; }
   list.forEach(function(it){
-    var d = document.createElement("div");
-    d.className = "card";
-    var img = document.createElement("img");
-    img.alt = it.t || "";
-    img.loading = "lazy";
-    img.src = it.u;
-    img.onerror = function(){ this.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=70"; };
-    var cap = document.createElement("div");
-    cap.className = "cap";
-    cap.textContent = it.t || "";
-    d.appendChild(img);
-    d.appendChild(cap);
-    grid.appendChild(d);
+    var d=document.createElement("div"); d.className="card";
+    var img=document.createElement("img"); img.loading="lazy"; img.alt=it.t||""; img.src=it.u;
+    img.onerror=function(){this.src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=70";};
+    var cap=document.createElement("div"); cap.className="cap"; cap.textContent=it.t||"";
+    d.appendChild(img); d.appendChild(cap); grid.appendChild(d);
   });
 }
-
 function loadCat(cat){
-  activeCat = cat;
-  var base = (CURATED[cat] || CURATED.trending).slice();
-  /* skeleton */
-  grid.innerHTML = "";
-  for (var i=0;i<4;i++){
-    var s = document.createElement("div");
-    s.className = "card skel";
-    grid.appendChild(s);
-  }
-  /* Try Pollinations (optional) — if fail, curated stays */
-  var prompt = encodeURIComponent(POLL_PROMPTS[cat] || POLL_PROMPTS.trending);
-  var seed = Date.now() % 99999;
-  var pollUrl = "https://image.pollinations.ai/prompt/" + prompt + "?width=512&height=768&nologo=true&seed=" + seed;
-  var mixed = base.slice();
-  /* first card try AI */
-  mixed[0] = { t: (cat === "3d" ? "AI 3D" : cat === "cartoon" ? "AI Cartoon" : "AI Look"), u: pollUrl };
-  setTimeout(function(){ showList(mixed); }, 280);
+  var base=(CURATED[cat]||CURATED.trending).slice();
+  grid.innerHTML="";
+  for(var i=0;i<4;i++){ var s=document.createElement("div"); s.className="card skel"; grid.appendChild(s); }
+  var u="https://image.pollinations.ai/prompt/"+encodeURIComponent(POLL[cat]||POLL.trending)+"?width=512&height=768&nologo=true&seed="+(Date.now()%99999);
+  var mixed=base.slice(); mixed[0]={t:"AI Look",u:u};
+  setTimeout(function(){ showList(mixed); },280);
+}
+document.getElementById("chips").addEventListener("click",function(e){
+  var c=e.target.closest(".chip"); if(!c)return;
+  document.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on");});
+  c.classList.add("on"); loadCat(c.getAttribute("data-cat"));
+});
+loadCat("trending");
+
+var overlay=document.getElementById("genOverlay");
+function setProg(n,t){ n=Math.max(0,Math.min(100,n|0)); document.getElementById("genPct").textContent=n+"%"; document.getElementById("genBar").style.width=n+"%"; if(t)document.getElementById("genStatus").textContent=t; }
+function openGen(){ overlay.classList.add("show"); document.getElementById("bottomNav").style.display="none"; }
+function closeGen(){ overlay.classList.remove("show"); document.getElementById("bottomNav").style.display="flex"; }
+document.getElementById("genBack").onclick=closeGen;
+document.getElementById("genClose").onclick=closeGen;
+function isFullStory(t){ return t.length>180||(t.match(/[.।!?]/g)||[]).length>=3; }
+
+async function genGroq(topic){
+  var key=getKey("VX_GROQ"); if(!key) throw new Error("Groq key नहीं");
+  var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Authorization":"Bearer "+key,"Content-Type":"application/json"},body:JSON.stringify({model:"llama-3.3-70b-versatile",temperature:0.7,max_tokens:900,messages:[{role:"system",content:"Short video story for India. Same language as user. 120-220 words. Only story."},{role:"user",content:topic}]})});
+  if(!r.ok) throw new Error("Groq "+r.status);
+  var j=await r.json();
+  return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||"").trim();
+}
+async function genGemini(topic){
+  var key=getKey("VX_GEMINI"); if(!key) throw new Error("Gemini key नहीं");
+  var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:"Short video story 120-220 words, same language. Only story.\n\n"+topic}]}]})});
+  if(!r.ok) throw new Error("Gemini "+r.status);
+  var j=await r.json();
+  var t=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0].text;
+  return (t||"").trim();
+}
+async function genOR(topic){
+  var key=getKey("VX_OR"); if(!key) throw new Error("OpenRouter key नहीं");
+  var r=await fetch("https://openrouter.ai/api/v1/chat/completions",{method:"POST",headers:{"Authorization":"Bearer "+key,"Content-Type":"application/json","HTTP-Referer":location.origin,"X-Title":"Velorix AI"},body:JSON.stringify({model:"meta-llama/llama-3.1-8b-instruct:free",messages:[{role:"system",content:"Short video story. Same language. 120-220 words. Only story."},{role:"user",content:topic}]})});
+  if(!r.ok) throw new Error("OpenRouter "+r.status);
+  var j=await r.json();
+  return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||"").trim();
 }
 
-document.getElementById("chips").addEventListener("click", function(e){
-  var c = e.target.closest(".chip");
-  if (!c) return;
-  document.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
-  c.classList.add("on");
-  loadCat(c.getAttribute("data-cat"));
-});
-
-/* Feature cards */
-document.getElementById("feat").addEventListener("click", function(e){
-  var fc = e.target.closest(".fc");
-  if (!fc) return;
-  var mode = fc.getAttribute("data-mode");
-  var prompt = (document.getElementById("user-prompt").value || "").trim();
-  if (mode === "gallery"){
-    alert("Gallery — जल्द आपकी बनी videos यहाँ दिखेंगी");
+async function startCreate(prompt, mode){
+  prompt=(prompt||"").trim();
+  if(!prompt){ alert("पहले कहानी / आइडिया लिखो"); return; }
+  if(!getKey("VX_GROQ")&&!getKey("VX_GEMINI")&&!getKey("VX_OR")){
+    alert("पहले API Keys बटन दबाकर keys save करो (एक बार)");
+    setKeysFromPrompt();
     return;
   }
-  if (mode === "full-story"){
-    localStorage.setItem("vxMode", "full-story-parts");
-    alert("Full Story (Parts mode)\nएक मिनट जैसा prompt → parts में लंबी video");
-    return;
-  }
-  localStorage.setItem("vxMode", mode);
-  if (prompt) localStorage.setItem("vxPrompt", prompt);
-  alert("Mode: " + mode + (prompt ? "\nPrompt save हो गया" : "\nपहले कहानी लिख सकते हो"));
-});
+  localStorage.setItem("vxPrompt",prompt);
+  localStorage.setItem("vxMode",mode||"text-to-video");
+  openGen(); setProg(8,"Reading…");
+  var story=prompt;
+  try{
+    if(!isFullStory(prompt)){
+      setProg(15,"Story…");
+      try{ story=await genGroq(prompt); setProg(55,"Groq ✓"); }
+      catch(e1){
+        try{ setProg(25,"Gemini…"); story=await genGemini(prompt); setProg(55,"Gemini ✓"); }
+        catch(e2){ setProg(35,"OpenRouter…"); story=await genOR(prompt); setProg(55,"OpenRouter ✓"); }
+      }
+      if(!story||story.length<40) throw new Error("Story खाली");
+    } else { setProg(45,"पूरी कहानी मिली"); story=prompt; }
+    localStorage.setItem("vxStory",story);
+    setProg(80,"Almost…");
+    await new Promise(function(r){setTimeout(r,400);});
+    setProg(100,"Ready");
+    setTimeout(function(){ alert("Story ready!\n\n"+story.slice(0,450)+(story.length>450?"…":"")); closeGen(); },500);
+  }catch(err){ setProg(0,"Error: "+(err.message||err)); console.error(err); }
+}
 
-document.getElementById("btnCreate").addEventListener("click", function(){
-  var prompt = (document.getElementById("user-prompt").value || "").trim();
-  if (!prompt){ alert("पहले कहानी / आइडिया लिखो"); return; }
-  localStorage.setItem("vxPrompt", prompt);
-  localStorage.setItem("vxMode", localStorage.getItem("vxMode") || "text-to-video");
-  alert("Create start (अगला step: generation pipeline)");
+document.getElementById("btnCreate").onclick=function(){
+  startCreate(document.getElementById("user-prompt").value, localStorage.getItem("vxMode")||"text-to-video");
+};
+document.getElementById("feat").addEventListener("click",function(e){
+  var fc=e.target.closest(".fc"); if(!fc)return;
+  var mode=fc.getAttribute("data-mode");
+  if(mode==="gallery"){ alert("Gallery — जल्द"); return; }
+  localStorage.setItem("vxMode",mode);
+  var p=(document.getElementById("user-prompt").value||"").trim();
+  if(p) startCreate(p,mode); else alert("पहले ऊपर लिखो");
 });
-
-loadCat("trending");
 </script>
 </body>
-  </html>
+      </html>
