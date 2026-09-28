@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Velorix AI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#06050c;color:#f4f4f8;padding-bottom:80px;
+background:radial-gradient(ellipse at 50% -10%,#1e1040 0%,#0a0814 50%,#06050c 100%)}
+.w{max-width:480px;margin:0 auto;padding:14px}
+.h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.logo{font-weight:800;font-size:1.3rem;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:grid;place-items:center;font-weight:700}
+.box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:14px;margin-bottom:16px}
+textarea{width:100%;min-height:96px;background:0;border:0;outline:0;color:#fff;font-size:.97rem;resize:none}
+textarea::placeholder{color:#6b7280}
+.row{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+.btn{border:0;border-radius:14px;padding:12px 20px;font-weight:700;color:#fff;cursor:pointer}
+.bp{background:linear-gradient(135deg,#7c3aed,#6d28d9)}
+.bg{background:rgba(255,255,255,.1)}
+.st{font-size:.7rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;margin:6px 0 10px}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.fc{position:relative;border-radius:18px;overflow:hidden;min-height:124px;border:1px solid rgba(255,255,255,.12);cursor:pointer}
+.fc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fc .sh{position:absolute;inset:0;background:linear-gradient(180deg,transparent 15%,rgba(0,0,0,.88))}
+.fc .tx{position:relative;z-index:1;padding:12px;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.fc h3{font-size:.88rem}.fc p{font-size:.68rem;color:#c4c4d0;margin-top:2px}
+.tag{position:absolute;top:8px;right:8px;z-index:2;font-size:.58rem;font-weight:800;padding:3px 7px;border-radius:6px;background:#7c3aed}
+.wide{grid-column:1/-1;min-height:100px}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:8px;padding-bottom:6px}
+.chip{flex:0 0 auto;padding:8px 14px;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#9ca3af;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,#7c3aed,#9333ea);color:#fff;border-color:transparent}
+.hot{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}
+.hot span{flex:0 0 auto;font-size:.72rem;padding:5px 10px;border-radius:8px;background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);aspect-ratio:3/4;position:relative;background:#111}
+.card img{width:100%;height:100%;object-fit:cover}
+.card .cap{position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(transparent,rgba(0,0,0,.92));font-size:.75rem;font-weight:600}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(10,10,16,.95);border-top:1px solid rgba(255,255,255,.12);padding:8px 6px 12px;display:flex;justify-content:space-around;max-width:480px;margin:0 auto;z-index:50}
+.nav a{flex:1;text-align:center;text-decoration:none;color:#9ca3af;font-size:.64rem;font-weight:600}
+.nav a.on{color:#a78bfa}
+.nav div{font-size:1.1rem;margin-bottom:2px}
+#ov,#km{display:none;position:fixed;inset:0;z-index:300}
+#ov.show,#km.show{display:flex}
+#ov{flex-direction:column;background:#06050c;padding:16px}
+.gt{display:flex;justify-content:space-between}
+.gt button{width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font-size:1.2rem}
+.gm{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.pct{font-size:1.7rem;font-weight:700;margin-bottom:14px;color:#a78bfa}
+.barw{width:min(280px,80vw);height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:16px}
+.bar{height:100%;width:0%;background:linear-gradient(90deg,#f59e0b,#ec4899,#8b5cf6);transition:width .3s}
+.msg{color:#9ca3af;font-size:.9rem;max-width:280px}
+.stat{margin-top:18px;font-size:.8rem;color:#a78bfa;max-width:90%;word-break:break-word}
+#km{align-items:flex-end;background:rgba(0,0,0,.75)}
+.ks{width:100%;max-width:480px;background:#12101c;border-radius:22px 22px 0 0;padding:22px 18px 28px;border:1px solid rgba(255,255,255,.12)}
+.ks h2{margin-bottom:6px}.ks .hint{font-size:.78rem;color:#9ca3af;margin-bottom:12px;line-height:1.4}
+.ks label{display:block;font-size:.72rem;color:#c4b5fd;margin:12px 0 6px;font-weight:600}
+.ks input{width:100%;padding:13px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:.88rem}
+.ka{display:flex;gap:10px;margin-top:18px}
+.ka button{flex:1;padding:13px;border:0;border-radius:12px;font-weight:700;cursor:pointer}
+.ka .c{background:rgba(255,255,255,.1);color:#fff}
+.ka .s{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="h"><div class="logo">Velorix AI</div><div class="av" id="av">V</div></div>
+  <div class="box">
+    <textarea id="p" placeholder="अपनी कहानी या आइडिया यहाँ लिखें..."></textarea>
+    <div class="row">
+      <button type="button" class="btn bg" id="bk">API Keys</button>
+      <button type="button" class="btn bp" id="bc">Create</button>
+    </div>
+  </div>
+  <div class="st">Create</div>
+  <div class="feat" id="feat">
+    <div class="fc" data-m="text-to-video">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80" alt="">
+      <div class="sh"></div><div class="tx"><h3>Text to Video</h3><p>कहानी से वीडियो</p></div>
+    </div>
+    <div class="fc" data-m="image-to-video">
+      <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&q=80" alt="">
+      <div class="sh"></div><div class="tx"><h3>Image to Video</h3><p>फोटो से मोशन</p></div>
+    </div>
+    <div class="fc" data-m="create-image">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80" alt="">
+      <div class="sh"></div><div class="tx"><h3>Create Image</h3><p>AI इमेज</p></div>
+    </div>
+    <div class="fc" data-m="full-story">
+      <span class="tag">PARTS</span>
+      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80" alt="">
+      <div class="sh"></div><div class="tx"><h3>Full Story Video</h3><p>पार्ट्स में लंबी स्टोरी</p></div>
+    </div>
+    <div class="fc wide" data-m="gallery">
+      <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=900&q=80" alt="camera">
+      <div class="sh"></div><div class="tx"><h3>Gallery</h3><p>बनी हुई वीडियो / इमेज</p></div>
+    </div>
+  </div>
+  <div class="st">Explore</div>
+  <div class="chips" id="chips">
+    <button type="button" class="chip on" data-c="t">Trending</button>
+    <button type="button" class="chip" data-c="3d">3D</button>
+    <button type="button" class="chip" data-c="2d">2D / Cartoon</button>
+    <button type="button" class="chip" data-c="r">Realistic</button>
+    <button type="button" class="chip" data-c="c">Cinematic</button>
+  </div>
+  <div class="hot"><span>#ViralAI</span><span>#3DLook</span><span>#ShortStory</span></div>
+  <div class="grid" id="grid"></div>
+</div>
+<nav class="nav">
+  <a href="home.html" class="on"><div>🏠</div>Home</a>
+  <a href="#p"><div>▶</div>Promo</a>
+  <a href="#m"><div>😊</div>Memes</a>
+  <a href="#s"><div>↗</div>Share</a>
+  <a href="#pr"><div>👤</div>Profile</a>
+</nav>
+<div id="ov">
+  <div class="gt"><button type="button" id="gb">←</button><button type="button" id="gc">×</button></div>
+  <div class="gm">
+    <div class="pct" id="pct">0%</div>
+    <div class="barw"><div class="bar" id="bar"></div></div>
+    <p class="msg">Generation will take a few seconds.</p>
+    <p class="stat" id="stat">Starting…</p>
+  </div>
+</div>
+<div id="km">
+  <div class="ks">
+    <h2>API Keys</h2>
+    <p class="hint">खाली = पुरानी key रहेगी। सिर्फ इस फोन में save।</p>
+    <label>Groq (ज़रूरी) gsk_...</label>
+    <input id="ig" type="text" placeholder="gsk_...">
+    <label>Gemini (optional)</label>
+    <input id="im" type="text" placeholder="AIza...">
+    <label>OpenRouter (optional)</label>
+    <input id="io" type="text" placeholder="sk-or-v1-...">
+    <div class="ka">
+      <button type="button" class="c" id="kc">Cancel</button>
+      <button type="button" class="s" id="ks">Save Keys</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+try{history.pushState({v:1},"",location.href)}catch(e){}
+window.addEventListener("popstate",function(){
+  var o=document.getElementById("ov"),k=document.getElementById("km");
+  if(o.classList.contains("show")){o.classList.remove("show");try{history.pushState({v:1},"",location.href)}catch(e){}return}
+  if(k.classList.contains("show")){k.classList.remove("show");try{history.pushState({v:1},"",location.href)}catch(e){}return}
+  try{history.pushState({v:1},"",location.href)}catch(e){}
+});
+function gk(n){return (localStorage.getItem(n)||"").trim()}
+function openK(){
+  document.getElementById("ig").value="";
+  document.getElementById("im").value="";
+  document.getElementById("io").value="";
+  document.getElementById("ig").placeholder=gk("VX_GROQ")?"(saved)":"gsk_...";
+  document.getElementById("km").classList.add("show");
+}
+function closeK(){document.getElementById("km").classList.remove("show")}
+document.getElementById("bk").onclick=function(e){e.preventDefault();openK()};
+document.getElementById("kc").onclick=closeK;
+document.getElementById("ks").onclick=function(){
+  var g=document.getElementById("ig").value.trim();
+  var m=document.getElementById("im").value.trim();
+  var o=document.getElementById("io").value.trim();
+  if(g)localStorage.setItem("VX_GROQ",g);
+  if(m)localStorage.setItem("VX_GEMINI",m);
+  if(o)localStorage.setItem("VX_OR",o);
+  if(!gk("VX_GROQ")){alert("Groq key ज़रूरी है");return}
+  closeK();alert("Keys save ✓");
+};
+var C={
+t:[["Portrait","https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80"],["Cinematic","https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=80"],["Night","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80"],["Soft","https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80"]],
+"3d":[["3D Hero","https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80"],["Sculpt","https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=500&q=80"],["Digital","https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&q=80"],["Neon","https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=500&q=80"]],
+"2d":[["Toon","https://images.unsplash.com/photo-1578632767115-351597cf2477?w=500&q=80"],["Color","https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&q=80"],["Art","https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80"],["Bright","https://images.unsplash.com/photo-1452587923054-e25c0e8f8c9a?w=500&q=80"]],
+r:[["Real","https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80"],["Natural","https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80"],["Street","https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80"],["Close","https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&q=80"]],
+c:[["Film","https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80"],["Drama","https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500&q=80"],["Wide","https://images.unsplash.com/photo-1440404653329-42134de6d6d1?w=500&q=80"],["Mood","https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&q=80"]]
+};
+var grid=document.getElementById("grid");
+function show(list){
+  grid.innerHTML="";
+  list.forEach(function(it){
+    var d=document.createElement("div");d.className="card";
+    d.innerHTML='<img src="'+it[1]+'" alt=""><div class="cap">'+it[0]+'</div>';
+    grid.appendChild(d);
+  });
+}
+function load(cat){show(C[cat]||C.t)}
+document.getElementById("chips").onclick=function(e){
+  var c=e.target.closest(".chip");if(!c)return;
+  document.querySelectorAll(".chip").forEach(function(x){x.classList.remove("on")});
+  c.classList.add("on");load(c.getAttribute("data-c"));
+};
+load("t");
+function setP(n,t){document.getElementById("pct").textContent=n+"%";document.getElementById("bar").style.width=n+"%";if(t)document.getElementById("stat").textContent=t}
+function openG(){document.getElementById("ov").classList.add("show")}
+function closeG(){document.getElementById("ov").classList.remove("show")}
+document.getElementById("gb").onclick=closeG;
+document.getElementById("gc").onclick=closeG;
+async function errBody(r){try{var j=await r.json();return (j.error&&(j.error.message||j.error)||j.message||"").toString().slice(0,140)}catch(e){return ""}}
+async function groq(topic){
+  var key=gk("VX_GROQ");if(!key)throw new Error("Groq key नहीं");
+  var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Authorization":"Bearer "+key,"Content-Type":"application/json"},
+    body:JSON.stringify({model:"openai/gpt-oss-20b",temperature:0.7,max_tokens:900,messages:[
+      {role:"system",content:"Short video story India. Same language. 120-220 words. Only story."},
+      {role:"user",content:topic}]})});
+  if(!r.ok)throw new Error("Groq "+r.status+": "+await errBody(r));
+  var j=await r.json();return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||"").trim();
+}
+async function gem(topic){
+  var key=gk("VX_GEMINI");if(!key)throw new Error("Gemini key नहीं");
+  var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(key),
+    {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:"Short story 120-220 words same language. Only story.\n\n"+topic}]}]})});
+  if(!r.ok)throw new Error("Gemini "+r.status+": "+await errBody(r));
+  var j=await r.json();return (j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0].text||"").trim();
+}
+async function oro(topic){
+  var key=gk("VX_OR");if(!key)throw new Error("OpenRouter key नहीं");
+  var r=await fetch("https://openrouter.ai/api/v1/chat/completions",{method:"POST",
+    headers:{"Authorization":"Bearer "+key,"Content-Type":"application/json","HTTP-Referer":location.origin,"X-Title":"Velorix AI"},
+    body:JSON.stringify({model:"openrouter/free",messages:[{role:"system",content:"Short story 120-220 words. Only story."},{role:"user",content:topic}]})});
+  if(!r.ok)throw new Error("OpenRouter "+r.status+": "+await errBody(r));
+  var j=await r.json();return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||"").trim();
+}
+function full(t){return t.length>180||((t.match(/[.।!?]/g)||[]).length>=3)}
+async function go(prompt){
+  prompt=(prompt||"").trim();
+  if(!prompt){alert("पहले लिखो");return}
+  if(!gk("VX_GROQ")&&!gk("VX_GEMINI")&&!gk("VX_OR")){alert("पहले API Keys save करो");openK();return}
+  openG();setP(10,"Reading…");
+  var story=prompt,last="";
+  try{
+    if(!full(prompt)){
+      var ok=false;
+      if(gk("VX_GROQ")){try{setP(20,"Groq…");story=await groq(prompt);setP(60,"Groq ✓");ok=true}catch(e){last=e.message;setP(25,last)}}
+      if(!ok&&gk("VX_GEMINI")){try{setP(40,"Gemini…");story=await gem(prompt);setP(65,"Gemini ✓");ok=true}catch(e){last=e.message;setP(45,last)}}
+      if(!ok&&gk("VX_OR")){try{setP(50,"OpenRouter…");story=await oro(prompt);setP(70,"OpenRouter ✓");ok=true}catch(e){last=e.message;setP(55,last)}}
+      if(!ok)throw new Error(last||"API fail");
+      if(story.length<40)throw new Error("Story छोटी");
+    }
+    localStorage.setItem("vxStory",story);
+    try{var L=JSON.parse(localStorage.getItem("vxGallery")||"[]");L.unshift({t:prompt.slice(0,40),s:story.slice(0,300),ts:Date.now()});localStorage.setItem("vxGallery",JSON.stringify(L.slice(0,30)))}catch(e){}
+    setP(100,"Ready ✓");
+    setTimeout(function(){alert("Story ready!\n\n"+story.slice(0,500));closeG()},400);
+  }catch(e){setP(0,"Error: "+e.message)}
+}
+document.getElementById("bc").onclick=function(){go(document.getElementById("p").value)};
+document.getElementById("feat").onclick=function(e){
+  var f=e.target.closest(".fc");if(!f)return;
+  var m=f.getAttribute("data-m");
+  if(m==="gallery"){
+    var L=[];try{L=JSON.parse(localStorage.getItem("vxGallery")||"[]")}catch(e){}
+    if(!L.length){alert("Gallery खाली — पहले Create करो");return}
+    alert("Gallery:\n"+L.slice(0,8).map(function(x,i){return (i+1)+". "+x.t}).join("\n"));
+    return;
+  }
+  var p=document.getElementById("p").value.trim();
+  if(p)go(p);else alert("पहले ऊपर लिखो");
+};
+})();
+</script>
+</body>
+</html>
