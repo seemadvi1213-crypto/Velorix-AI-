@@ -33,8 +33,8 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
 .overlay.show{display:flex}
 .modal{background:#1a102e;border-radius:22px;padding:22px;width:100%;max-width:360px;border:1px solid rgba(168,85,247,.3)}
 .modal h3{margin-bottom:14px;font-size:18px}
-.modal input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:#0f0a1c;color:#fff;margin-bottom:10px;font-size:14px}
-.prog-box{text-align:center;color:#fff}
+.modal input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:#0f0a1c;color:#fff;margin-bottom:10px;font-size:13px}
+.prog-box{text-align:center;color:#fff;max-width:300px}
 .prog-bar{height:6px;background:rgba(255,255,255,.1);border-radius:10px;margin:16px 0;overflow:hidden}
 .prog-fill{height:100%;background:linear-gradient(90deg,#a855f7,#c084fc);width:0%;transition:width .3s}
 .screen{display:none;padding:16px;padding-bottom:100px}
@@ -50,15 +50,15 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
 .scene-num{font-size:12px;color:#c084fc;font-weight:700;margin-bottom:6px}
 .scene-text{font-size:14px;line-height:1.55;color:#e9e0ff}
 .page-title{font-size:15px;font-weight:700;margin-bottom:14px;color:#e9d5ff}
+.err{color:#f87171;font-size:13px;margin-top:8px;text-align:center}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="logo">Velorix AI</div>
-  <div class="avatar" id="avatar">V</div>
+  <div class="avatar">V</div>
 </div>
 
-<!-- HOME SCREEN -->
 <div class="main" id="homeScreen">
   <div class="prompt-box">
     <textarea id="prompt" placeholder="अपनी कहानी लिखें या टॉपिक दें..."></textarea>
@@ -69,15 +69,14 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
   </div>
   <div class="section-title">CREATE</div>
   <div class="grid">
-    <div class="card"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80" alt=""><div class="card-label">Text to Video<br><span class="card-sub">कहानी से वीडियो</span></div></div>
-    <div class="card"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80" alt=""><div class="card-label">Image to Video<br><span class="card-sub">फोटो से मोशन</span></div></div>
-    <div class="card"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80" alt=""><div class="card-label">Create Image<br><span class="card-sub">AI इमेज</span></div></div>
-    <div class="card"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80" alt=""><div class="card-label">Full Story Video<br><span class="card-sub">पार्ट्स में लंबी स्टोरी</span></div></div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80"><div class="card-label">Text to Video<br><span class="card-sub">कहानी से वीडियो</span></div></div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80"><div class="card-label">Image to Video<br><span class="card-sub">फोटो से मोशन</span></div></div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80"><div class="card-label">Create Image<br><span class="card-sub">AI इमेज</span></div></div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80"><div class="card-label">Full Story Video<br><span class="card-sub">पार्ट्स में लंबी स्टोरी</span></div></div>
     <div class="card full-card" style="background:linear-gradient(135deg,#1e1b4b,#312e81)"><div class="card-label" style="font-size:16px">📷 Gallery<br><span class="card-sub">बनी हुई वीडियो / इमेज</span></div></div>
   </div>
 </div>
 
-<!-- STORY RESULT SCREEN -->
 <div class="screen" id="storyScreen">
   <div class="page-title">स्टोरी तैयार ✓</div>
   <div class="story-box" id="storyText"></div>
@@ -94,7 +93,6 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
   </div>
 </div>
 
-<!-- SCENE BREAKDOWN SCREEN -->
 <div class="screen" id="sceneScreen">
   <div class="page-title">स्टोरी को सीन में बाँटा गया</div>
   <div id="sceneList"></div>
@@ -104,12 +102,11 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
   </div>
 </div>
 
-<!-- API KEYS MODAL -->
 <div class="overlay" id="keysModal">
   <div class="modal">
     <h3>API Keys</h3>
     <input id="kGroq" placeholder="Groq Key (gsk_...)">
-    <input id="kGemini" placeholder="Gemini Key">
+    <input id="kGemini" placeholder="Gemini Key (AIza... बेहतर)">
     <input id="kOR" placeholder="OpenRouter Key (sk-or-...)">
     <div class="action-row">
       <button class="btn btn-gray" id="btnCloseKeys">Close</button>
@@ -118,12 +115,12 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
   </div>
 </div>
 
-<!-- PROGRESS -->
 <div class="overlay" id="progOverlay">
   <div class="prog-box">
-    <div id="progMsg" style="font-size:16px;margin-bottom:8px">स्टोरी बन रही है...</div>
+    <div id="progMsg">स्टोरी बन रही है...</div>
     <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
     <div id="progPct" style="font-size:13px;color:#a78bfa">0%</div>
+    <div class="err" id="progErr"></div>
   </div>
 </div>
 
@@ -137,15 +134,12 @@ textarea{width:100%;min-height:110px;background:transparent;border:none;color:#f
 
 <script>
 const $ = id => document.getElementById(id);
-let currentStory = '';
-let scenes = [];
+let currentStory = '', scenes = [];
 
-// Load keys
 $('kGroq').value = localStorage.getItem('VX_GROQ') || '';
 $('kGemini').value = localStorage.getItem('VX_GEMINI') || '';
 $('kOR').value = localStorage.getItem('VX_OR') || '';
 
-// API Keys
 $('btnKeys').onclick = () => $('keysModal').classList.add('show');
 $('btnCloseKeys').onclick = () => $('keysModal').classList.remove('show');
 $('btnSaveKeys').onclick = () => {
@@ -156,10 +150,11 @@ $('btnSaveKeys').onclick = () => {
   alert('Keys saved ✓');
 };
 
-function setProg(p, msg) {
+function setProg(p, msg, err='') {
   $('progFill').style.width = p + '%';
   $('progPct').textContent = p + '%';
   if (msg) $('progMsg').textContent = msg;
+  $('progErr').textContent = err || '';
   $('progOverlay').classList.add('show');
 }
 function hideProg() { $('progOverlay').classList.remove('show'); }
@@ -168,77 +163,96 @@ async function callAI(sys, userMsg) {
   const groq = localStorage.getItem('VX_GROQ') || '';
   const gemini = localStorage.getItem('VX_GEMINI') || '';
   const or = localStorage.getItem('VX_OR') || '';
+  let lastErr = '';
 
+  // 1. Groq - updated free models
   if (groq) {
-    try {
-      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + groq, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [{ role: 'system', content: sys }, { role: 'user', content: userMsg }],
-          temperature: 0.7, max_tokens: 1400
-        })
-      });
-      if (r.ok) {
+    for (const model of ['openai/gpt-oss-20b', 'llama-3.1-8b-instant', 'llama-3.3-70b-versatile']) {
+      try {
+        setProg(30, 'Groq (' + model.split('/').pop() + ')...');
+        const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + groq, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: 'system', content: sys }, { role: 'user', content: userMsg }],
+            temperature: 0.7, max_tokens: 1400
+          })
+        });
         const d = await r.json();
-        const t = d.choices?.[0]?.message?.content?.trim();
-        if (t && t.length > 30) return t;
-      }
-    } catch(e) {}
+        if (r.ok) {
+          const t = d.choices?.[0]?.message?.content?.trim();
+          if (t && t.length > 30) return t;
+        } else {
+          lastErr = 'Groq: ' + (d.error?.message || r.status);
+        }
+      } catch(e) { lastErr = 'Groq network: ' + e.message; }
+    }
   }
 
-  if (gemini) {
-    try {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gemini}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: sys + '\n\n' + userMsg }] }] })
-      });
-      if (r.ok) {
-        const d = await r.json();
-        const t = d.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (t && t.length > 30) return t;
-      }
-    } catch(e) {}
-  }
-
+  // 2. OpenRouter
   if (or) {
     try {
+      setProg(60, 'OpenRouter...');
       const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + or, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.3-70b-instruct:free',
+          model: 'openrouter/free',
           messages: [{ role: 'system', content: sys }, { role: 'user', content: userMsg }]
         })
       });
+      const d = await r.json();
       if (r.ok) {
-        const d = await r.json();
         const t = d.choices?.[0]?.message?.content?.trim();
         if (t && t.length > 30) return t;
+      } else {
+        lastErr = 'OpenRouter: ' + (d.error?.message || r.status);
       }
-    } catch(e) {}
+    } catch(e) { lastErr = 'OpenRouter network: ' + e.message; }
   }
-  return null;
+
+  // 3. Gemini (try both styles)
+  if (gemini) {
+    try {
+      setProg(80, 'Gemini...');
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gemini}`;
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: sys + '\n\n' + userMsg }] }] })
+      });
+      const d = await r.json();
+      if (r.ok) {
+        const t = d.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (t && t.length > 30) return t;
+      } else {
+        lastErr = 'Gemini: ' + (d.error?.message || r.status);
+      }
+    } catch(e) { lastErr = 'Gemini network: ' + e.message; }
+  }
+
+  throw new Error(lastErr || 'कोई भी API काम नहीं कर रही। Keys चेक करो।');
 }
 
-// Create Story
 $('btnCreate').onclick = async () => {
   const p = $('prompt').value.trim();
   if (!p) { alert('पहले कुछ लिखो'); return; }
-  setProg(15, 'स्टोरी बन रही है...');
-  const sys = 'तुम प्रोफेशनल हिंदी स्टोरी राइटर हो। यूजर के टॉपिक से एक इमोशनल, मजेदार शॉर्ट स्टोरी लिखो (150-250 शब्द)। सिर्फ स्टोरी दो।';
-  const story = await callAI(sys, p);
-  hideProg();
-  if (!story) { alert('स्टोरी नहीं बन पाई। Keys चेक करो।'); return; }
-  currentStory = story;
-  $('storyText').textContent = story;
-  $('homeScreen').style.display = 'none';
-  $('storyScreen').classList.add('show');
+  try {
+    setProg(10, 'शुरू हो रहा है...');
+    const sys = 'तुम प्रोफेशनल हिंदी स्टोरी राइटर हो। यूजर के टॉपिक से एक इमोशनल, मजेदार शॉर्ट स्टोरी लिखो (150-250 शब्द)। सिर्फ स्टोरी दो, कोई टाइटल मत लिखो।';
+    const story = await callAI(sys, p);
+    hideProg();
+    currentStory = story;
+    $('storyText').textContent = story;
+    $('homeScreen').style.display = 'none';
+    $('storyScreen').classList.add('show');
+  } catch(e) {
+    setProg(100, 'फेल हो गया', e.message);
+    setTimeout(hideProg, 4000);
+  }
 };
 
-// Edit
 $('btnEdit').onclick = () => {
   $('editBox').classList.add('show');
   $('mainActions').classList.add('hid');
@@ -251,68 +265,60 @@ $('btnCancelEdit').onclick = () => {
 $('btnApplyEdit').onclick = async () => {
   const sug = $('editInput').value.trim();
   if (!sug) { alert('सुझाव लिखो'); return; }
-  setProg(20, 'सुधार हो रहा है...');
-  const sys = 'तुम प्रोफेशनल हिंदी स्टोरी राइटर हो। मौजूदा स्टोरी को यूजर के सुझाव के अनुसार सुधारो। सिर्फ सुधारी हुई पूरी स्टोरी दो।';
-  const updated = await callAI(sys, `मौजूदा स्टोरी:\n${currentStory}\n\nसुझाव: ${sug}`);
-  hideProg();
-  if (!updated) { alert('अपडेट नहीं हो पाया'); return; }
-  currentStory = updated;
-  $('storyText').textContent = updated;
-  $('editBox').classList.remove('show');
-  $('mainActions').classList.remove('hid');
-  $('editInput').value = '';
+  try {
+    setProg(20, 'सुधार हो रहा है...');
+    const sys = 'तुम प्रोफेशनल हिंदी स्टोरी राइटर हो। मौजूदा स्टोरी को यूजर के सुझाव के अनुसार सुधारो। सिर्फ सुधारी हुई पूरी स्टोरी दो।';
+    const updated = await callAI(sys, `मौजूदा स्टोरी:\n${currentStory}\n\nसुझाव: ${sug}`);
+    hideProg();
+    currentStory = updated;
+    $('storyText').textContent = updated;
+    $('editBox').classList.remove('show');
+    $('mainActions').classList.remove('hid');
+    $('editInput').value = '';
+  } catch(e) {
+    setProg(100, 'अपडेट फेल', e.message);
+    setTimeout(hideProg, 4000);
+  }
 };
 
-// Continue → Scene Breakdown
 $('btnContinue').onclick = async () => {
-  setProg(25, 'सीन बना रहा हूँ...');
-  const sys = `तुम स्टोरी को 4 से 6 छोटे सीन में तोड़ो। हर सीन 1-2 वाक्य का हो। 
-आउटपुट सिर्फ इस फॉर्मेट में दो:
+  try {
+    setProg(25, 'सीन बना रहा हूँ...');
+    const sys = `स्टोरी को 4 से 6 छोटे सीन में तोड़ो। हर सीन 1-2 वाक्य का हो। सिर्फ इस फॉर्मेट में दो:
 SCENE 1: .....
 SCENE 2: .....
-SCENE 3: .....
-(कोई एक्स्ट्रा टेक्स्ट मत लिखो)`;
-  const result = await callAI(sys, currentStory);
-  hideProg();
-
-  scenes = [];
-  if (result) {
-    const lines = result.split('\n').filter(l => l.trim().match(/^SCENE\s*\d+/i));
-    lines.forEach(l => {
-      const text = l.replace(/^SCENE\s*\d+\s*[:.\-–]\s*/i, '').trim();
-      if (text) scenes.push(text);
-    });
+SCENE 3: .....`;
+    const result = await callAI(sys, currentStory);
+    hideProg();
+    scenes = [];
+    if (result) {
+      result.split('\n').forEach(l => {
+        const m = l.match(/^SCENE\s*\d+\s*[:.\-–]\s*(.+)/i);
+        if (m && m[1].trim()) scenes.push(m[1].trim());
+      });
+    }
+    if (scenes.length < 2) {
+      scenes = currentStory.split(/[।.!?]+/).filter(s => s.trim().length > 20).slice(0, 5).map(s => s.trim());
+    }
+    $('sceneList').innerHTML = scenes.map((s, i) =>
+      `<div class="scene-card"><div class="scene-num">सीन \( {i+1}</div><div class="scene-text"> \){s}</div></div>`
+    ).join('');
+    $('storyScreen').classList.remove('show');
+    $('sceneScreen').classList.add('show');
+  } catch(e) {
+    setProg(100, 'सीन फेल', e.message);
+    setTimeout(hideProg, 4000);
   }
-  // fallback if AI fail
-  if (scenes.length < 2) {
-    const parts = currentStory.split(/[।.!?]+/).filter(s => s.trim().length > 15);
-    scenes = parts.slice(0, 5).map(s => s.trim());
-  }
-
-  let html = '';
-  scenes.forEach((s, i) => {
-    html += `<div class="scene-card"><div class="scene-num">सीन \( {i+1}</div><div class="scene-text"> \){s}</div></div>`;
-  });
-  $('sceneList').innerHTML = html;
-
-  $('storyScreen').classList.remove('show');
-  $('sceneScreen').classList.add('show');
 };
 
-// Back from scenes
 $('btnBackStory').onclick = () => {
   $('sceneScreen').classList.remove('show');
   $('storyScreen').classList.add('show');
 };
+$('btnNextScene').onclick = () => alert('अगला पेज (Character / Style) जल्द आएगा।');
 
-// Next (future page)
-$('btnNextScene').onclick = () => {
-  alert('अगला पेज (Character / Style / Size) जल्द आएगा। अभी के लिए यहीं तक पूरा है।');
-};
-
-// Mobile back button
 history.pushState({page:'home'}, '', location.href);
-window.onpopstate = (e) => {
+window.onpopstate = () => {
   if ($('sceneScreen').classList.contains('show')) {
     $('sceneScreen').classList.remove('show');
     $('storyScreen').classList.add('show');
@@ -327,4 +333,4 @@ window.onpopstate = (e) => {
 };
 </script>
 </body>
-                                                                       </html>
+  </html>
