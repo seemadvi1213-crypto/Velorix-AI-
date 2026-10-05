@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Velorix AI — Profile</title>
+<title>Velorix AI</title>
 <style>
 :root {
   --bg: #0d0a14;
@@ -11,11 +11,10 @@
   --card-border: rgba(255,255,255,0.09);
   --primary: #a855f7;
   --primary2: #7c3aed;
-  --text: #ffffff;
+  --text: #fff;
   --text2: #a1a1aa;
   --radius: 16px;
 }
-
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -23,6 +22,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  padding-bottom: 75px;
 }
 
 /* Header */
@@ -30,161 +30,149 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 18px 10px;
+  padding: 16px 18px 8px;
 }
 .logo {
   font-size: 20px;
   font-weight: 700;
   color: var(--primary);
 }
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.credit-pill {
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 20px;
-}
-.avatar-small {
+.header-avatar {
   width: 36px; height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), var(--primary2));
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 15px;
+  font-weight: 700; font-size: 14px;
+  cursor: pointer;
 }
 
-/* Profile Card */
-.profile-card {
-  margin: 10px 16px 20px;
+/* Prompt Box */
+.prompt-box {
+  margin: 12px 16px 20px;
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 20px;
-  padding: 24px 18px;
-  text-align: center;
+  padding: 16px;
 }
-.avatar-big {
-  width: 90px; height: 90px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--primary2));
-  margin: 0 auto 14px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 36px; font-weight: 700;
-  border: 3px solid rgba(168,85,247,0.3);
-  position: relative;
+.prompt-box textarea {
+  width: 100%;
+  min-height: 90px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 16px;
+  resize: none;
+  font-family: inherit;
 }
-.owner-dot {
-  position: absolute;
-  bottom: 2px; right: 2px;
-  background: #f59e0b;
-  color: #000;
-  font-size: 9px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 8px;
-  border: 2px solid var(--bg);
+.prompt-box textarea::placeholder { color: #666; }
+.prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
 }
-.profile-name {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-.profile-email {
-  font-size: 13px;
-  color: var(--text2);
-  margin-bottom: 12px;
-}
-.owner-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, #a855f7, #ec4899);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 14px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-}
-.edit-btn {
-  background: rgba(168,85,247,0.15);
-  border: 1px solid rgba(168,85,247,0.35);
-  color: #e9d5ff;
-  padding: 10px 28px;
+.btn {
+  padding: 10px 20px;
   border-radius: 25px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
+  border: none;
   cursor: pointer;
 }
+.btn-gray {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+  color: white;
+}
 
-/* Quick Actions */
-.quick-row {
-  display: flex;
-  gap: 12px;
-  padding: 0 16px 22px;
-}
-.quick-card {
-  flex: 1;
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  padding: 16px 10px;
-  text-align: center;
-  cursor: pointer;
-}
-.quick-card .q-icon { font-size: 24px; margin-bottom: 8px; }
-.quick-card .q-title { font-size: 13px; font-weight: 600; }
-.quick-card .q-sub { font-size: 11px; color: var(--text2); margin-top: 3px; }
-
-/* Owner Section */
-.owner-wrap {
-  padding: 0 16px 100px;
-  display: none;
-}
-.owner-wrap.show { display: block; }
-.sec-label {
-  font-size: 12px;
+/* Section Title */
+.sec-title {
+  font-size: 13px;
   font-weight: 600;
   color: var(--text2);
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 10px;
-  padding-left: 4px;
+  padding: 0 18px 12px;
 }
-.menu-box {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 18px;
-  overflow: hidden;
-}
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 15px 16px;
-  border-bottom: 1px solid var(--card-border);
-  cursor: pointer;
-}
-.menu-item:last-child { border-bottom: none; }
-.menu-item:active { background: rgba(255,255,255,0.04); }
-.m-icon {
-  width: 40px; height: 40px;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  margin-right: 14px;
-  flex-shrink: 0;
-}
-.m-text { flex: 1; }
-.m-title { font-size: 15px; font-weight: 500; }
-.m-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-.m-arrow { color: var(--text2); font-size: 18px; }
 
-/* Bottom Nav - same as current site */
+/* Create Cards */
+.create-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 16px 24px;
+}
+.create-card {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  height: 140px;
+  cursor: pointer;
+  background: #1a1325;
+}
+.create-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.create-card .card-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+}
+.create-card .card-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.create-card .card-sub {
+  font-size: 11px;
+  color: #ccc;
+  margin-top: 2px;
+}
+
+/* Trending / Photos Section */
+.trending-scroll {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.trending-scroll::-webkit-scrollbar { display: none; }
+.trend-item {
+  min-width: 110px;
+  height: 150px;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  background: #1a1325;
+}
+.trend-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.trend-item .trend-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+}
+
+/* Bottom Navigation */
 .bottom-nav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   height: 64px;
-  background: rgba(13,10,20,0.96);
+  background: rgba(13,10,20,0.97);
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--card-border);
   display: flex;
@@ -201,23 +189,12 @@ body {
   font-size: 10px;
   color: var(--text2);
   cursor: pointer;
+  padding: 6px 10px;
 }
 .nav-item.active { color: var(--primary); }
-.nav-item .nav-icon { font-size: 20px; }
-
-/* Floating Assistant */
-.assist-btn {
-  position: fixed;
-  bottom: 80px;
-  right: 16px;
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), #ec4899);
-  border: none;
+.nav-item .nav-icon {
   font-size: 22px;
-  box-shadow: 0 6px 20px rgba(168,85,247,0.4);
-  z-index: 90;
-  cursor: pointer;
+  line-height: 1;
 }
 </style>
 </head>
@@ -226,188 +203,123 @@ body {
 <!-- Header -->
 <div class="header">
   <div class="logo">Velorix AI</div>
-  <div class="header-right">
-    <div class="credit-pill">⚡ 42</div>
-    <div class="avatar-small" id="headerAvatar">V</div>
+  <div class="header-avatar" onclick="goProfile()">V</div>
+</div>
+
+<!-- Prompt Box -->
+<div class="prompt-box">
+  <textarea id="promptInput" placeholder="अपनी कहानी लिखें... जैसे गरीब किसान की स्टोरी"></textarea>
+  <div class="prompt-actions">
+    <button class="btn btn-gray" onclick="openApiKeys()">API Keys</button>
+    <button class="btn btn-primary" onclick="startCreate()">Create</button>
   </div>
 </div>
 
-<!-- Profile Card -->
-<div class="profile-card">
-  <div class="avatar-big" id="mainAvatar">
-    V
-    <div class="owner-dot" id="ownerDot" style="display:none;">OWNER</div>
+<!-- Create Section -->
+<div class="sec-title">Create</div>
+<div class="create-grid">
+  <div class="create-card" onclick="selectMode('text2video')">
+    <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80" alt="">
+    <div class="card-overlay">
+      <div class="card-title">Text to Video</div>
+      <div class="card-sub">कहानी से वीडियो</div>
+    </div>
   </div>
-  <div class="profile-name" id="pName">Velorix User</div>
-  <div class="profile-email" id="pEmail">@user</div>
-  <div class="owner-badge" id="ownerBadge" style="display:none;">👑 Owner Access</div>
-  <button class="edit-btn" onclick="editProfile()">Edit Profile</button>
-</div>
-
-<!-- Quick Actions -->
-<div class="quick-row">
-  <div class="quick-card" onclick="openPremium()">
-    <div class="q-icon">💎</div>
-    <div class="q-title">Go Premium</div>
-    <div class="q-sub">More features</div>
+  <div class="create-card" onclick="selectMode('img2video')">
+    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80" alt="">
+    <div class="card-overlay">
+      <div class="card-title">Image to Video</div>
+      <div class="card-sub">फोटो से मोशन</div>
+    </div>
   </div>
-  <div class="quick-card" onclick="openShare()">
-    <div class="q-icon">🎁</div>
-    <div class="q-title">Invite Friends</div>
-    <div class="q-sub">Earn rewards</div>
+  <div class="create-card" onclick="selectMode('createimg')">
+    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80" alt="">
+    <div class="card-overlay">
+      <div class="card-title">Create Image</div>
+      <div class="card-sub">AI से फोटो</div>
+    </div>
   </div>
-</div>
-
-<!-- Owner Control Center -->
-<div class="owner-wrap" id="ownerWrap">
-  <div class="sec-label">Owner Control Center</div>
-  <div class="menu-box">
-
-    <div class="menu-item" onclick="openSec('api')">
-      <div class="m-icon" style="background:rgba(168,85,247,0.18);">🔑</div>
-      <div class="m-text">
-        <div class="m-title">API Keys Management</div>
-        <div class="m-sub">Story • Image • Video • Voice</div>
-      </div>
-      <div class="m-arrow">›</div>
+  <div class="create-card" onclick="selectMode('fullstory')">
+    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80" alt="">
+    <div class="card-overlay">
+      <div class="card-title">Full Story Video</div>
+      <div class="card-sub">पूरी कहानी से वीडियो</div>
     </div>
-
-    <div class="menu-item" onclick="openSec('future')">
-      <div class="m-icon" style="background:rgba(59,130,246,0.18);">🚀</div>
-      <div class="m-text">
-        <div class="m-title">Future Update / Launch</div>
-        <div class="m-sub">Code upload • Launch only when ready</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('repair')">
-      <div class="m-icon" style="background:rgba(34,197,94,0.18);">🛠️</div>
-      <div class="m-text">
-        <div class="m-title">Code Repair & Auto-Fix</div>
-        <div class="m-sub">AI fix + Manual repair</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('service')">
-      <div class="m-icon" style="background:rgba(234,179,8,0.18);">⚙️</div>
-      <div class="m-text">
-        <div class="m-title">Service Center</div>
-        <div class="m-sub">Health • Scanner • Auto Repair</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('security')">
-      <div class="m-icon" style="background:rgba(239,68,68,0.18);">🛡️</div>
-      <div class="m-text">
-        <div class="m-title">Security Center</div>
-        <div class="m-sub">Virus • Attack • API Protect</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('ads')">
-      <div class="m-icon" style="background:rgba(236,72,153,0.18);">📢</div>
-      <div class="m-text">
-        <div class="m-title">Ads Management</div>
-        <div class="m-sub">On/Off • Links • Frequency</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('payment')">
-      <div class="m-icon" style="background:rgba(16,185,129,0.18);">💳</div>
-      <div class="m-text">
-        <div class="m-title">Payment & Accounts</div>
-        <div class="m-sub">Link accounts • Premium</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('share')">
-      <div class="m-icon" style="background:rgba(249,115,22,0.18);">🎁</div>
-      <div class="m-text">
-        <div class="m-title">Sharing & Rewards</div>
-        <div class="m-sub">Link • Progressive rewards</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
-    <div class="menu-item" onclick="openSec('system')">
-      <div class="m-icon" style="background:rgba(99,102,241,0.18);">📋</div>
-      <div class="m-text">
-        <div class="m-title">System Controls</div>
-        <div class="m-sub">Logs • Diagnostics • Override</div>
-      </div>
-      <div class="m-arrow">›</div>
-    </div>
-
   </div>
 </div>
 
-<!-- Floating Assistant -->
-<button class="assist-btn" onclick="openAssistant()">💬</button>
+<!-- Trending Photos -->
+<div class="sec-title">Trending</div>
+<div class="trending-scroll" id="trendingRow">
+  <div class="trend-item">
+    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80" alt="">
+    <div class="trend-label">3D Style</div>
+  </div>
+  <div class="trend-item">
+    <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80" alt="">
+    <div class="trend-label">Realistic</div>
+  </div>
+  <div class="trend-item">
+    <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300&q=80" alt="">
+    <div class="trend-label">Cinematic</div>
+  </div>
+  <div class="trend-item">
+    <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80" alt="">
+    <div class="trend-label">Anime Mix</div>
+  </div>
+  <div class="trend-item">
+    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="">
+    <div class="trend-label">Portrait</div>
+  </div>
+</div>
 
-<!-- Bottom Nav (same as current site) -->
+<!-- Bottom Nav -->
 <div class="bottom-nav">
-  <div class="nav-item" onclick="goHome()">
+  <div class="nav-item active" onclick="goHome()">
     <div class="nav-icon">🏠</div>
     <div>Home</div>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" onclick="goPromo()">
     <div class="nav-icon">🎬</div>
     <div>Promo</div>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" onclick="goMemes()">
     <div class="nav-icon">😂</div>
     <div>Memes</div>
   </div>
-  <div class="nav-item">
+  <div class="nav-item" onclick="goShare()">
     <div class="nav-icon">🔗</div>
     <div>Share</div>
   </div>
-  <div class="nav-item active">
+  <div class="nav-item" onclick="goProfile()">
     <div class="nav-icon">👤</div>
     <div>Profile</div>
   </div>
 </div>
 
 <script>
-const OWNER_EMAIL = "seemadvi1213@gmail.com";
-
-// Temporary user (later Firebase se aayega)
-let currentUser = {
-  email: "seemadvi1213@gmail.com",
-  name: "Velorix Owner",
-  photo: null,
-  credits: 42
-};
-
-function initProfile() {
-  const isOwner = currentUser.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
-
-  document.getElementById('pName').textContent = currentUser.name || 'User';
-  document.getElementById('pEmail').textContent = currentUser.email;
-  document.getElementById('headerAvatar').textContent = (currentUser.name || 'V').charAt(0).toUpperCase();
-  document.getElementById('mainAvatar').childNodes[0].textContent = (currentUser.name || 'V').charAt(0).toUpperCase();
-
-  if (isOwner) {
-    document.getElementById('ownerDot').style.display = 'block';
-    document.getElementById('ownerBadge').style.display = 'inline-block';
-    document.getElementById('ownerWrap').classList.add('show');
+function startCreate() {
+  const text = document.getElementById('promptInput').value.trim();
+  if (!text) {
+    alert('पहले कहानी लिखो');
+    return;
   }
+  alert('Create शुरू होगा\n(अगले पार्ट में स्टोरी फ्लो जुड़ेगा)');
 }
 
-function goHome() { alert('Home पर जाएंगे'); }
-function editProfile() { alert('Edit Profile'); }
-function openPremium() { alert('Premium'); }
-function openShare() { alert('Sharing & Rewards'); }
-function openSec(name) { alert('Opening: ' + name + '\n(अगले पार्ट में पूरा आएगा)'); }
-function openAssistant() { alert('Personal Assistant\n(PART 4 में पूरा चैट)'); }
+function openApiKeys() {
+  alert('API Keys\n(Owner Profile में शिफ्ट होगा)');
+}
 
-initProfile();
+function selectMode(mode) {
+  alert('Mode selected: ' + mode);
+}
+
+function goHome() {}
+function goPromo() { alert('Promo section'); }
+function goMemes() { alert('Memes section'); }
+function goShare() { alert('Share & Rewards'); }
+function goProfile() { alert('Profile page\n(PART 2/3 में आएगा)'); }
 </script>
 </body>
-  </html>
+    </html>
