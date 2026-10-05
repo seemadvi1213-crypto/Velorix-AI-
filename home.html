@@ -13,7 +13,6 @@
   --primary2: #7c3aed;
   --text: #ffffff;
   --text2: #a1a1aa;
-  --radius: 16px;
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
@@ -21,8 +20,8 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  overflow-x: hidden;
   padding-bottom: 75px;
+  overflow-x: hidden;
 }
 
 /* Header */
@@ -30,7 +29,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 18px 6px;
+  padding: 16px 18px 8px;
 }
 .logo {
   font-size: 20px;
@@ -43,12 +42,11 @@ body {
   background: linear-gradient(135deg, var(--primary), var(--primary2));
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 14px;
-  cursor: pointer;
 }
 
-/* Prompt Box */
+/* Prompt */
 .prompt-box {
-  margin: 10px 16px 18px;
+  margin: 8px 16px 18px;
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 20px;
@@ -56,7 +54,7 @@ body {
 }
 .prompt-box textarea {
   width: 100%;
-  min-height: 85px;
+  min-height: 82px;
   background: transparent;
   border: none;
   outline: none;
@@ -81,16 +79,13 @@ body {
   border: none;
   cursor: pointer;
 }
-.btn-gray {
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-}
+.btn-gray { background: rgba(255,255,255,0.08); color: var(--text); }
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary2));
   color: white;
 }
 
-/* Section Title */
+/* Titles */
 .sec-title {
   font-size: 12px;
   font-weight: 600;
@@ -100,91 +95,77 @@ body {
   padding: 0 18px 10px;
 }
 
-/* Create Cards */
+/* Create Grid */
 .create-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  padding: 0 16px 22px;
+  padding: 0 16px 20px;
 }
 .create-card {
   border-radius: 16px;
   overflow: hidden;
   position: relative;
-  height: 135px;
-  cursor: pointer;
+  height: 132px;
   background: #1a1325;
+  cursor: pointer;
 }
 .create-card img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
 }
-.create-card .card-overlay {
+.card-overlay {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  padding: 11px;
+  padding: 10px;
   background: linear-gradient(transparent, rgba(0,0,0,0.88));
 }
-.create-card .card-title { font-size: 13px; font-weight: 600; }
-.create-card .card-sub { font-size: 11px; color: #ccc; margin-top: 2px; }
+.card-title { font-size: 13px; font-weight: 600; }
+.card-sub { font-size: 11px; color: #ccc; margin-top: 2px; }
 .card-badge {
   position: absolute;
   top: 8px; right: 8px;
-  background: rgba(168,85,247,0.9);
+  background: rgba(168,85,247,0.92);
   font-size: 9px;
   font-weight: 700;
   padding: 3px 7px;
   border-radius: 8px;
 }
 
-/* Gallery - Camera Style */
-.gallery-section {
-  padding: 0 16px 20px;
+/* Gallery - Clean Camera */
+.gallery-wrap {
+  padding: 0 16px 18px;
 }
 .gallery-card {
   width: 100%;
-  height: 110px;
+  height: 108px;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
   border: 1px solid var(--card-border);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 .gallery-card img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
-  opacity: 0.7;
 }
-.gallery-center {
+.gallery-overlay {
   position: absolute;
-  text-align: center;
-  z-index: 2;
-}
-.gallery-center .cam-icon {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: 2px solid rgba(255,255,255,0.25);
+  inset: 0;
+  background: rgba(0,0,0,0.45);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  margin: 0 auto 6px;
 }
-.gallery-center .gal-title {
-  font-size: 14px;
-  font-weight: 600;
+.gallery-overlay .gal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 3px;
 }
-.gallery-center .gal-sub {
-  font-size: 11px;
-  color: #ccc;
-  margin-top: 2px;
+.gallery-overlay .gal-sub {
+  font-size: 12px;
+  color: #ddd;
 }
 
 /* Trending */
@@ -197,8 +178,8 @@ body {
 }
 .trending-scroll::-webkit-scrollbar { display: none; }
 .trend-item {
-  min-width: 105px;
-  height: 140px;
+  min-width: 104px;
+  height: 138px;
   border-radius: 14px;
   overflow: hidden;
   position: relative;
@@ -207,18 +188,17 @@ body {
   cursor: pointer;
 }
 .trend-item img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
 }
-.trend-item .trend-label {
+.trend-label {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  padding: 7px;
+  padding: 7px 4px;
   font-size: 11px;
   font-weight: 600;
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
   text-align: center;
+  background: linear-gradient(transparent, rgba(0,0,0,0.87));
 }
 
 /* Bottom Nav */
@@ -243,21 +223,18 @@ body {
   font-size: 10px;
   color: var(--text2);
   cursor: pointer;
-  padding: 6px 8px;
 }
 .nav-item.active { color: var(--primary); }
-.nav-item .nav-icon { font-size: 21px; line-height: 1; }
+.nav-item .nav-icon { font-size: 21px; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
   <div class="logo">Velorix AI</div>
   <div class="header-avatar" onclick="goProfile()">V</div>
 </div>
 
-<!-- Prompt Box -->
 <div class="prompt-box">
   <textarea id="promptInput" placeholder="अपनी कहानी लिखें... जैसे गरीब किसान की स्टोरी"></textarea>
   <div class="prompt-actions">
@@ -266,7 +243,6 @@ body {
   </div>
 </div>
 
-<!-- Create Section -->
 <div class="sec-title">Create</div>
 <div class="create-grid">
   <div class="create-card" onclick="selectMode('text2video')">
@@ -300,25 +276,28 @@ body {
   </div>
 </div>
 
-<!-- Gallery - Camera Style -->
+<!-- Clean Gallery -->
 <div class="sec-title">Gallery</div>
-<div class="gallery-section">
+<div class="gallery-wrap">
   <div class="gallery-card" onclick="openGallery()">
-    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80" alt="camera">
-    <div class="gallery-center">
-      <div class="cam-icon">📷</div>
+    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=900&q=80" alt="camera">
+    <div class="gallery-overlay">
       <div class="gal-title">My Gallery</div>
       <div class="gal-sub">Photos • Shorts • Full Videos</div>
     </div>
   </div>
 </div>
 
-<!-- Trending -->
+<!-- Trending with clear 2D / 3D -->
 <div class="sec-title">Trending Styles</div>
 <div class="trending-scroll">
   <div class="trend-item" onclick="selectStyle('3d')">
     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80" alt="">
     <div class="trend-label">3D Style</div>
+  </div>
+  <div class="trend-item" onclick="selectStyle('2d')">
+    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&q=80" alt="">
+    <div class="trend-label">2D Style</div>
   </div>
   <div class="trend-item" onclick="selectStyle('realistic')">
     <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80" alt="">
@@ -329,16 +308,11 @@ body {
     <div class="trend-label">Cinematic</div>
   </div>
   <div class="trend-item" onclick="selectStyle('anime')">
-    <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80" alt="">
+    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=300&q=80" alt="">
     <div class="trend-label">Anime Mix</div>
-  </div>
-  <div class="trend-item" onclick="selectStyle('2d')">
-    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="">
-    <div class="trend-label">2D Style</div>
   </div>
 </div>
 
-<!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="nav-item active">
     <div class="nav-icon">🏠</div>
@@ -364,26 +338,18 @@ body {
 
 <script>
 function startCreate() {
-  const text = document.getElementById('promptInput').value.trim();
-  if (!text) return alert('पहले कहानी लिखो');
-  alert('Create शुरू\n(अगले पार्ट में स्टोरी फ्लो जुड़ेगा)');
+  const t = document.getElementById('promptInput').value.trim();
+  if (!t) return alert('पहले कहानी लिखो');
+  alert('Create शुरू होगा');
 }
-function openApiKeys() {
-  alert('API Keys → Owner Profile में शिफ्ट होगा');
-}
-function selectMode(mode) {
-  alert('Mode: ' + mode);
-}
-function selectStyle(style) {
-  alert('Style selected: ' + style);
-}
-function openGallery() {
-  alert('Gallery खोलेगा\n(Photos • Shorts • Full Videos)\nअंदर का डिज़ाइन बाद में बनेगा');
-}
+function openApiKeys() { alert('API Keys'); }
+function selectMode(m) { alert('Mode: ' + m); }
+function selectStyle(s) { alert('Style: ' + s); }
+function openGallery() { alert('Gallery\nPhotos • Shorts • Full Videos'); }
 function goPromo() { alert('Promo'); }
 function goMemes() { alert('Memes'); }
-function goShare() { alert('Share & Rewards'); }
-function goProfile() { alert('Profile (अगले पार्ट में)'); }
+function goShare() { alert('Share'); }
+function goProfile() { alert('Profile'); }
 </script>
 </body>
-    </html>
+                             </html>
