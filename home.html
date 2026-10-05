@@ -11,7 +11,7 @@
   --card-border: rgba(255,255,255,0.09);
   --primary: #a855f7;
   --primary2: #7c3aed;
-  --text: #fff;
+  --text: #ffffff;
   --text2: #a1a1aa;
   --radius: 16px;
 }
@@ -30,7 +30,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 18px 8px;
+  padding: 16px 18px 6px;
 }
 .logo {
   font-size: 20px;
@@ -48,7 +48,7 @@ body {
 
 /* Prompt Box */
 .prompt-box {
-  margin: 12px 16px 20px;
+  margin: 10px 16px 18px;
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 20px;
@@ -56,14 +56,15 @@ body {
 }
 .prompt-box textarea {
   width: 100%;
-  min-height: 90px;
+  min-height: 85px;
   background: transparent;
   border: none;
   outline: none;
   color: var(--text);
-  font-size: 16px;
+  font-size: 15px;
   resize: none;
   font-family: inherit;
+  line-height: 1.45;
 }
 .prompt-box textarea::placeholder { color: #666; }
 .prompt-actions {
@@ -73,9 +74,9 @@ body {
   margin-top: 12px;
 }
 .btn {
-  padding: 10px 20px;
+  padding: 10px 18px;
   border-radius: 25px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -91,12 +92,12 @@ body {
 
 /* Section Title */
 .sec-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text2);
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  padding: 0 18px 12px;
+  padding: 0 18px 10px;
 }
 
 /* Create Cards */
@@ -104,13 +105,13 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  padding: 0 16px 24px;
+  padding: 0 16px 22px;
 }
 .create-card {
   border-radius: 16px;
   overflow: hidden;
   position: relative;
-  height: 140px;
+  height: 135px;
   cursor: pointer;
   background: #1a1325;
 }
@@ -122,36 +123,88 @@ body {
 .create-card .card-overlay {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  padding: 12px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  padding: 11px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.88));
 }
-.create-card .card-title {
+.create-card .card-title { font-size: 13px; font-weight: 600; }
+.create-card .card-sub { font-size: 11px; color: #ccc; margin-top: 2px; }
+.card-badge {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(168,85,247,0.9);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 8px;
+}
+
+/* Gallery - Camera Style */
+.gallery-section {
+  padding: 0 16px 20px;
+}
+.gallery-card {
+  width: 100%;
+  height: 110px;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gallery-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+.gallery-center {
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+}
+.gallery-center .cam-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin: 0 auto 6px;
+}
+.gallery-center .gal-title {
   font-size: 14px;
   font-weight: 600;
 }
-.create-card .card-sub {
+.gallery-center .gal-sub {
   font-size: 11px;
   color: #ccc;
   margin-top: 2px;
 }
 
-/* Trending / Photos Section */
+/* Trending */
 .trending-scroll {
   display: flex;
-  gap: 12px;
-  padding: 0 16px 20px;
+  gap: 11px;
+  padding: 0 16px 18px;
   overflow-x: auto;
   scrollbar-width: none;
 }
 .trending-scroll::-webkit-scrollbar { display: none; }
 .trend-item {
-  min-width: 110px;
-  height: 150px;
+  min-width: 105px;
+  height: 140px;
   border-radius: 14px;
   overflow: hidden;
   position: relative;
   flex-shrink: 0;
   background: #1a1325;
+  cursor: pointer;
 }
 .trend-item img {
   width: 100%;
@@ -161,13 +214,14 @@ body {
 .trend-item .trend-label {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  padding: 8px;
+  padding: 7px;
   font-size: 11px;
-  font-weight: 500;
-  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  font-weight: 600;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  text-align: center;
 }
 
-/* Bottom Navigation */
+/* Bottom Nav */
 .bottom-nav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -189,13 +243,10 @@ body {
   font-size: 10px;
   color: var(--text2);
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 6px 8px;
 }
 .nav-item.active { color: var(--primary); }
-.nav-item .nav-icon {
-  font-size: 22px;
-  line-height: 1;
-}
+.nav-item .nav-icon { font-size: 21px; line-height: 1; }
 </style>
 </head>
 <body>
@@ -241,41 +292,55 @@ body {
   </div>
   <div class="create-card" onclick="selectMode('fullstory')">
     <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80" alt="">
+    <div class="card-badge">PARTS</div>
     <div class="card-overlay">
       <div class="card-title">Full Story Video</div>
-      <div class="card-sub">पूरी कहानी से वीडियो</div>
+      <div class="card-sub">पार्ट्स में लंबी स्टोरी</div>
     </div>
   </div>
 </div>
 
-<!-- Trending Photos -->
-<div class="sec-title">Trending</div>
-<div class="trending-scroll" id="trendingRow">
-  <div class="trend-item">
+<!-- Gallery - Camera Style -->
+<div class="sec-title">Gallery</div>
+<div class="gallery-section">
+  <div class="gallery-card" onclick="openGallery()">
+    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80" alt="camera">
+    <div class="gallery-center">
+      <div class="cam-icon">📷</div>
+      <div class="gal-title">My Gallery</div>
+      <div class="gal-sub">Photos • Shorts • Full Videos</div>
+    </div>
+  </div>
+</div>
+
+<!-- Trending -->
+<div class="sec-title">Trending Styles</div>
+<div class="trending-scroll">
+  <div class="trend-item" onclick="selectStyle('3d')">
     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80" alt="">
     <div class="trend-label">3D Style</div>
   </div>
-  <div class="trend-item">
+  <div class="trend-item" onclick="selectStyle('realistic')">
     <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80" alt="">
     <div class="trend-label">Realistic</div>
   </div>
-  <div class="trend-item">
+  <div class="trend-item" onclick="selectStyle('cinematic')">
     <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300&q=80" alt="">
     <div class="trend-label">Cinematic</div>
   </div>
-  <div class="trend-item">
+  <div class="trend-item" onclick="selectStyle('anime')">
     <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80" alt="">
     <div class="trend-label">Anime Mix</div>
   </div>
-  <div class="trend-item">
+  <div class="trend-item" onclick="selectStyle('2d')">
     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="">
-    <div class="trend-label">Portrait</div>
+    <div class="trend-label">2D Style</div>
   </div>
 </div>
 
 <!-- Bottom Nav -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="goHome()">
+  <div class="nav-item active">
     <div class="nav-icon">🏠</div>
     <div>Home</div>
   </div>
@@ -300,26 +365,25 @@ body {
 <script>
 function startCreate() {
   const text = document.getElementById('promptInput').value.trim();
-  if (!text) {
-    alert('पहले कहानी लिखो');
-    return;
-  }
-  alert('Create शुरू होगा\n(अगले पार्ट में स्टोरी फ्लो जुड़ेगा)');
+  if (!text) return alert('पहले कहानी लिखो');
+  alert('Create शुरू\n(अगले पार्ट में स्टोरी फ्लो जुड़ेगा)');
 }
-
 function openApiKeys() {
-  alert('API Keys\n(Owner Profile में शिफ्ट होगा)');
+  alert('API Keys → Owner Profile में शिफ्ट होगा');
 }
-
 function selectMode(mode) {
-  alert('Mode selected: ' + mode);
+  alert('Mode: ' + mode);
 }
-
-function goHome() {}
-function goPromo() { alert('Promo section'); }
-function goMemes() { alert('Memes section'); }
+function selectStyle(style) {
+  alert('Style selected: ' + style);
+}
+function openGallery() {
+  alert('Gallery खोलेगा\n(Photos • Shorts • Full Videos)\nअंदर का डिज़ाइन बाद में बनेगा');
+}
+function goPromo() { alert('Promo'); }
+function goMemes() { alert('Memes'); }
 function goShare() { alert('Share & Rewards'); }
-function goProfile() { alert('Profile page\n(PART 2/3 में आएगा)'); }
+function goProfile() { alert('Profile (अगले पार्ट में)'); }
 </script>
 </body>
     </html>
