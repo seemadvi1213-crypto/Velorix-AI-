@@ -1142,136 +1142,169 @@ function openPrivacy() {
 </div>
 
 <script>
-/* ========== PART 4 SCRIPT ========== */
+<!-- ==================== PART 4 CLEAN ==================== -->
+<script>
+/* ============================================
+   PART 4 — Auth Gate + Logout + Profile Init
+   index.html = Login
+   home.html  = App
+============================================ */
 
-// ऐप शुरू होते ही चेक करो
-(function initAuth() {
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  if (isLoggedIn) {
-    showHome();
+const OWNER_EMAIL = "seemadvi1213@gmail.com";
+
+// करंट यूजर (Login के बाद भरेगा)
+let currentUser = {
+  email: "",
+  name: "Velorix User"
+};
+
+/* ----- ऐप शुरू होते ही चेक ----- */
+(function checkLogin() {
+  // Firebase से यूजर लो
+  if (typeof firebase !== "undefined" && firebase.auth) {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // असली लॉगिन है
+        currentUser = {
+          email: user.email || "",
+          name: localStorage.getItem("velorix_username") || user.displayName || "Velorix User"
+        };
+        initApp();
+      } else {
+        // लॉगिन नहीं → Login पेज पर भेजो
+        window.location.href = "index.html";
+      }
+    });
   } else {
-    showLogin();
+    // Firebase नहीं मिला तो भी Login पर भेजो
+    window.location.href = "index.html";
   }
 })();
 
-function showLogin() {
-  document.getElementById('loginScreen').classList.add('show');
-  if (document.getElementById('homeScreen')) {
-    document.getElementById('homeScreen').classList.add('hidden');
+function initApp() {
+  // होमपेज दिखाओ
+  if (document.getElementById("homeScreen")) {
+    document.getElementById("homeScreen").classList.remove("hidden");
   }
-  if (document.getElementById('profileScreen')) {
-    document.getElementById('profileScreen').classList.remove('active');
-  }
-  if (document.getElementById('logoutScreen')) {
-    document.getElementById('logoutScreen').classList.remove('show');
+  if (document.getElementById("loginScreen")) {
+    document.getElementById("loginScreen").classList.remove("show");
   }
 }
 
-function showHome() {
-  document.getElementById('loginScreen').classList.remove('show');
-  if (document.getElementById('homeScreen')) {
-    document.getElementById('homeScreen').classList.remove('hidden');
+/* ----- PROFILE ----- */
+function goProfile() {
+  if (document.getElementById("homeScreen")) {
+    document.getElementById("homeScreen").classList.add("hidden");
   }
-  if (document.getElementById('logoutScreen')) {
-    document.getElementById('logoutScreen').classList.remove('show');
+  if (document.getElementById("profileScreen")) {
+    document.getElementById("profileScreen").classList.add("active");
   }
-  setActiveNav('home');
+  initProfile();
+  window.scrollTo(0, 0);
 }
 
-// Google Login (अभी सिम्युलेटेड + Firebase सपोर्ट)
-async function doGoogleLogin() {
-  try {
-    // अगर Firebase मौजूद है तो असली Google Login
-    if (typeof firebase !== 'undefined' && firebase.auth) {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      const result = await firebase.auth().signInWithPopup(provider);
-      const user = result.user;
-      currentUser = {
-        email: user.email,
-        name: user.displayName || 'Velorix User'
-      };
-    } else {
-      // Firebase नहीं है तो टेस्ट लॉगिन
-      currentUser = {
-        email: 'seemadvi1213@gmail.com',
-        name: 'Velorix Owner'
-      };
-    }
-  } catch (e) {
-    // Popup ब्लॉक या error हो तो टेस्ट लॉगिन
-    currentUser = {
-      email: 'seemadvi1213@gmail.com',
-      name: 'Velorix Owner'
-    };
+function closeProfile() {
+  if (document.getElementById("profileScreen")) {
+    document.getElementById("profileScreen").classList.remove("active");
   }
-
-  localStorage.setItem('isLoggedIn', 'true');
-  localStorage.setItem('VX_USER', JSON.stringify(currentUser));
-  showHome();
+  if (document.getElementById("homeScreen")) {
+    document.getElementById("homeScreen").classList.remove("hidden");
+  }
 }
 
-// Logout को अपडेट करो (PART 3 वाले doLogout को ये replace करेगा)
+function initProfile() {
+  const isOwner = currentUser.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+
+  const nameEl = document.getElementById("profName");
+  const emailEl = document.getElementById("profEmail");
+  const avatarEl = document.getElementById("profAvatar");
+  const ownerDot = document.getElementById("ownerDot");
+  const ownerTag = document.getElementById("ownerTag");
+  const ownerSection = document.getElementById("ownerSection");
+
+  if (nameEl) nameEl.textContent = currentUser.name || "User";
+  if (emailEl) emailEl.textContent = currentUser.email || "";
+  if (avatarEl) {
+    avatarEl.childNodes[0].textContent = (currentUser.name || "V").charAt(0).toUpperCase();
+  }
+
+  if (isOwner) {
+    if (ownerDot) ownerDot.style.display = "block";
+    if (ownerTag) ownerTag.style.display = "inline-block";
+    if (ownerSection) ownerSection.classList.add("show");
+  } else {
+    if (ownerDot) ownerDot.style.display = "none";
+    if (ownerTag) ownerTag.style.display = "none";
+    if (ownerSection) ownerSection.classList.remove("show");
+  }
+
+  if (typeof loadApiKeys === "function") loadApiKeys();
+}
+
+/* ----- LOGOUT → index.html ----- */
 async function doLogout() {
-  if (!confirm('क्या आप सच में Logout करना चाहते हैं?')) return;
+  if (!confirm("क्या आप सच में Logout करना चाहते हैं?")) return;
 
   try {
-    if (typeof firebase !== 'undefined' && firebase.auth) {
+    if (typeof firebase !== "undefined" && firebase.auth) {
       await firebase.auth().signOut();
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 
-  localStorage.removeItem('isLoggedIn');
-  localStorage.removeItem('VX_USER');
-  localStorage.removeItem('user');
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("VX_USER");
+  localStorage.removeItem("velorix_username");
 
-  if (typeof closeEditProfile === 'function') closeEditProfile();
-  if (typeof closeProfile === 'function') closeProfile();
-
-  showLogin();
+  // असली Login पेज
+  window.location.href = "index.html";
 }
 
-// नीचे के बटन
+/* ----- EDIT PROFILE ----- */
+function openEditProfile() {
+  const input = document.getElementById("editName");
+  if (input) input.value = currentUser.name || "";
+  const modal = document.getElementById("editModal");
+  if (modal) modal.classList.add("show");
+}
+
+function closeEditProfile() {
+  const modal = document.getElementById("editModal");
+  if (modal) modal.classList.remove("show");
+}
+
+function saveEditProfile() {
+  const newName = document.getElementById("editName").value.trim();
+  if (!newName) {
+    alert("नाम खाली नहीं रख सकते");
+    return;
+  }
+  currentUser.name = newName;
+  localStorage.setItem("velorix_username", newName);
+  const pn = document.getElementById("profName");
+  if (pn) pn.textContent = newName;
+  if (document.getElementById("profAvatar")) {
+    document.getElementById("profAvatar").childNodes[0].textContent = newName.charAt(0).toUpperCase();
+  }
+  closeEditProfile();
+  alert("नाम सेव हो गया ✅");
+}
+
+function openHelp() {
+  alert("Help & Support\n\nLogin समस्या हो तो Login पेज पर Report दबाएं।");
+}
+
+function openPrivacy() {
+  alert("Privacy Policy\n\nहम Google Sign-In इस्तेमाल करते हैं।");
+}
+
+/* ----- BOTTOM NAV ----- */
 function goHome() {
-  if (document.getElementById('profileScreen')) {
-    document.getElementById('profileScreen').classList.remove('active');
-  }
-  if (document.getElementById('homeScreen')) {
-    document.getElementById('homeScreen').classList.remove('hidden');
-  }
-  setActiveNav('home');
+  closeProfile();
 }
 
-function goProfile() {
-  if (document.getElementById('homeScreen')) {
-    document.getElementById('homeScreen').classList.add('hidden');
-  }
-  if (document.getElementById('profileScreen')) {
-    document.getElementById('profileScreen').classList.add('active');
-    if (typeof initProfile === 'function') initProfile();
-  }
-  setActiveNav('profile');
-  window.scrollTo(0,0);
-}
-
-function goPromo() {
-  alert('Promo सेक्शन जल्द आएगा 🎬');
-  setActiveNav('promo');
-}
-
-function goMemes() {
-  alert('Memes सेक्शन जल्द आएगा 😂');
-  setActiveNav('memes');
-}
-
-function goShare() {
-  alert('Share सेक्शन जल्द आएगा 🔗');
-  setActiveNav('share');
-}
-
-function setActiveNav(name) {
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const map = { home: 0, promo: 1, memes: 2, share: 3, profile: 4 };
-  const items = document.querySelectorAll('.nav-item');
-  if (items[map[name]]) items[map[name]].classList.add('active');
-}
+function goPromo() { alert("Promo जल्द आएगा 🎬"); }
+function goMemes() { alert("Memes जल्द आएगा 😂"); }
+function goShare() { alert("Share जल्द आएगा 🔗"); }
 </script>
