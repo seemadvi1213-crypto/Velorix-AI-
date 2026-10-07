@@ -997,57 +997,70 @@ async function doLogout() {
   if (document.getElementById('profileScreen')) {
     document.getElementById('profileScreen').classList.remove('active');
   }
+<!-- Firebase (अगर home.html में पहले से नहीं है तो ये रखो) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 
-  // Logout स्क्रीन दिखाओ
-  document.getElementById('logoutScreen').classList.add('show');
-}
-
-function reLogin() {
-  // पेज रीलोड → शुरू से
-  window.location.href = window.location.origin + window.location.pathname;
-}
-
-function openHelp() {
-  alert('Help & Support\n\nअभी बेसिक है। बाद में टिकट सिस्टम जोड़ेंगे।');
-}
-
-function openPrivacy() {
-  alert('Privacy Policy\n\nआपका डेटा सुरक्षित रखा जाएगा।');
-}
-</script>
-<!-- ==================== PART 4 FINAL CLEAN ==================== -->
 <script>
-/* 
-  index.html  = असली Google Login (तुम्हारी पुरानी फाइल)
-  home.html   = ऐप (ये स्क्रिप्ट)
-  Owner सिर्फ seemadvi1213@gmail.com को
-*/
+/* ==================== PART 4 — LOGOUT FIXED ==================== */
 
 const OWNER_EMAIL = "seemadvi1213@gmail.com";
 let currentUser = { email: "", name: "Velorix User" };
 
-/* ----- लॉगिन चेक (कोई फेक Owner लॉगिन नहीं) ----- */
-(function checkLogin() {
-  // Firebase नहीं है तो Login पेज पर भेजो
+// Firebase config (index.html जैसा ही)
+const firebaseConfig = {
+  apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
+  authDomain: "best-47108.firebaseapp.com",
+  projectId: "best-47108",
+  storageBucket: "best-47108.firebasestorage.app",
+  messagingSenderId: "995954423710",
+  appId: "1:995954423710:web:9b3458af61b99e6fb6088f",
+  measurementId: "G-CPCRTBG42V"
+};
+
+// Firebase शुरू करो (एक बार)
+if (typeof firebase !== "undefined" && !firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+/* ----- लॉगिन चेक ----- */
+(function () {
   if (typeof firebase === "undefined" || !firebase.auth) {
     window.location.href = "index.html";
     return;
   }
 
   firebase.auth().onAuthStateChanged(function (user) {
-    // लॉगिन नहीं → Login पेज
     if (!user) {
       window.location.href = "index.html";
       return;
     }
-
-    // असली यूजर का डेटा (कभी Owner फोर्स नहीं)
     currentUser = {
       email: (user.email || "").toLowerCase(),
       name: localStorage.getItem("velorix_username") || user.displayName || "Velorix User"
     };
   });
 })();
+
+/* ----- LOGOUT (असली) ----- */
+async function doLogout() {
+  if (!confirm("क्या आप Logout करना चाहते हैं?")) return;
+
+  try {
+    await firebase.auth().signOut();   // सेशन खत्म
+  } catch (e) {
+    console.log("signOut error:", e);
+  }
+
+  // लोकल डेटा साफ
+  localStorage.removeItem("velorix_username");
+  localStorage.removeItem("velorix_lang");
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("VX_USER");
+
+  // Login पेज पर भेजो
+  window.location.href = "index.html";
+}
 
 /* ----- PROFILE ----- */
 function goProfile() {
@@ -1071,10 +1084,8 @@ function closeProfile() {
 }
 
 function initProfile() {
-  const email = (currentUser.email || "").toLowerCase();
-  const isOwner = email === OWNER_EMAIL.toLowerCase();
+  const isOwner = (currentUser.email || "") === OWNER_EMAIL.toLowerCase();
 
-  // नाम + ईमेल
   if (document.getElementById("profName")) {
     document.getElementById("profName").textContent = currentUser.name || "User";
   }
@@ -1082,11 +1093,10 @@ function initProfile() {
     document.getElementById("profEmail").textContent = currentUser.email || "";
   }
   if (document.getElementById("profAvatar")) {
-    const letter = (currentUser.name || "V").charAt(0).toUpperCase();
-    document.getElementById("profAvatar").childNodes[0].textContent = letter;
+    document.getElementById("profAvatar").childNodes[0].textContent =
+      (currentUser.name || "V").charAt(0).toUpperCase();
   }
 
-  // Owner सेक्शन — सिर्फ असली Owner को
   const ownerDot = document.getElementById("ownerDot");
   const ownerTag = document.getElementById("ownerTag");
   const ownerSection = document.getElementById("ownerSection");
@@ -1100,25 +1110,6 @@ function initProfile() {
     if (ownerTag) ownerTag.style.display = "none";
     if (ownerSection) ownerSection.classList.remove("show");
   }
-
-  if (typeof loadApiKeys === "function") loadApiKeys();
-}
-
-/* ----- LOGOUT → index.html ----- */
-async function doLogout() {
-  if (!confirm("क्या आप Logout करना चाहते हैं?")) return;
-
-  try {
-    if (firebase && firebase.auth) {
-      await firebase.auth().signOut();
-    }
-  } catch (e) {}
-
-  localStorage.removeItem("velorix_username");
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("VX_USER");
-
-  window.location.href = "index.html";
 }
 
 /* ----- EDIT PROFILE ----- */
@@ -1149,32 +1140,20 @@ function saveEditProfile() {
   if (document.getElementById("profName")) {
     document.getElementById("profName").textContent = newName;
   }
-  if (document.getElementById("profAvatar")) {
-    document.getElementById("profAvatar").childNodes[0].textContent = newName.charAt(0).toUpperCase();
-  }
   closeEditProfile();
   alert("नाम सेव हो गया ✅");
 }
 
 function openHelp() {
-  alert("Help & Support\n\nLogin समस्या हो तो Login पेज पर Report दबाएं।");
+  alert("Help & Support");
 }
-
 function openPrivacy() {
-  alert("Privacy Policy\n\nहम सिर्फ Google Sign-In इस्तेमाल करते हैं।");
+  alert("Privacy Policy");
 }
 
 /* ----- BOTTOM NAV ----- */
-function goHome() {
-  closeProfile();
-}
-function goPromo() {
-  alert("Promo जल्द आएगा 🎬");
-}
-function goMemes() {
-  alert("Memes जल्द आएगा 😂");
-}
-function goShare() {
-  alert("Share जल्द आएगा 🔗");
-}
+function goHome() { closeProfile(); }
+function goPromo() { alert("Promo जल्द आएगा"); }
+function goMemes() { alert("Memes जल्द आएगा"); }
+function goShare() { alert("Share जल्द आएगा"); }
 </script>
