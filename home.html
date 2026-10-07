@@ -352,28 +352,36 @@ function goShare() { alert('Share'); }
 function goProfile() { alert('Profile'); }
 </script>
 </body>
-                             </html>
-<!-- ==================== PART 2 : PROFILE + OWNER ==================== -->
+<!-- ==================== PART 2 CORRECTED ==================== -->
 <style>
-/* Profile Screen */
+#homeScreen { display: block; }
 #profileScreen {
   display: none;
   min-height: 100vh;
   background: #0d0a14;
   padding-bottom: 80px;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 150;
+  overflow-y: auto;
 }
 #profileScreen.active { display: block; }
+#homeScreen.hidden { display: none !important; }
 
 .prof-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 18px 10px;
+  position: sticky;
+  top: 0;
+  background: #0d0a14;
+  z-index: 10;
 }
 .prof-header .back {
   width: 38px; height: 38px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.1);
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; color: #fff;
@@ -386,7 +394,7 @@ function goProfile() { alert('Profile'); }
 }
 
 .prof-card {
-  margin: 10px 16px 18px;
+  margin: 8px 16px 18px;
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 20px;
@@ -415,16 +423,8 @@ function goProfile() { alert('Profile'); }
   border: 2px solid #0d0a14;
   display: none;
 }
-.prof-name {
-  font-size: 21px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-.prof-email {
-  font-size: 13px;
-  color: #a1a1aa;
-  margin-bottom: 12px;
-}
+.prof-name { font-size: 21px; font-weight: 700; margin-bottom: 3px; }
+.prof-email { font-size: 13px; color: #a1a1aa; margin-bottom: 12px; }
 .owner-tag {
   display: none;
   background: linear-gradient(135deg, #a855f7, #ec4899);
@@ -445,7 +445,6 @@ function goProfile() { alert('Profile'); }
   cursor: pointer;
 }
 
-/* Quick Actions */
 .quick-row {
   display: flex;
   gap: 12px;
@@ -464,9 +463,8 @@ function goProfile() { alert('Profile'); }
 .quick-card .q-title { font-size: 13px; font-weight: 600; }
 .quick-card .q-sub { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
 
-/* Owner Section */
 .owner-section {
-  padding: 0 16px 20px;
+  padding: 0 16px 30px;
   display: none;
 }
 .owner-section.show { display: block; }
@@ -507,37 +505,28 @@ function goProfile() { alert('Profile'); }
 .m-sub { font-size: 12px; color: #a1a1aa; margin-top: 2px; }
 .m-arrow { color: #666; font-size: 18px; }
 
-/* API Keys Modal */
+/* API Modal */
 .api-modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
-  z-index: 200;
+  background: rgba(0,0,0,0.78);
+  z-index: 300;
   align-items: flex-end;
   justify-content: center;
 }
 .api-modal.show { display: flex; }
 .api-sheet {
   width: 100%;
-  max-height: 85vh;
+  max-height: 86vh;
   background: #16121f;
   border-radius: 22px 22px 0 0;
   padding: 20px 18px 30px;
   overflow-y: auto;
 }
-.api-sheet h3 {
-  font-size: 18px;
-  margin-bottom: 6px;
-}
-.api-sheet .sub {
-  font-size: 13px;
-  color: #a1a1aa;
-  margin-bottom: 18px;
-}
-.api-group {
-  margin-bottom: 18px;
-}
+.api-sheet h3 { font-size: 18px; margin-bottom: 4px; }
+.api-sheet .sub { font-size: 13px; color: #a1a1aa; margin-bottom: 18px; }
+.api-group { margin-bottom: 16px; }
 .api-group label {
   display: block;
   font-size: 13px;
@@ -558,7 +547,7 @@ function goProfile() { alert('Profile'); }
 .api-actions {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 .api-actions button {
   flex: 1;
@@ -579,7 +568,7 @@ function goProfile() { alert('Profile'); }
 }
 </style>
 
-<!-- PROFILE SCREEN -->
+<!-- PROFILE SCREEN (Full separate screen) -->
 <div id="profileScreen">
   <div class="prof-header">
     <div class="back" onclick="closeProfile()">←</div>
@@ -595,23 +584,23 @@ function goProfile() { alert('Profile'); }
     <div class="prof-name" id="profName">Velorix User</div>
     <div class="prof-email" id="profEmail">user@email.com</div>
     <div class="owner-tag" id="ownerTag">👑 Owner Access</div>
-    <button class="edit-btn" onclick="editProfile()">Edit Profile</button>
+    <button class="edit-btn" onclick="alert('Edit Profile जल्द आएगा')">Edit Profile</button>
   </div>
 
   <div class="quick-row">
-    <div class="quick-card" onclick="alert('Premium जल्द आएगा')">
+    <div class="quick-card" onclick="alert('Premium जल्द')">
       <div class="q-icon">💎</div>
       <div class="q-title">Go Premium</div>
       <div class="q-sub">More features</div>
     </div>
-    <div class="quick-card" onclick="alert('Sharing जल्द आएगा')">
+    <div class="quick-card" onclick="alert('Sharing जल्द')">
       <div class="q-icon">🎁</div>
       <div class="q-title">Invite Friends</div>
       <div class="q-sub">Earn rewards</div>
     </div>
   </div>
 
-  <!-- OWNER ONLY -->
+  <!-- OWNER ONLY SECTION -->
   <div class="owner-section" id="ownerSection">
     <div class="sec-label">Owner Control Center</div>
     <div class="menu-box">
@@ -663,7 +652,7 @@ function goProfile() { alert('Profile'); }
 <div class="api-modal" id="apiModal">
   <div class="api-sheet">
     <h3>API Keys Management</h3>
-    <div class="sub">सिर्फ Owner के लिए • Keys सुरक्षित localStorage में सेव होंगी</div>
+    <div class="sub">सिर्फ Owner के लिए • Keys localStorage में सेव होंगी</div>
 
     <div class="api-group">
       <label>Groq API Key (Story)</label>
@@ -678,7 +667,7 @@ function goProfile() { alert('Profile'); }
       <input type="password" id="keyOpenRouter" placeholder="sk-or-v1-...">
     </div>
     <div class="api-group">
-      <label>Image Key 1 (Fal / Replicate / Together)</label>
+      <label>Image Key 1</label>
       <input type="password" id="keyImg1" placeholder="Image API Key">
     </div>
     <div class="api-group">
@@ -694,23 +683,32 @@ function goProfile() { alert('Profile'); }
 </div>
 
 <script>
-/* ========== PART 2 SCRIPT ========== */
 const OWNER_EMAIL = "seemadvi1213@gmail.com";
 
-// Temporary user (बाद में Firebase से आएगा)
 let currentUser = {
   email: "seemadvi1213@gmail.com",
-  name: "Velorix Owner",
-  photo: null
+  name: "Velorix Owner"
 };
 
 function goProfile() {
+  // होमपेज छुपाओ
+  const home = document.getElementById('homeScreen') || document.body;
+  if (document.getElementById('homeScreen')) {
+    document.getElementById('homeScreen').classList.add('hidden');
+  }
+  
   document.getElementById('profileScreen').classList.add('active');
   initProfile();
+  window.scrollTo(0,0);
 }
 
 function closeProfile() {
   document.getElementById('profileScreen').classList.remove('active');
+  
+  // होमपेज वापस दिखाओ
+  if (document.getElementById('homeScreen')) {
+    document.getElementById('homeScreen').classList.remove('hidden');
+  }
 }
 
 function initProfile() {
@@ -729,20 +727,13 @@ function initProfile() {
     document.getElementById('ownerTag').style.display = 'none';
     document.getElementById('ownerSection').classList.remove('show');
   }
-
-  // Load saved keys
   loadApiKeys();
-}
-
-function editProfile() {
-  alert('Edit Profile जल्द आएगा');
 }
 
 function openApiModal() {
   document.getElementById('apiModal').classList.add('show');
   loadApiKeys();
 }
-
 function closeApiModal() {
   document.getElementById('apiModal').classList.remove('show');
 }
@@ -764,7 +755,6 @@ function loadApiKeys() {
   document.getElementById('keyImg1').value = localStorage.getItem('VX_IMG1') || '';
   document.getElementById('keyImg2').value = localStorage.getItem('VX_IMG2') || '';
 }
-
-// होमपेज के Profile बटन को कनेक्ट करना
-// (अगर होमपेज में goProfile फंक्शन है तो ये काम करेगा)
-        </script>
+</script>                             
+  
+  
