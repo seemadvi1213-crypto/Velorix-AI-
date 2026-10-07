@@ -758,3 +758,232 @@ function loadApiKeys() {
   document.getElementById('keyImg2').value = localStorage.getItem('VX_IMG2') || '';
 }
   </script>
+<!-- ==================== PART 3 : EDIT PROFILE + LOGOUT + HELP ==================== -->
+<style>
+/* Edit Profile Modal */
+.edit-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.78);
+  z-index: 250;
+  align-items: flex-end;
+  justify-content: center;
+}
+.edit-modal.show { display: flex; }
+
+.edit-sheet {
+  width: 100%;
+  max-height: 80vh;
+  background: #16121f;
+  border-radius: 22px 22px 0 0;
+  padding: 22px 18px 30px;
+  overflow-y: auto;
+}
+.edit-sheet h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.edit-sheet .sub {
+  font-size: 13px;
+  color: #a1a1aa;
+  margin-bottom: 20px;
+}
+
+.edit-group {
+  margin-bottom: 16px;
+}
+.edit-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c4b5fd;
+  margin-bottom: 6px;
+}
+.edit-group input {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 22px;
+}
+.edit-actions button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 14px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-save-edit {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+}
+.btn-cancel-edit {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+/* Extra Options inside Edit */
+.edit-extra {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 16px;
+}
+.extra-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 4px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.extra-item:active {
+  background: rgba(255,255,255,0.04);
+}
+.extra-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 14px;
+}
+.extra-text {
+  flex: 1;
+}
+.extra-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+.extra-sub {
+  font-size: 12px;
+  color: #a1a1aa;
+  margin-top: 2px;
+}
+.logout-item .extra-title {
+  color: #f87171;
+}
+</style>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="edit-modal" id="editModal">
+  <div class="edit-sheet">
+    <h3>Edit Profile</h3>
+    <div class="sub">अपना नाम बदलें या अकाउंट से जुड़े ऑप्शन देखें</div>
+
+    <div class="edit-group">
+      <label>Display Name</label>
+      <input type="text" id="editName" placeholder="अपना नाम लिखें" maxlength="30">
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn-cancel-edit" onclick="closeEditProfile()">Cancel</button>
+      <button class="btn-save-edit" onclick="saveEditProfile()">Save</button>
+    </div>
+
+    <!-- Extra Options -->
+    <div class="edit-extra">
+      <div class="extra-item" onclick="openHelp()">
+        <div class="extra-icon" style="background:rgba(59,130,246,0.18);">❓</div>
+        <div class="extra-text">
+          <div class="extra-title">Help & Support</div>
+          <div class="extra-sub">समस्या हो तो यहाँ से बताएं</div>
+        </div>
+      </div>
+
+      <div class="extra-item" onclick="openPrivacy()">
+        <div class="extra-icon" style="background:rgba(168,85,247,0.18);">📄</div>
+        <div class="extra-text">
+          <div class="extra-title">Privacy Policy</div>
+          <div class="extra-sub">नियम और शर्तें</div>
+        </div>
+      </div>
+
+      <div class="extra-item logout-item" onclick="doLogout()">
+        <div class="extra-icon" style="background:rgba(239,68,68,0.18);">🚪</div>
+        <div class="extra-text">
+          <div class="extra-title">Logout</div>
+          <div class="extra-sub">अकाउंट से साइन आउट करें</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== PART 3 SCRIPT ========== */
+
+// Edit Profile खोलना
+function openEditProfile() {
+  document.getElementById('editName').value = currentUser.name || '';
+  document.getElementById('editModal').classList.add('show');
+}
+
+// Edit Profile बंद करना
+function closeEditProfile() {
+  document.getElementById('editModal').classList.remove('show');
+}
+
+// नाम सेव करना
+function saveEditProfile() {
+  const newName = document.getElementById('editName').value.trim();
+  if (!newName) {
+    alert('नाम खाली नहीं रख सकते');
+    return;
+  }
+  currentUser.name = newName;
+  // Profile स्क्रीन अपडेट करो
+  document.getElementById('profName').textContent = newName;
+  document.getElementById('profAvatar').childNodes[0].textContent = newName.charAt(0).toUpperCase();
+  closeEditProfile();
+  alert('नाम सेव हो गया ✅');
+}
+
+// Logout (अभी बेसिक)
+function doLogout() {
+  const confirmLogout = confirm('क्या आप सच में Logout करना चाहते हैं?');
+  if (!confirmLogout) return;
+
+  // localStorage साफ (जरूरत के हिसाब से)
+  // localStorage.clear(); // पूरा साफ करना हो तो ये चालू करो
+
+  // Profile बंद करो
+  closeEditProfile();
+  closeProfile();
+
+  // बाद में यहाँ Firebase signOut आएगा
+  alert('Logout हो गया।\n(अभी टेस्ट मोड है, असली Login सिस्टम बाद में जुड़ेगा)');
+  
+  // होमपेज पर वापस
+  if (document.getElementById('homeScreen')) {
+    document.getElementById('homeScreen').classList.remove('hidden');
+  }
+}
+
+// Help
+function openHelp() {
+  alert('Help & Support\n\nअभी बेसिक है।\nबाद में यहाँ टिकट सिस्टम और चैट सपोर्ट जुड़ेगा।');
+}
+
+// Privacy
+function openPrivacy() {
+  alert('Privacy Policy\n\nआपका डेटा सुरक्षित रखा जाएगा।\nविस्तार बाद में जोड़ा जाएगा।');
+}
+
+// PART 2 वाले Edit बटन को कनेक्ट करना
+// Profile स्क्रीन में Edit Profile बटन पर ये लगाओ:
+// onclick="openEditProfile()"
+</script>
