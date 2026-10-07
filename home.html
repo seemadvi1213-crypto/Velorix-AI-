@@ -353,3 +353,418 @@ function goProfile() { alert('Profile'); }
 </script>
 </body>
                              </html>
+<!-- ==================== PART 2 : PROFILE + OWNER ==================== -->
+<style>
+/* Profile Screen */
+#profileScreen {
+  display: none;
+  min-height: 100vh;
+  background: #0d0a14;
+  padding-bottom: 80px;
+}
+#profileScreen.active { display: block; }
+
+.prof-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px 10px;
+}
+.prof-header .back {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #fff;
+  cursor: pointer;
+}
+.prof-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #a855f7;
+}
+
+.prof-card {
+  margin: 10px 16px 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  padding: 22px 16px;
+  text-align: center;
+}
+.prof-avatar {
+  width: 86px; height: 86px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  margin: 0 auto 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px; font-weight: 700;
+  position: relative;
+  border: 3px solid rgba(168,85,247,0.3);
+}
+.owner-badge-dot {
+  position: absolute;
+  bottom: -2px; right: -2px;
+  background: #f59e0b;
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 8px;
+  border: 2px solid #0d0a14;
+  display: none;
+}
+.prof-name {
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.prof-email {
+  font-size: 13px;
+  color: #a1a1aa;
+  margin-bottom: 12px;
+}
+.owner-tag {
+  display: none;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+.edit-btn {
+  background: rgba(168,85,247,0.15);
+  border: 1px solid rgba(168,85,247,0.35);
+  color: #e9d5ff;
+  padding: 10px 26px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Quick Actions */
+.quick-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px 20px;
+}
+.quick-card {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.quick-card .q-icon { font-size: 22px; margin-bottom: 7px; }
+.quick-card .q-title { font-size: 13px; font-weight: 600; }
+.quick-card .q-sub { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
+
+/* Owner Section */
+.owner-section {
+  padding: 0 16px 20px;
+  display: none;
+}
+.owner-section.show { display: block; }
+.sec-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+.menu-box {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: rgba(255,255,255,0.04); }
+.m-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+.m-text { flex: 1; }
+.m-title { font-size: 15px; font-weight: 500; }
+.m-sub { font-size: 12px; color: #a1a1aa; margin-top: 2px; }
+.m-arrow { color: #666; font-size: 18px; }
+
+/* API Keys Modal */
+.api-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+.api-modal.show { display: flex; }
+.api-sheet {
+  width: 100%;
+  max-height: 85vh;
+  background: #16121f;
+  border-radius: 22px 22px 0 0;
+  padding: 20px 18px 30px;
+  overflow-y: auto;
+}
+.api-sheet h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+.api-sheet .sub {
+  font-size: 13px;
+  color: #a1a1aa;
+  margin-bottom: 18px;
+}
+.api-group {
+  margin-bottom: 18px;
+}
+.api-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #c4b5fd;
+}
+.api-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+.api-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.api-actions button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 14px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-save {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+}
+.btn-close {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+</style>
+
+<!-- PROFILE SCREEN -->
+<div id="profileScreen">
+  <div class="prof-header">
+    <div class="back" onclick="closeProfile()">←</div>
+    <div class="prof-logo">Velorix AI</div>
+    <div style="width:38px"></div>
+  </div>
+
+  <div class="prof-card">
+    <div class="prof-avatar" id="profAvatar">
+      V
+      <div class="owner-badge-dot" id="ownerDot">OWNER</div>
+    </div>
+    <div class="prof-name" id="profName">Velorix User</div>
+    <div class="prof-email" id="profEmail">user@email.com</div>
+    <div class="owner-tag" id="ownerTag">👑 Owner Access</div>
+    <button class="edit-btn" onclick="editProfile()">Edit Profile</button>
+  </div>
+
+  <div class="quick-row">
+    <div class="quick-card" onclick="alert('Premium जल्द आएगा')">
+      <div class="q-icon">💎</div>
+      <div class="q-title">Go Premium</div>
+      <div class="q-sub">More features</div>
+    </div>
+    <div class="quick-card" onclick="alert('Sharing जल्द आएगा')">
+      <div class="q-icon">🎁</div>
+      <div class="q-title">Invite Friends</div>
+      <div class="q-sub">Earn rewards</div>
+    </div>
+  </div>
+
+  <!-- OWNER ONLY -->
+  <div class="owner-section" id="ownerSection">
+    <div class="sec-label">Owner Control Center</div>
+    <div class="menu-box">
+      <div class="menu-item" onclick="openApiModal()">
+        <div class="m-icon" style="background:rgba(168,85,247,0.18);">🔑</div>
+        <div class="m-text">
+          <div class="m-title">API Keys Management</div>
+          <div class="m-sub">Story • Image • Video • Voice</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="alert('Future Update जल्द')">
+        <div class="m-icon" style="background:rgba(59,130,246,0.18);">🚀</div>
+        <div class="m-text">
+          <div class="m-title">Future Update / Launch</div>
+          <div class="m-sub">Code upload • Launch when ready</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="alert('Code Repair जल्द')">
+        <div class="m-icon" style="background:rgba(34,197,94,0.18);">🛠️</div>
+        <div class="m-text">
+          <div class="m-title">Code Repair & Auto-Fix</div>
+          <div class="m-sub">AI fix + Manual repair</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="alert('Service Center जल्द')">
+        <div class="m-icon" style="background:rgba(234,179,8,0.18);">⚙️</div>
+        <div class="m-text">
+          <div class="m-title">Service Center</div>
+          <div class="m-sub">Health • Scanner • Auto Repair</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="alert('Security जल्द')">
+        <div class="m-icon" style="background:rgba(239,68,68,0.18);">🛡️</div>
+        <div class="m-text">
+          <div class="m-title">Security Center</div>
+          <div class="m-sub">Virus • Attack • API Protect</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API Keys Modal -->
+<div class="api-modal" id="apiModal">
+  <div class="api-sheet">
+    <h3>API Keys Management</h3>
+    <div class="sub">सिर्फ Owner के लिए • Keys सुरक्षित localStorage में सेव होंगी</div>
+
+    <div class="api-group">
+      <label>Groq API Key (Story)</label>
+      <input type="password" id="keyGroq" placeholder="gsk_...">
+    </div>
+    <div class="api-group">
+      <label>Gemini API Key</label>
+      <input type="password" id="keyGemini" placeholder="AQ... or AIza...">
+    </div>
+    <div class="api-group">
+      <label>OpenRouter API Key</label>
+      <input type="password" id="keyOpenRouter" placeholder="sk-or-v1-...">
+    </div>
+    <div class="api-group">
+      <label>Image Key 1 (Fal / Replicate / Together)</label>
+      <input type="password" id="keyImg1" placeholder="Image API Key">
+    </div>
+    <div class="api-group">
+      <label>Image Key 2</label>
+      <input type="password" id="keyImg2" placeholder="Image API Key">
+    </div>
+
+    <div class="api-actions">
+      <button class="btn-close" onclick="closeApiModal()">Close</button>
+      <button class="btn-save" onclick="saveApiKeys()">Save Keys</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== PART 2 SCRIPT ========== */
+const OWNER_EMAIL = "seemadvi1213@gmail.com";
+
+// Temporary user (बाद में Firebase से आएगा)
+let currentUser = {
+  email: "seemadvi1213@gmail.com",
+  name: "Velorix Owner",
+  photo: null
+};
+
+function goProfile() {
+  document.getElementById('profileScreen').classList.add('active');
+  initProfile();
+}
+
+function closeProfile() {
+  document.getElementById('profileScreen').classList.remove('active');
+}
+
+function initProfile() {
+  const isOwner = currentUser.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+
+  document.getElementById('profName').textContent = currentUser.name || 'User';
+  document.getElementById('profEmail').textContent = currentUser.email || '';
+  document.getElementById('profAvatar').childNodes[0].textContent = (currentUser.name || 'V').charAt(0).toUpperCase();
+
+  if (isOwner) {
+    document.getElementById('ownerDot').style.display = 'block';
+    document.getElementById('ownerTag').style.display = 'inline-block';
+    document.getElementById('ownerSection').classList.add('show');
+  } else {
+    document.getElementById('ownerDot').style.display = 'none';
+    document.getElementById('ownerTag').style.display = 'none';
+    document.getElementById('ownerSection').classList.remove('show');
+  }
+
+  // Load saved keys
+  loadApiKeys();
+}
+
+function editProfile() {
+  alert('Edit Profile जल्द आएगा');
+}
+
+function openApiModal() {
+  document.getElementById('apiModal').classList.add('show');
+  loadApiKeys();
+}
+
+function closeApiModal() {
+  document.getElementById('apiModal').classList.remove('show');
+}
+
+function saveApiKeys() {
+  localStorage.setItem('VX_GROQ', document.getElementById('keyGroq').value.trim());
+  localStorage.setItem('VX_GEMINI', document.getElementById('keyGemini').value.trim());
+  localStorage.setItem('VX_OR', document.getElementById('keyOpenRouter').value.trim());
+  localStorage.setItem('VX_IMG1', document.getElementById('keyImg1').value.trim());
+  localStorage.setItem('VX_IMG2', document.getElementById('keyImg2').value.trim());
+  alert('Keys सेव हो गईं ✅');
+  closeApiModal();
+}
+
+function loadApiKeys() {
+  document.getElementById('keyGroq').value = localStorage.getItem('VX_GROQ') || '';
+  document.getElementById('keyGemini').value = localStorage.getItem('VX_GEMINI') || '';
+  document.getElementById('keyOpenRouter').value = localStorage.getItem('VX_OR') || '';
+  document.getElementById('keyImg1').value = localStorage.getItem('VX_IMG1') || '';
+  document.getElementById('keyImg2').value = localStorage.getItem('VX_IMG2') || '';
+}
+
+// होमपेज के Profile बटन को कनेक्ट करना
+// (अगर होमपेज में goProfile फंक्शन है तो ये काम करेगा)
+        </script>
