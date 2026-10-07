@@ -1142,54 +1142,39 @@ function openPrivacy() {
 </div>
 
 <script>
-<!-- ==================== PART 4 CLEAN ==================== -->
+<!-- ==================== PART 4 FINAL CLEAN ==================== -->
 <script>
-/* ============================================
-   PART 4 — Auth Gate + Logout + Profile Init
-   index.html = Login
-   home.html  = App
-============================================ */
+/* 
+  index.html  = असली Google Login (तुम्हारी पुरानी फाइल)
+  home.html   = ऐप (ये स्क्रिप्ट)
+  Owner सिर्फ seemadvi1213@gmail.com को
+*/
 
 const OWNER_EMAIL = "seemadvi1213@gmail.com";
+let currentUser = { email: "", name: "Velorix User" };
 
-// करंट यूजर (Login के बाद भरेगा)
-let currentUser = {
-  email: "",
-  name: "Velorix User"
-};
-
-/* ----- ऐप शुरू होते ही चेक ----- */
+/* ----- लॉगिन चेक (कोई फेक Owner लॉगिन नहीं) ----- */
 (function checkLogin() {
-  // Firebase से यूजर लो
-  if (typeof firebase !== "undefined" && firebase.auth) {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        // असली लॉगिन है
-        currentUser = {
-          email: user.email || "",
-          name: localStorage.getItem("velorix_username") || user.displayName || "Velorix User"
-        };
-        initApp();
-      } else {
-        // लॉगिन नहीं → Login पेज पर भेजो
-        window.location.href = "index.html";
-      }
-    });
-  } else {
-    // Firebase नहीं मिला तो भी Login पर भेजो
+  // Firebase नहीं है तो Login पेज पर भेजो
+  if (typeof firebase === "undefined" || !firebase.auth) {
     window.location.href = "index.html";
+    return;
   }
-})();
 
-function initApp() {
-  // होमपेज दिखाओ
-  if (document.getElementById("homeScreen")) {
-    document.getElementById("homeScreen").classList.remove("hidden");
-  }
-  if (document.getElementById("loginScreen")) {
-    document.getElementById("loginScreen").classList.remove("show");
-  }
-}
+  firebase.auth().onAuthStateChanged(function (user) {
+    // लॉगिन नहीं → Login पेज
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    // असली यूजर का डेटा (कभी Owner फोर्स नहीं)
+    currentUser = {
+      email: (user.email || "").toLowerCase(),
+      name: localStorage.getItem("velorix_username") || user.displayName || "Velorix User"
+    };
+  });
+})();
 
 /* ----- PROFILE ----- */
 function goProfile() {
@@ -1213,20 +1198,25 @@ function closeProfile() {
 }
 
 function initProfile() {
-  const isOwner = currentUser.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+  const email = (currentUser.email || "").toLowerCase();
+  const isOwner = email === OWNER_EMAIL.toLowerCase();
 
-  const nameEl = document.getElementById("profName");
-  const emailEl = document.getElementById("profEmail");
-  const avatarEl = document.getElementById("profAvatar");
+  // नाम + ईमेल
+  if (document.getElementById("profName")) {
+    document.getElementById("profName").textContent = currentUser.name || "User";
+  }
+  if (document.getElementById("profEmail")) {
+    document.getElementById("profEmail").textContent = currentUser.email || "";
+  }
+  if (document.getElementById("profAvatar")) {
+    const letter = (currentUser.name || "V").charAt(0).toUpperCase();
+    document.getElementById("profAvatar").childNodes[0].textContent = letter;
+  }
+
+  // Owner सेक्शन — सिर्फ असली Owner को
   const ownerDot = document.getElementById("ownerDot");
   const ownerTag = document.getElementById("ownerTag");
   const ownerSection = document.getElementById("ownerSection");
-
-  if (nameEl) nameEl.textContent = currentUser.name || "User";
-  if (emailEl) emailEl.textContent = currentUser.email || "";
-  if (avatarEl) {
-    avatarEl.childNodes[0].textContent = (currentUser.name || "V").charAt(0).toUpperCase();
-  }
 
   if (isOwner) {
     if (ownerDot) ownerDot.style.display = "block";
@@ -1243,47 +1233,49 @@ function initProfile() {
 
 /* ----- LOGOUT → index.html ----- */
 async function doLogout() {
-  if (!confirm("क्या आप सच में Logout करना चाहते हैं?")) return;
+  if (!confirm("क्या आप Logout करना चाहते हैं?")) return;
 
   try {
-    if (typeof firebase !== "undefined" && firebase.auth) {
+    if (firebase && firebase.auth) {
       await firebase.auth().signOut();
     }
-  } catch (e) {
-    console.log(e);
-  }
+  } catch (e) {}
 
+  localStorage.removeItem("velorix_username");
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("VX_USER");
-  localStorage.removeItem("velorix_username");
 
-  // असली Login पेज
   window.location.href = "index.html";
 }
 
 /* ----- EDIT PROFILE ----- */
 function openEditProfile() {
-  const input = document.getElementById("editName");
-  if (input) input.value = currentUser.name || "";
-  const modal = document.getElementById("editModal");
-  if (modal) modal.classList.add("show");
+  if (document.getElementById("editName")) {
+    document.getElementById("editName").value = currentUser.name || "";
+  }
+  if (document.getElementById("editModal")) {
+    document.getElementById("editModal").classList.add("show");
+  }
 }
 
 function closeEditProfile() {
-  const modal = document.getElementById("editModal");
-  if (modal) modal.classList.remove("show");
+  if (document.getElementById("editModal")) {
+    document.getElementById("editModal").classList.remove("show");
+  }
 }
 
 function saveEditProfile() {
-  const newName = document.getElementById("editName").value.trim();
+  const input = document.getElementById("editName");
+  const newName = input ? input.value.trim() : "";
   if (!newName) {
     alert("नाम खाली नहीं रख सकते");
     return;
   }
   currentUser.name = newName;
   localStorage.setItem("velorix_username", newName);
-  const pn = document.getElementById("profName");
-  if (pn) pn.textContent = newName;
+  if (document.getElementById("profName")) {
+    document.getElementById("profName").textContent = newName;
+  }
   if (document.getElementById("profAvatar")) {
     document.getElementById("profAvatar").childNodes[0].textContent = newName.charAt(0).toUpperCase();
   }
@@ -1296,15 +1288,20 @@ function openHelp() {
 }
 
 function openPrivacy() {
-  alert("Privacy Policy\n\nहम Google Sign-In इस्तेमाल करते हैं।");
+  alert("Privacy Policy\n\nहम सिर्फ Google Sign-In इस्तेमाल करते हैं।");
 }
 
 /* ----- BOTTOM NAV ----- */
 function goHome() {
   closeProfile();
 }
-
-function goPromo() { alert("Promo जल्द आएगा 🎬"); }
-function goMemes() { alert("Memes जल्द आएगा 😂"); }
-function goShare() { alert("Share जल्द आएगा 🔗"); }
+function goPromo() {
+  alert("Promo जल्द आएगा 🎬");
+}
+function goMemes() {
+  alert("Memes जल्द आएगा 😂");
+}
+function goShare() {
+  alert("Share जल्द आएगा 🔗");
+}
 </script>
