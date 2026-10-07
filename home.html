@@ -758,7 +758,7 @@ function loadApiKeys() {
   document.getElementById('keyImg2').value = localStorage.getItem('VX_IMG2') || '';
 }
   </script>
-<!-- ==================== PART 3 FINAL ==================== -->
+<!-- ==================== PART 3 NEW (LOGOUT SCREEN) ==================== -->
 <style>
 .edit-modal {
   display: none;
@@ -779,19 +779,9 @@ function loadApiKeys() {
   padding: 22px 18px 30px;
   overflow-y: auto;
 }
-.edit-sheet h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-.edit-sheet .sub {
-  font-size: 13px;
-  color: #a1a1aa;
-  margin-bottom: 20px;
-}
-.edit-group {
-  margin-bottom: 16px;
-}
+.edit-sheet h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.edit-sheet .sub { font-size: 13px; color: #a1a1aa; margin-bottom: 20px; }
+.edit-group { margin-bottom: 16px; }
 .edit-group label {
   display: block;
   font-size: 13px;
@@ -843,12 +833,9 @@ function loadApiKeys() {
   cursor: pointer;
   border-radius: 12px;
 }
-.extra-item:active {
-  background: rgba(255,255,255,0.04);
-}
+.extra-item:active { background: rgba(255,255,255,0.04); }
 .extra-icon {
-  width: 38px;
-  height: 38px;
+  width: 38px; height: 38px;
   border-radius: 11px;
   display: flex;
   align-items: center;
@@ -860,6 +847,48 @@ function loadApiKeys() {
 .extra-title { font-size: 15px; font-weight: 500; }
 .extra-sub { font-size: 12px; color: #a1a1aa; margin-top: 2px; }
 .logout-item .extra-title { color: #f87171; }
+
+/* Logout Screen */
+#logoutScreen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0d0a14;
+  z-index: 400;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 24px;
+  text-align: center;
+}
+#logoutScreen.show { display: flex; }
+.logout-logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #a855f7;
+  margin-bottom: 16px;
+}
+.logout-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.logout-sub {
+  font-size: 14px;
+  color: #a1a1aa;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+.btn-relogin {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
 </style>
 
 <!-- EDIT PROFILE MODAL -->
@@ -906,6 +935,14 @@ function loadApiKeys() {
   </div>
 </div>
 
+<!-- LOGOUT SCREEN -->
+<div id="logoutScreen">
+  <div class="logout-logo">Velorix AI</div>
+  <div class="logout-title">Logout हो गया</div>
+  <div class="logout-sub">आप सफलतापूर्वक लॉगआउट हो चुके हैं।<br>फिर से शुरू करने के लिए नीचे बटन दबाएं।</div>
+  <button class="btn-relogin" onclick="reLogin()">फिर से शुरू करें</button>
+</div>
+
 <script>
 function openEditProfile() {
   document.getElementById('editName').value = currentUser.name || '';
@@ -931,7 +968,7 @@ function saveEditProfile() {
   alert('नाम सेव हो गया ✅');
 }
 
-/* ===== REAL LOGOUT ===== */
+/* ===== REAL LOGOUT - स्क्रीन बदलेगी ===== */
 async function doLogout() {
   if (!confirm('क्या आप सच में Logout करना चाहते हैं?')) return;
 
@@ -951,7 +988,22 @@ async function doLogout() {
   localStorage.removeItem('user');
   localStorage.removeItem('isLoggedIn');
 
-  // पूरा पेज रीलोड → शुरू से
+  // सब बंद करो
+  closeEditProfile();
+  if (typeof closeProfile === 'function') closeProfile();
+  if (document.getElementById('homeScreen')) {
+    document.getElementById('homeScreen').classList.add('hidden');
+  }
+  if (document.getElementById('profileScreen')) {
+    document.getElementById('profileScreen').classList.remove('active');
+  }
+
+  // Logout स्क्रीन दिखाओ
+  document.getElementById('logoutScreen').classList.add('show');
+}
+
+function reLogin() {
+  // पेज रीलोड → शुरू से
   window.location.href = window.location.origin + window.location.pathname;
 }
 
