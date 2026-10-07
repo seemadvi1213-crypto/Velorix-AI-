@@ -758,9 +758,8 @@ function loadApiKeys() {
   document.getElementById('keyImg2').value = localStorage.getItem('VX_IMG2') || '';
 }
   </script>
-<!-- ==================== PART 3 : EDIT PROFILE + LOGOUT + HELP ==================== -->
+<!-- ==================== PART 3 COMPLETE ==================== -->
 <style>
-/* Edit Profile Modal */
 .edit-modal {
   display: none;
   position: fixed;
@@ -774,7 +773,7 @@ function loadApiKeys() {
 
 .edit-sheet {
   width: 100%;
-  max-height: 80vh;
+  max-height: 82vh;
   background: #16121f;
   border-radius: 22px 22px 0 0;
   padding: 22px 18px 30px;
@@ -790,7 +789,6 @@ function loadApiKeys() {
   color: #a1a1aa;
   margin-bottom: 20px;
 }
-
 .edit-group {
   margin-bottom: 16px;
 }
@@ -811,12 +809,11 @@ function loadApiKeys() {
   font-size: 15px;
   outline: none;
 }
-
 .edit-actions {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
-  margin-bottom: 22px;
+  margin-top: 8px;
+  margin-bottom: 20px;
 }
 .edit-actions button {
   flex: 1;
@@ -835,11 +832,9 @@ function loadApiKeys() {
   background: rgba(255,255,255,0.08);
   color: #fff;
 }
-
-/* Extra Options inside Edit */
 .edit-extra {
   border-top: 1px solid rgba(255,255,255,0.08);
-  padding-top: 16px;
+  padding-top: 14px;
 }
 .extra-item {
   display: flex;
@@ -848,9 +843,7 @@ function loadApiKeys() {
   cursor: pointer;
   border-radius: 12px;
 }
-.extra-item:active {
-  background: rgba(255,255,255,0.04);
-}
+.extra-item:active { background: rgba(255,255,255,0.04); }
 .extra-icon {
   width: 38px;
   height: 38px;
@@ -861,28 +854,17 @@ function loadApiKeys() {
   font-size: 18px;
   margin-right: 14px;
 }
-.extra-text {
-  flex: 1;
-}
-.extra-title {
-  font-size: 15px;
-  font-weight: 500;
-}
-.extra-sub {
-  font-size: 12px;
-  color: #a1a1aa;
-  margin-top: 2px;
-}
-.logout-item .extra-title {
-  color: #f87171;
-}
+.extra-text { flex: 1; }
+.extra-title { font-size: 15px; font-weight: 500; }
+.extra-sub { font-size: 12px; color: #a1a1aa; margin-top: 2px; }
+.logout-item .extra-title { color: #f87171; }
 </style>
 
 <!-- EDIT PROFILE MODAL -->
 <div class="edit-modal" id="editModal">
   <div class="edit-sheet">
     <h3>Edit Profile</h3>
-    <div class="sub">अपना नाम बदलें या अकाउंट से जुड़े ऑप्शन देखें</div>
+    <div class="sub">अपना नाम बदलें या अकाउंट ऑप्शन देखें</div>
 
     <div class="edit-group">
       <label>Display Name</label>
@@ -894,13 +876,12 @@ function loadApiKeys() {
       <button class="btn-save-edit" onclick="saveEditProfile()">Save</button>
     </div>
 
-    <!-- Extra Options -->
     <div class="edit-extra">
       <div class="extra-item" onclick="openHelp()">
         <div class="extra-icon" style="background:rgba(59,130,246,0.18);">❓</div>
         <div class="extra-text">
           <div class="extra-title">Help & Support</div>
-          <div class="extra-sub">समस्या हो तो यहाँ से बताएं</div>
+          <div class="extra-sub">समस्या हो तो यहाँ बताएं</div>
         </div>
       </div>
 
@@ -924,20 +905,17 @@ function loadApiKeys() {
 </div>
 
 <script>
-/* ========== PART 3 SCRIPT ========== */
+/* PART 3 Functions */
 
-// Edit Profile खोलना
 function openEditProfile() {
   document.getElementById('editName').value = currentUser.name || '';
   document.getElementById('editModal').classList.add('show');
 }
 
-// Edit Profile बंद करना
 function closeEditProfile() {
   document.getElementById('editModal').classList.remove('show');
 }
 
-// नाम सेव करना
 function saveEditProfile() {
   const newName = document.getElementById('editName').value.trim();
   if (!newName) {
@@ -945,45 +923,32 @@ function saveEditProfile() {
     return;
   }
   currentUser.name = newName;
-  // Profile स्क्रीन अपडेट करो
   document.getElementById('profName').textContent = newName;
-  document.getElementById('profAvatar').childNodes[0].textContent = newName.charAt(0).toUpperCase();
+  if (document.getElementById('profAvatar')) {
+    document.getElementById('profAvatar').childNodes[0].textContent = newName.charAt(0).toUpperCase();
+  }
   closeEditProfile();
   alert('नाम सेव हो गया ✅');
 }
 
-// Logout (अभी बेसिक)
 function doLogout() {
-  const confirmLogout = confirm('क्या आप सच में Logout करना चाहते हैं?');
-  if (!confirmLogout) return;
+  if (!confirm('क्या आप Logout करना चाहते हैं?')) return;
 
-  // localStorage साफ (जरूरत के हिसाब से)
-  // localStorage.clear(); // पूरा साफ करना हो तो ये चालू करो
-
-  // Profile बंद करो
   closeEditProfile();
   closeProfile();
 
-  // बाद में यहाँ Firebase signOut आएगा
-  alert('Logout हो गया।\n(अभी टेस्ट मोड है, असली Login सिस्टम बाद में जुड़ेगा)');
-  
-  // होमपेज पर वापस
+  alert('Logout हो गया ✅\n(अभी टेस्ट मोड है। असली Login बाद में जुड़ेगा)');
+
   if (document.getElementById('homeScreen')) {
     document.getElementById('homeScreen').classList.remove('hidden');
   }
 }
 
-// Help
 function openHelp() {
-  alert('Help & Support\n\nअभी बेसिक है।\nबाद में यहाँ टिकट सिस्टम और चैट सपोर्ट जुड़ेगा।');
+  alert('Help & Support\n\nअभी बेसिक है।\nबाद में टिकट और चैट सपोर्ट जोड़ेंगे।');
 }
 
-// Privacy
 function openPrivacy() {
-  alert('Privacy Policy\n\nआपका डेटा सुरक्षित रखा जाएगा।\nविस्तार बाद में जोड़ा जाएगा।');
+  alert('Privacy Policy\n\nआपका डेटा सुरक्षित रखा जाएगा।');
 }
-
-// PART 2 वाले Edit बटन को कनेक्ट करना
-// Profile स्क्रीन में Edit Profile बटन पर ये लगाओ:
-// onclick="openEditProfile()"
 </script>
