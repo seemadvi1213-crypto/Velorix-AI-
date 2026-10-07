@@ -352,9 +352,8 @@ function goShare() { alert('Share'); }
 function goProfile() { alert('Profile'); }
 </script>
 </body>
-<!-- ==================== PART 2 CORRECTED ==================== -->
+<!-- ==================== PART 2 NEW ==================== -->
 <style>
-#homeScreen { display: block; }
 #profileScreen {
   display: none;
   min-height: 100vh;
@@ -568,7 +567,7 @@ function goProfile() { alert('Profile'); }
 }
 </style>
 
-<!-- PROFILE SCREEN (Full separate screen) -->
+<!-- PROFILE SCREEN -->
 <div id="profileScreen">
   <div class="prof-header">
     <div class="back" onclick="closeProfile()">←</div>
@@ -600,7 +599,7 @@ function goProfile() { alert('Profile'); }
     </div>
   </div>
 
-  <!-- OWNER ONLY SECTION -->
+  <!-- OWNER ONLY - सिर्फ Owner को दिखेगा -->
   <div class="owner-section" id="ownerSection">
     <div class="sec-label">Owner Control Center</div>
     <div class="menu-box">
@@ -652,7 +651,7 @@ function goProfile() { alert('Profile'); }
 <div class="api-modal" id="apiModal">
   <div class="api-sheet">
     <h3>API Keys Management</h3>
-    <div class="sub">सिर्फ Owner के लिए • Keys localStorage में सेव होंगी</div>
+    <div class="sub">सिर्फ Owner के लिए</div>
 
     <div class="api-group">
       <label>Groq API Key (Story)</label>
@@ -685,18 +684,23 @@ function goProfile() { alert('Profile'); }
 <script>
 const OWNER_EMAIL = "seemadvi1213@gmail.com";
 
+// ========== टेस्टिंग ==========
+// नॉर्मल यूजर टेस्ट के लिए ये रखो:
 let currentUser = {
-  email: "seemadvi1213@gmail.com",
-  name: "Velorix Owner"
+  email: "normaluser@gmail.com",
+  name: "Velorix User"
 };
 
+// Owner टेस्ट करना हो तो ऊपर वाले को कमेंट करके ये चालू करो:
+// let currentUser = {
+//   email: "seemadvi1213@gmail.com",
+//   name: "Velorix Owner"
+// };
+
 function goProfile() {
-  // होमपेज छुपाओ
-  const home = document.getElementById('homeScreen') || document.body;
   if (document.getElementById('homeScreen')) {
     document.getElementById('homeScreen').classList.add('hidden');
   }
-  
   document.getElementById('profileScreen').classList.add('active');
   initProfile();
   window.scrollTo(0,0);
@@ -704,8 +708,6 @@ function goProfile() {
 
 function closeProfile() {
   document.getElementById('profileScreen').classList.remove('active');
-  
-  // होमपेज वापस दिखाओ
   if (document.getElementById('homeScreen')) {
     document.getElementById('homeScreen').classList.remove('hidden');
   }
@@ -755,6 +757,4 @@ function loadApiKeys() {
   document.getElementById('keyImg1').value = localStorage.getItem('VX_IMG1') || '';
   document.getElementById('keyImg2').value = localStorage.getItem('VX_IMG2') || '';
 }
-</script>                             
-  
-  
+  </script>
