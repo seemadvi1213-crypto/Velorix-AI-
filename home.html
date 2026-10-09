@@ -682,5 +682,120 @@ function goProfile() { alert('Profile'); }
   </div>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<style>
+.prof-extra {
+  margin-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 12px;
+}
+.prof-extra-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+.prof-extra-item:active { background: rgba(255,255,255,0.05); }
+.prof-extra-icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 14px;
+}
+.prof-extra-text { flex: 1; }
+.prof-extra-title { font-size: 15px; font-weight: 500; }
+.prof-extra-sub { font-size: 12px; color: #a1a1aa; margin-top: 2px; }
+.logout-row .prof-extra-title { color: #f87171; }
+</style>
+
 <script>
+const OWNER_EMAIL = "seemadvi1213@gmail.com";
+let currentUser = { email: "", name: "Velorix User" };
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBwFnbJoKUIDSmyl96EewCGMXg2oVnXot4",
+  authDomain: "best-47108.firebaseapp.com",
+  projectId: "best-47108",
+  storageBucket: "best-47108.firebasestorage.app",
+  messagingSenderId: "995954423710",
+  appId: "1:995954423710:web:9b3458af61b99e6fb6088f",
+  measurementId: "G-CPCRTBG42V"
+};
+
+if (typeof firebase !== "undefined" && !firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+(function () {
+  if (typeof firebase === "undefined" || !firebase.auth) {
+    window.location.href = "index.html";
+    return;
+  }
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+    currentUser = {
+      email: (user.email || "").toLowerCase(),
+      name: localStorage.getItem("velorix_username") || user.displayName || "Velorix User"
+    };
+  });
+})();
+
+function goProfile() {
+  if (document.getElementById("homeScreen")) document.getElementById("homeScreen").classList.add("hidden");
+  if (document.getElementById("profileScreen")) document.getElementById("profileScreen").classList.add("active");
+  initProfile();
+  window.scrollTo(0, 0);
+}
+
+function closeProfile() {
+  if (document.getElementById("profileScreen")) document.getElementById("profileScreen").classList.remove("active");
+  if (document.getElementById("homeScreen")) document.getElementById("homeScreen").classList.remove("hidden");
+}
+
+function initProfile() {
+  const isOwner = (currentUser.email || "") === OWNER_EMAIL.toLowerCase();
+  if (document.getElementById("profName")) document.getElementById("profName").textContent = currentUser.name || "User";
+  if (document.getElementById("profEmail")) document.getElementById("profEmail").textContent = currentUser.email || "";
+  if (document.getElementById("profAvatar")) {
+    document.getElementById("profAvatar").childNodes[0].textContent = (currentUser.name || "V").charAt(0).toUpperCase();
+  }
+  if (document.getElementById("ownerDot")) document.getElementById("ownerDot").style.display = isOwner ? "block" : "none";
+  if (document.getElementById("ownerTag")) document.getElementById("ownerTag").style.display = isOwner ? "inline-block" : "none";
+  if (document.getElementById("ownerSection")) {
+    isOwner ? document.getElementById("ownerSection").classList.add("show") : document.getElementById("ownerSection").classList.remove("show");
+  }
+}
+
+async function doLogout() {
+  if (!confirm("क्या आप Logout करना चाहते हैं?")) return;
+  try { await firebase.auth().signOut(); } catch (e) {}
+  localStorage.removeItem("velorix_username");
+  localStorage.removeItem("velorix_lang");
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("VX_USER");
+  window.location.href = "index.html";
+}
+
+function openHelp() {
+  alert("Help & Support\n\nLogin समस्या हो तो Login पेज पर Report दबाएं।");
+}
+function openPrivacy() {
+  alert("Privacy Policy\n\nहम सिर्फ Google Sign-In इस्तेमाल करते हैं।");
+}
+function goHome() { closeProfile(); }
+function goPromo() { alert("Promo जल्द आएगा"); }
+function goMemes() { alert("Memes जल्द आएगा"); }
+function goShare() { alert("Share जल्द आएगा"); }
+</script>
   
