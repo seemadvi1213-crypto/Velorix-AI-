@@ -352,3 +352,121 @@ function goShare() { alert('Share'); }
 function goProfile() { alert('Profile'); }
 </script>
 </body>
+<!-- PROFILE SCREEN -->
+<div id="profileScreen">
+  <div class="prof-header">
+    <div class="back" onclick="closeProfile()">←</div>
+    <div class="prof-logo">Velorix AI</div>
+    <div style="width:38px"></div>
+  </div>
+
+  <div class="prof-card">
+    <div class="prof-avatar" id="profAvatar">
+      V
+      <div class="owner-badge-dot" id="ownerDot">OWNER</div>
+    </div>
+    <div class="prof-name" id="profName">Velorix User</div>
+    <div class="prof-email" id="profEmail">user@email.com</div>
+    <div class="owner-tag" id="ownerTag">👑 Owner Access</div>
+  </div>
+
+  <div class="quick-row">
+    <div class="quick-card" onclick="goPremium()">
+      <div class="q-icon">💎</div>
+      <div class="q-title">Go Premium</div>
+      <div class="q-sub">More features</div>
+    </div>
+    <div class="quick-card" onclick="goInvite()">
+      <div class="q-icon">🎁</div>
+      <div class="q-title">Invite Friends</div>
+      <div class="q-sub">Earn rewards</div>
+    </div>
+  </div>
+
+  <!-- OWNER ONLY -->
+  <div class="owner-section" id="ownerSection">
+    <div class="sec-label">Owner Control Center</div>
+    <div class="menu-box">
+
+      <div class="menu-item" onclick="openApiModal()">
+        <div class="m-icon" style="background:rgba(168,85,247,0.18);">🔑</div>
+        <div class="m-text">
+          <div class="m-title">API Keys Management</div>
+          <div class="m-sub">Story · Image · Video · Voice</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+
+      <div class="menu-item" onclick="openCodeCenter()">
+        <div class="m-icon" style="background:rgba(34,197,94,0.18);">💻</div>
+        <div class="m-text">
+          <div class="m-title">Code Center</div>
+          <div class="m-sub">Upload · Scan · Fix · GitHub / Vercel</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+
+      <div class="menu-item" onclick="openUiGallery()">
+        <div class="m-icon" style="background:rgba(59,130,246,0.18);">🖼️</div>
+        <div class="m-text">
+          <div class="m-title">UI Gallery & Logo</div>
+          <div class="m-sub">Icons · Logos · Screen images</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+
+      <div class="menu-item" onclick="openFutureUpdate()">
+        <div class="m-icon" style="background:rgba(59,130,246,0.18);">🚀</div>
+        <div class="m-text">
+          <div class="m-title">Future Update / Launch</div>
+          <div class="m-sub">Code upload · Launch control</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+
+      <div class="menu-item" onclick="openServiceCenter()">
+        <div class="m-icon" style="background:rgba(234,179,8,0.18);">🛠️</div>
+        <div class="m-text">
+          <div class="m-title">Service Center</div>
+          <div class="m-sub">Health · Scanner · Auto Repair</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+
+      <div class="menu-item" onclick="openSecurityCenter()">
+        <div class="m-icon" style="background:rgba(239,68,68,0.18);">🛡️</div>
+        <div class="m-text">
+          <div class="m-title">Security Center</div>
+          <div class="m-sub">Virus · Attack · API Protect</div>
+        </div>
+        <div class="m-arrow">›</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- सबको दिखेगा -->
+  <div class="prof-extra">
+    <div class="prof-extra-item" onclick="openHelp()">
+      <div class="prof-extra-icon" style="background:rgba(59,130,246,0.18);">❓</div>
+      <div class="prof-extra-text">
+        <div class="prof-extra-title">Help & Support</div>
+        <div class="prof-extra-sub">समस्या हो तो यहाँ</div>
+      </div>
+    </div>
+    <div class="prof-extra-item" onclick="openPrivacy()">
+      <div class="prof-extra-icon" style="background:rgba(168,85,247,0.18);">📄</div>
+      <div class="prof-extra-text">
+        <div class="prof-extra-title">Privacy Policy</div>
+        <div class="prof-extra-sub">नियम और शर्तें</div>
+      </div>
+    </div>
+    <div class="prof-extra-item logout-row" onclick="doLogout()">
+      <div class="prof-extra-icon" style="background:rgba(239,68,68,0.18);">🚪</div>
+      <div class="prof-extra-text">
+        <div class="prof-extra-title">Logout</div>
+        <div class="prof-extra-sub">अकाउंट से साइन आउट</div>
+      </div>
+    </div>
+  </div>
+  </div>
