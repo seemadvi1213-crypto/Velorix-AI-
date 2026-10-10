@@ -350,20 +350,41 @@ function goPromo() { alert('Promo'); }
 function goMemes() { alert('Memes'); }
 function goShare() { alert('Share'); }
 function goProfile() { alert('Profile'); }
-</script>
-</body>
-<!-- ==================== PART 2 FIXED ==================== -->
+<!-- ==================== API KEYS MODAL ==================== -->
 <style>
+.api-modal{
+  display:none; position:fixed; inset:0; z-index:300;
+  background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center;
+}
+.api-modal.show{ display:flex; }
+.api-sheet{
+  width:100%; max-width:480px; background:#14141c;
+  border-radius:20px 20px 0 0; padding:20px 18px 28px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.api-sheet h3{ font-size:17px; margin-bottom:4px; }
+.api-sheet .sub{ font-size:12px; color:#a1a1aa; margin-bottom:16px; }
+.api-group{ margin-bottom:12px; }
+.api-group label{ display:block; font-size:12px; color:#a1a1aa; margin-bottom:5px; }
+.api-group input{
+  width:100%; padding:12px 14px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06);
+  color:#fff; font-size:14px; outline:none;
+}
+.api-actions{ display:flex; gap:10px; margin-top:16px; }
+.api-actions button{
+  flex:1; padding:12px; border:none; border-radius:12px;
+  font-weight:600; font-size:14px; cursor:pointer;
+}
+.btn-close{ background:rgba(255,255,255,0.08); color:#fff; }
+.btn-save{ background:linear-gradient(135deg,#a855f7,#7c3aed); color:#fff; }
+
+/* PART 2 — Profile */
 #profileScreen{
-  display:none;
-  position:fixed; inset:0;
-  background:#0a0a0f;
-  z-index:200;
-  overflow-y:auto;
-  padding-bottom:90px;
+  display:none; position:fixed; inset:0; background:#0a0a0f;
+  z-index:200; overflow-y:auto; padding-bottom:90px;
 }
 #profileScreen.active{ display:block; }
-
 .prof-header{
   display:flex; align-items:center; justify-content:space-between;
   padding:16px 18px; position:sticky; top:0;
@@ -376,13 +397,10 @@ function goProfile() { alert('Profile'); }
   font-size:18px; cursor:pointer;
 }
 .prof-logo{ font-weight:700; color:#a855f7; font-size:16px; }
-
 .prof-card{
-  margin:12px 16px; padding:22px 16px;
-  border-radius:20px;
+  margin:12px 16px; padding:22px 16px; border-radius:20px;
   background:linear-gradient(145deg,#1a1a24,#12121a);
-  border:1px solid rgba(255,255,255,0.06);
-  text-align:center;
+  border:1px solid rgba(255,255,255,0.06); text-align:center;
 }
 .prof-avatar{
   width:72px; height:72px; border-radius:50%;
@@ -392,10 +410,8 @@ function goProfile() { alert('Profile'); }
   font-size:28px; font-weight:700; color:#fff;
 }
 .owner-badge-dot{
-  display:none;
-  position:absolute; bottom:-2px; right:-2px;
-  background:#f59e0b; color:#000;
-  font-size:9px; font-weight:800;
+  display:none; position:absolute; bottom:-2px; right:-2px;
+  background:#f59e0b; color:#000; font-size:9px; font-weight:800;
   padding:2px 6px; border-radius:8px;
 }
 .prof-name{ font-size:18px; font-weight:700; margin-bottom:4px; }
@@ -404,41 +420,32 @@ function goProfile() { alert('Profile'); }
   display:none;
   background:linear-gradient(135deg,#a855f7,#ec4899);
   color:#fff; font-size:12px; font-weight:600;
-  padding:6px 14px; border-radius:20px;
-  width:fit-content; margin:0 auto;
+  padding:6px 14px; border-radius:20px; width:fit-content; margin:0 auto;
 }
-
 .quick-row{
   display:grid; grid-template-columns:1fr 1fr;
   gap:12px; margin:0 16px 18px;
 }
 .quick-card{
-  background:#14141c; border-radius:16px;
-  padding:16px 12px; text-align:center;
-  border:1px solid rgba(255,255,255,0.06);
-  cursor:pointer;
+  background:#14141c; border-radius:16px; padding:16px 12px;
+  text-align:center; border:1px solid rgba(255,255,255,0.06); cursor:pointer;
 }
 .q-icon{ font-size:24px; margin-bottom:6px; }
 .q-title{ font-size:14px; font-weight:600; }
 .q-sub{ font-size:11px; color:#a1a1aa; margin-top:2px; }
-
-/* Owner — डिफ़ॉल्ट छुपा; सिर्फ JS से .show */
 .owner-section{ display:none; margin:0 16px 16px; }
 .owner-section.show{ display:block; }
 .sec-label{
   font-size:12px; font-weight:700; color:#a1a1aa;
-  letter-spacing:0.06em; margin-bottom:10px;
-  text-transform:uppercase;
+  letter-spacing:0.06em; margin-bottom:10px; text-transform:uppercase;
 }
 .menu-box{
   background:#14141c; border-radius:16px;
-  border:1px solid rgba(255,255,255,0.06);
-  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.06); overflow:hidden;
 }
 .menu-item{
-  display:flex; align-items:center;
-  padding:14px 14px; cursor:pointer;
-  border-bottom:1px solid rgba(255,255,255,0.05);
+  display:flex; align-items:center; padding:14px;
+  cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.05);
 }
 .menu-item:last-child{ border-bottom:none; }
 .menu-item:active{ background:rgba(255,255,255,0.04); }
@@ -451,15 +458,13 @@ function goProfile() { alert('Profile'); }
 .m-title{ font-size:14px; font-weight:600; }
 .m-sub{ font-size:11px; color:#a1a1aa; margin-top:2px; }
 .m-arrow{ color:#52525b; font-size:18px; }
-
 .prof-extra{
   margin:8px 16px 20px;
-  border-top:1px solid rgba(255,255,255,0.06);
-  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.06); padding-top:12px;
 }
 .prof-extra-item{
-  display:flex; align-items:center;
-  padding:14px 10px; border-radius:12px; cursor:pointer;
+  display:flex; align-items:center; padding:14px 10px;
+  border-radius:12px; cursor:pointer;
 }
 .prof-extra-item:active{ background:rgba(255,255,255,0.05); }
 .prof-extra-icon{
@@ -472,6 +477,30 @@ function goProfile() { alert('Profile'); }
 .logout-row .prof-extra-title{ color:#f87171; }
 </style>
 
+<div class="api-modal" id="apiModal">
+  <div class="api-sheet">
+    <h3>API Keys</h3>
+    <div class="sub">Keys सिर्फ इस डिवाइस पर सेव होंगी</div>
+    <div class="api-group">
+      <label>Groq API Key</label>
+      <input type="password" id="keyGroq" placeholder="gsk_...">
+    </div>
+    <div class="api-group">
+      <label>Gemini API Key</label>
+      <input type="password" id="keyGemini" placeholder="AQ... या AIza...">
+    </div>
+    <div class="api-group">
+      <label>OpenRouter API Key</label>
+      <input type="password" id="keyOpenRouter" placeholder="sk-or-v1-...">
+    </div>
+    <div class="api-actions">
+      <button class="btn-close" onclick="closeApiModal()">Close</button>
+      <button class="btn-save" onclick="saveApiKeys()">Save Keys</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 2 — PROFILE ==================== -->
 <div id="profileScreen">
   <div class="prof-header">
     <div class="back" onclick="closeProfile()">←</div>
@@ -502,7 +531,6 @@ function goProfile() { alert('Profile'); }
     </div>
   </div>
 
-  <!-- सिर्फ Owner — JS से .show -->
   <div class="owner-section" id="ownerSection">
     <div class="sec-label">Owner Control Center</div>
     <div class="menu-box">
@@ -575,11 +603,112 @@ function goProfile() { alert('Profile'); }
     <div class="prof-extra-item logout-row" onclick="doLogout()">
       <div class="prof-extra-icon" style="background:rgba(239,68,68,0.18);">🚪</div>
       <div class="prof-extra-text">
-        <div class="prof-extra-title">Logout</div>
+        <div class="prof-extra-title">Sign out</div>
         <div class="prof-extra-sub">अकाउंट से साइन आउट</div>
       </div>
     </div>
   </div>
 </div>
-<!-- ==================== END PART 2 ==================== -->
-        
+
+<!-- ==================== PART 4 — JS ==================== -->
+<script>
+const OWNER_EMAIL = "seemadvi1213@gmail.com";
+let currentUser = {
+  email: (localStorage.getItem("velorix_email") || "").toLowerCase(),
+  name: localStorage.getItem("velorix_username") || "Velorix User"
+};
+
+/* ----- Home ----- */
+function startCreate() {
+  const t = document.getElementById("promptInput").value.trim();
+  if (!t) return alert("पहले कहानी लिखो");
+  alert("Create शुरू होगा");
+}
+function selectMode(m) { alert("Mode: " + m); }
+function selectStyle(s) { alert("Style: " + s); }
+function openGallery() { alert("Gallery\nPhotos • Shorts • Full Videos"); }
+function goPromo() { alert("Promo"); }
+function goMemes() { alert("Memes"); }
+function goShare() { alert("Share"); }
+function goPremium() { alert("Premium"); }
+function goInvite() { alert("Invite Friends"); }
+
+/* ----- API Modal (होम + Owner दोनों से) ----- */
+function openApiModal() {
+  document.getElementById("keyGroq").value = localStorage.getItem("VX_GROQ") || "";
+  document.getElementById("keyGemini").value = localStorage.getItem("VX_GEMINI") || "";
+  document.getElementById("keyOpenRouter").value = localStorage.getItem("VX_OR") || "";
+  document.getElementById("apiModal").classList.add("show");
+}
+function openApiKeys() { openApiModal(); }
+function closeApiModal() {
+  document.getElementById("apiModal").classList.remove("show");
+}
+function saveApiKeys() {
+  localStorage.setItem("VX_GROQ", document.getElementById("keyGroq").value.trim());
+  localStorage.setItem("VX_GEMINI", document.getElementById("keyGemini").value.trim());
+  localStorage.setItem("VX_OR", document.getElementById("keyOpenRouter").value.trim());
+  closeApiModal();
+  alert("Keys सेव हो गईं ✅");
+}
+
+/* ----- Profile ----- */
+function goProfile() {
+  initProfile();
+  document.getElementById("profileScreen").classList.add("active");
+}
+function closeProfile() {
+  document.getElementById("profileScreen").classList.remove("active");
+}
+function initProfile() {
+  const email = (currentUser.email || "").toLowerCase();
+  const name = currentUser.name || "Velorix User";
+  const isOwner = email === OWNER_EMAIL.toLowerCase();
+
+  document.getElementById("profName").textContent = name;
+  document.getElementById("profEmail").textContent = email || "—";
+  document.getElementById("profAvatar").childNodes[0].textContent =
+    (name.charAt(0) || "V").toUpperCase();
+
+  document.getElementById("ownerDot").style.display = isOwner ? "block" : "none";
+  document.getElementById("ownerTag").style.display = isOwner ? "inline-block" : "none";
+  const os = document.getElementById("ownerSection");
+  if (isOwner) os.classList.add("show");
+  else os.classList.remove("show");
+}
+
+/* ----- Owner menus (पेज बाद में) ----- */
+function openCodeCenter() { alert("Code Center"); }
+function openUiGallery() { alert("UI Gallery & Logo"); }
+function openFutureUpdate() { alert("Future Update / Launch"); }
+function openServiceCenter() { alert("Service Center"); }
+function openSecurityCenter() { alert("Security Center"); }
+function openHelp() { alert("Help & Support"); }
+function openPrivacy() { alert("Privacy Policy"); }
+
+/* ----- Logout ----- */
+function doLogout() {
+  if (!confirm("Sign out करना है?")) return;
+  localStorage.removeItem("velorix_username");
+  localStorage.removeItem("velorix_email");
+  localStorage.removeItem("velorix_lang");
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "index.html";
+}
+
+/* Firebase अगर पेज पर है तो असली user लो */
+(function () {
+  if (typeof firebase !== "undefined" && firebase.auth) {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (!user) return;
+      currentUser = {
+        email: (user.email || "").toLowerCase(),
+        name: localStorage.getItem("velorix_username") || user.displayName || "Velorix User"
+      };
+      localStorage.setItem("velorix_email", currentUser.email);
+    });
+  }
+})();
+</script>
+</body>
+</html>
