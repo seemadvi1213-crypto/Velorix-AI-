@@ -352,7 +352,126 @@ function goShare() { alert('Share'); }
 function goProfile() { alert('Profile'); }
 </script>
 </body>
-<!-- PROFILE SCREEN -->
+<!-- ==================== PART 2 FIXED ==================== -->
+<style>
+#profileScreen{
+  display:none;
+  position:fixed; inset:0;
+  background:#0a0a0f;
+  z-index:200;
+  overflow-y:auto;
+  padding-bottom:90px;
+}
+#profileScreen.active{ display:block; }
+
+.prof-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px; position:sticky; top:0;
+  background:rgba(10,10,15,0.92); z-index:5;
+}
+.prof-header .back{
+  width:38px; height:38px; border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; cursor:pointer;
+}
+.prof-logo{ font-weight:700; color:#a855f7; font-size:16px; }
+
+.prof-card{
+  margin:12px 16px; padding:22px 16px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#1a1a24,#12121a);
+  border:1px solid rgba(255,255,255,0.06);
+  text-align:center;
+}
+.prof-avatar{
+  width:72px; height:72px; border-radius:50%;
+  background:linear-gradient(135deg,#a855f7,#7c3aed);
+  margin:0 auto 12px; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; font-weight:700; color:#fff;
+}
+.owner-badge-dot{
+  display:none;
+  position:absolute; bottom:-2px; right:-2px;
+  background:#f59e0b; color:#000;
+  font-size:9px; font-weight:800;
+  padding:2px 6px; border-radius:8px;
+}
+.prof-name{ font-size:18px; font-weight:700; margin-bottom:4px; }
+.prof-email{ font-size:13px; color:#a1a1aa; margin-bottom:10px; }
+.owner-tag{
+  display:none;
+  background:linear-gradient(135deg,#a855f7,#ec4899);
+  color:#fff; font-size:12px; font-weight:600;
+  padding:6px 14px; border-radius:20px;
+  width:fit-content; margin:0 auto;
+}
+
+.quick-row{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px; margin:0 16px 18px;
+}
+.quick-card{
+  background:#14141c; border-radius:16px;
+  padding:16px 12px; text-align:center;
+  border:1px solid rgba(255,255,255,0.06);
+  cursor:pointer;
+}
+.q-icon{ font-size:24px; margin-bottom:6px; }
+.q-title{ font-size:14px; font-weight:600; }
+.q-sub{ font-size:11px; color:#a1a1aa; margin-top:2px; }
+
+/* Owner — डिफ़ॉल्ट छुपा; सिर्फ JS से .show */
+.owner-section{ display:none; margin:0 16px 16px; }
+.owner-section.show{ display:block; }
+.sec-label{
+  font-size:12px; font-weight:700; color:#a1a1aa;
+  letter-spacing:0.06em; margin-bottom:10px;
+  text-transform:uppercase;
+}
+.menu-box{
+  background:#14141c; border-radius:16px;
+  border:1px solid rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+.menu-item{
+  display:flex; align-items:center;
+  padding:14px 14px; cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.menu-item:last-child{ border-bottom:none; }
+.menu-item:active{ background:rgba(255,255,255,0.04); }
+.m-icon{
+  width:38px; height:38px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; margin-right:12px; flex-shrink:0;
+}
+.m-text{ flex:1; min-width:0; }
+.m-title{ font-size:14px; font-weight:600; }
+.m-sub{ font-size:11px; color:#a1a1aa; margin-top:2px; }
+.m-arrow{ color:#52525b; font-size:18px; }
+
+.prof-extra{
+  margin:8px 16px 20px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding-top:12px;
+}
+.prof-extra-item{
+  display:flex; align-items:center;
+  padding:14px 10px; border-radius:12px; cursor:pointer;
+}
+.prof-extra-item:active{ background:rgba(255,255,255,0.05); }
+.prof-extra-icon{
+  width:38px; height:38px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; margin-right:14px;
+}
+.prof-extra-title{ font-size:15px; font-weight:500; }
+.prof-extra-sub{ font-size:12px; color:#a1a1aa; margin-top:2px; }
+.logout-row .prof-extra-title{ color:#f87171; }
+</style>
+
 <div id="profileScreen">
   <div class="prof-header">
     <div class="back" onclick="closeProfile()">←</div>
@@ -383,11 +502,10 @@ function goProfile() { alert('Profile'); }
     </div>
   </div>
 
-  <!-- OWNER ONLY -->
+  <!-- सिर्फ Owner — JS से .show -->
   <div class="owner-section" id="ownerSection">
     <div class="sec-label">Owner Control Center</div>
     <div class="menu-box">
-
       <div class="menu-item" onclick="openApiModal()">
         <div class="m-icon" style="background:rgba(168,85,247,0.18);">🔑</div>
         <div class="m-text">
@@ -396,7 +514,6 @@ function goProfile() { alert('Profile'); }
         </div>
         <div class="m-arrow">›</div>
       </div>
-
       <div class="menu-item" onclick="openCodeCenter()">
         <div class="m-icon" style="background:rgba(34,197,94,0.18);">💻</div>
         <div class="m-text">
@@ -405,7 +522,6 @@ function goProfile() { alert('Profile'); }
         </div>
         <div class="m-arrow">›</div>
       </div>
-
       <div class="menu-item" onclick="openUiGallery()">
         <div class="m-icon" style="background:rgba(59,130,246,0.18);">🖼️</div>
         <div class="m-text">
@@ -414,7 +530,6 @@ function goProfile() { alert('Profile'); }
         </div>
         <div class="m-arrow">›</div>
       </div>
-
       <div class="menu-item" onclick="openFutureUpdate()">
         <div class="m-icon" style="background:rgba(59,130,246,0.18);">🚀</div>
         <div class="m-text">
@@ -423,7 +538,6 @@ function goProfile() { alert('Profile'); }
         </div>
         <div class="m-arrow">›</div>
       </div>
-
       <div class="menu-item" onclick="openServiceCenter()">
         <div class="m-icon" style="background:rgba(234,179,8,0.18);">🛠️</div>
         <div class="m-text">
@@ -432,7 +546,6 @@ function goProfile() { alert('Profile'); }
         </div>
         <div class="m-arrow">›</div>
       </div>
-
       <div class="menu-item" onclick="openSecurityCenter()">
         <div class="m-icon" style="background:rgba(239,68,68,0.18);">🛡️</div>
         <div class="m-text">
@@ -441,11 +554,9 @@ function goProfile() { alert('Profile'); }
         </div>
         <div class="m-arrow">›</div>
       </div>
-
     </div>
   </div>
 
-  <!-- सबको दिखेगा -->
   <div class="prof-extra">
     <div class="prof-extra-item" onclick="openHelp()">
       <div class="prof-extra-icon" style="background:rgba(59,130,246,0.18);">❓</div>
@@ -469,4 +580,6 @@ function goProfile() { alert('Profile'); }
       </div>
     </div>
   </div>
-  </div>
+</div>
+<!-- ==================== END PART 2 ==================== -->
+        
