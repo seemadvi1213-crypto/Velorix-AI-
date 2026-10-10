@@ -478,10 +478,10 @@ body {
   </div>
 </div>
 
-<!-- ========== PART 4: JS ========== -->
-<script>
+<!-- ========== PART 4: JS ==========
+   <script>
 const OWNER_EMAIL = "seemadvi1213@gmail.com";
-let currentUser = {
+var currentUser = {
   email: (localStorage.getItem("velorix_email") || "").toLowerCase(),
   name: localStorage.getItem("velorix_username") || "Velorix User"
 };
@@ -500,7 +500,6 @@ function goShare() { alert("Share"); }
 function goPremium() { alert("Premium"); }
 function goInvite() { alert("Invite Friends"); }
 
-/* API */
 function openApiModal() {
   document.getElementById("keyGroq").value = localStorage.getItem("VX_GROQ") || "";
   document.getElementById("keyGemini").value = localStorage.getItem("VX_GEMINI") || "";
@@ -515,10 +514,50 @@ function saveApiKeys() {
   localStorage.setItem("VX_GEMINI", document.getElementById("keyGemini").value.trim());
   localStorage.setItem("VX_OR", document.getElementById("keyOpenRouter").value.trim());
   closeApiModal();
-  alert("Keys सेव ✅");
+  alert("Keys सेव OK");
 }
 
-/* PROFILE — जरूर काम करे */
 function goProfile() {
   initProfile();
-  var s = document.getElementById("pro
+  var s = document.getElementById("profileScreen");
+  s.classList.add("active");
+  s.style.display = "block";
+}
+function closeProfile() {
+  var s = document.getElementById("profileScreen");
+  s.classList.remove("active");
+  s.style.display = "none";
+}
+function initProfile() {
+  var email = (currentUser.email || "").toLowerCase();
+  var name = currentUser.name || "Velorix User";
+  var isOwner = email === OWNER_EMAIL.toLowerCase();
+  document.getElementById("profName").textContent = name;
+  document.getElementById("profEmail").textContent = email || "-";
+  document.getElementById("profAvatar").childNodes[0].textContent = (name.charAt(0) || "V").toUpperCase();
+  var av = document.getElementById("headerAv");
+  if (av) av.textContent = (name.charAt(0) || "V").toUpperCase();
+  document.getElementById("ownerDot").style.display = isOwner ? "block" : "none";
+  document.getElementById("ownerTag").style.display = isOwner ? "inline-block" : "none";
+  var os = document.getElementById("ownerSection");
+  if (isOwner) os.classList.add("show"); else os.classList.remove("show");
+}
+
+function openCodeCenter() { alert("Code Center"); }
+function openUiGallery() { alert("UI Gallery"); }
+function openFutureUpdate() { alert("Future Update"); }
+function openServiceCenter() { alert("Service Center"); }
+function openSecurityCenter() { alert("Security Center"); }
+function openHelp() { alert("Help"); }
+function openPrivacy() { alert("Privacy"); }
+
+function doLogout() {
+  if (!confirm("Sign out?")) return;
+  localStorage.removeItem("velorix_username");
+  localStorage.removeItem("velorix_email");
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "index.html";
+}
+</script>
+</body>
+</html>
