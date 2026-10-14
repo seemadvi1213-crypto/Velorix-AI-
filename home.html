@@ -1,11 +1,3 @@
-<!-- ============================================================
-   VELORIX AI — home.html
-   START HERE — यहीं से पूरा कॉपी करो
-   PART 1 = Home
-   PART 2 = Profile + Owner
-   PART 3 = API Modal
-   PART 4 = JS (Profile open, Owner, Logout, API Keys)
-============================================================ -->
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -28,8 +20,6 @@ body {
   background: var(--bg); color: var(--text);
   min-height: 100vh; padding-bottom: 75px; overflow-x: hidden;
 }
-
-/* ===== HOME ===== */
 .header {
   display:flex; justify-content:space-between; align-items:center;
   padding:16px 18px 8px;
@@ -58,7 +48,6 @@ body {
   padding:10px 18px; border-radius:25px; font-size:13px;
   font-weight:600; border:none; cursor:pointer;
 }
-.btn-gray { background:rgba(255,255,255,0.08); color:var(--text); }
 .btn-primary {
   background:linear-gradient(135deg,var(--p),var(--p2)); color:#fff;
 }
@@ -127,7 +116,6 @@ body {
 .nav-item.active { color:var(--p); }
 .nav-icon { font-size:21px; }
 
-/* ===== API MODAL ===== */
 .api-modal {
   display:none; position:fixed; inset:0; z-index:300;
   background:rgba(0,0,0,0.72); align-items:flex-end; justify-content:center;
@@ -155,7 +143,6 @@ body {
 .btn-close { background:rgba(255,255,255,0.08); color:#fff; }
 .btn-save { background:linear-gradient(135deg,var(--p),var(--p2)); color:#fff; }
 
-/* ===== PROFILE ===== */
 #profileScreen {
   display:none; position:fixed; inset:0; background:#0a0a0f;
   z-index:200; overflow-y:auto; padding-bottom:90px;
@@ -254,7 +241,6 @@ body {
 </head>
 <body>
 
-<!-- ========== PART 1: HOME ========== -->
 <div class="header">
   <div class="logo">Velorix AI</div>
   <div class="header-avatar" id="headerAv" onclick="goProfile()">V</div>
@@ -263,7 +249,6 @@ body {
 <div class="prompt-box">
   <textarea id="promptInput" placeholder="अपनी कहानी लिखें... जैसे गरीब किसान की स्टोरी"></textarea>
   <div class="prompt-actions">
-    <button class="btn btn-gray" onclick="openApiModal()">API Keys</button>
     <button class="btn btn-primary" onclick="startCreate()">Create</button>
   </div>
 </div>
@@ -344,7 +329,6 @@ body {
   <div class="nav-item" onclick="goProfile()"><div class="nav-icon">👤</div><div>Profile</div></div>
 </div>
 
-<!-- ========== PART 3: API MODAL ========== -->
 <div class="api-modal" id="apiModal">
   <div class="api-sheet">
     <h3>API Keys</h3>
@@ -368,14 +352,12 @@ body {
   </div>
 </div>
 
-<!-- ========== PART 2: PROFILE ========== -->
 <div id="profileScreen">
   <div class="prof-header">
     <div class="back" onclick="closeProfile()">←</div>
     <div class="prof-logo">Velorix AI</div>
     <div style="width:38px"></div>
   </div>
-
   <div class="prof-card">
     <div class="prof-avatar" id="profAvatar">
       V
@@ -385,7 +367,6 @@ body {
     <div class="prof-email" id="profEmail">user@email.com</div>
     <div class="owner-tag" id="ownerTag">👑 Owner Access</div>
   </div>
-
   <div class="quick-row">
     <div class="quick-card" onclick="goPremium()">
       <div class="q-icon">💎</div>
@@ -398,7 +379,6 @@ body {
       <div class="q-sub">Earn rewards</div>
     </div>
   </div>
-
   <div class="owner-section" id="ownerSection">
     <div class="sec-label">Owner Control Center</div>
     <div class="menu-box">
@@ -452,7 +432,6 @@ body {
       </div>
     </div>
   </div>
-
   <div class="prof-extra">
     <div class="prof-extra-item" onclick="openHelp()">
       <div class="prof-extra-icon" style="background:rgba(59,130,246,0.18);">❓</div>
@@ -477,13 +456,17 @@ body {
     </div>
   </div>
 </div>
-<!-- ========== PART 4: JS ========== -->
+
 <script>
 const OWNER_EMAIL = "seemadvi1213@gmail.com";
-var currentUser = {
-  email: (localStorage.getItem("velorix_email") || "").toLowerCase(),
-  name: localStorage.getItem("velorix_username") || "Velorix User"
-};
+var currentUser = { email: "", name: "Velorix User" };
+
+function loadUser() {
+  currentUser = {
+    email: (localStorage.getItem("velorix_email") || "").toLowerCase(),
+    name: localStorage.getItem("velorix_username") || "Velorix User"
+  };
+}
 
 function startCreate() {
   var t = document.getElementById("promptInput").value.trim();
@@ -517,6 +500,7 @@ function saveApiKeys() {
 }
 
 function goProfile() {
+  loadUser();
   initProfile();
   var s = document.getElementById("profileScreen");
   s.classList.add("active");
@@ -531,32 +515,8 @@ function initProfile() {
   var email = (currentUser.email || "").toLowerCase();
   var name = currentUser.name || "Velorix User";
   var isOwner = email === OWNER_EMAIL.toLowerCase();
+
   document.getElementById("profName").textContent = name;
   document.getElementById("profEmail").textContent = email || "-";
   document.getElementById("profAvatar").childNodes[0].textContent = (name.charAt(0) || "V").toUpperCase();
-  var av = document.getElementById("headerAv");
-  if (av) av.textContent = (name.charAt(0) || "V").toUpperCase();
-  document.getElementById("ownerDot").style.display = isOwner ? "block" : "none";
-  document.getElementById("ownerTag").style.display = isOwner ? "inline-block" : "none";
-  var os = document.getElementById("ownerSection");
-  if (isOwner) os.classList.add("show"); else os.classList.remove("show");
-}
-
-function openCodeCenter() { alert("Code Center"); }
-function openUiGallery() { alert("UI Gallery"); }
-function openFutureUpdate() { alert("Future Update"); }
-function openServiceCenter() { alert("Service Center"); }
-function openSecurityCenter() { alert("Security Center"); }
-function openHelp() { alert("Help"); }
-function openPrivacy() { alert("Privacy"); }
-
-function doLogout() {
-  if (!confirm("Sign out?")) return;
-  localStorage.removeItem("velorix_username");
-  localStorage.removeItem("velorix_email");
-  localStorage.removeItem("isLoggedIn");
-  window.location.href = "index.html";
-}
-</script>
-</body>
-</html>
+  var av = document.getElementById("
