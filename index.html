@@ -238,7 +238,6 @@
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         },{merge:true});
         localStorage.setItem("velorix_username", name);
-        localStorage.setItem("velorix_username", name);
         localStorage.setItem("velorix_email", (user.email || "").toLowerCase());
         localStorage.setItem("isLoggedIn", "true");
         window.location.href = "home.html";
