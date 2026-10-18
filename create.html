@@ -5,64 +5,105 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Create · Velorix AI</title>
 <style>
-:root{--bg:#0d0a14;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.09);--p:#a855f7;--p2:#7c3aed;--text:#fff;--muted:#a1a1aa}
+:root{
+  --bg:#07060c;--card:rgba(255,255,255,.07);--border:rgba(167,139,250,.22);
+  --p:#c084fc;--p2:#7c3aed;--glow:rgba(124,58,237,.35);--text:#fafafa;--muted:#a1a1aa
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:16px;padding-bottom:40px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.back{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:none;color:#fff;font-size:18px;cursor:pointer}
-.logo{font-weight:700;color:var(--p);font-size:16px}
-.box{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px}
-label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
-textarea{width:100%;min-height:100px;background:transparent;border:none;outline:none;color:#fff;font-size:15px;line-height:1.5;resize:none;font-family:inherit}
-.row{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
-.btn{padding:12px 18px;border-radius:25px;border:none;font-weight:600;font-size:13px;cursor:pointer}
-.btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
-.btn-g{background:rgba(255,255,255,.1);color:#fff}
-.btn:disabled{opacity:.45}
-.screen{display:none}
-.screen.on{display:block}
-.story{font-size:15px;line-height:1.65;color:#e4e4e7;white-space:pre-wrap}
-.scene{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
-.scene h3{font-size:13px;color:var(--p);margin-bottom:6px}
-.scene p{font-size:14px;line-height:1.5;color:#ddd}
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:12px}
-.ov.on{display:flex}
-.bar{width:200px;height:6px;background:#333;border-radius:4px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--p2));transition:width .3s}
-.msg{font-size:13px;color:#ccc}
-.editbox{display:none;margin-top:12px}
-.editbox.on{display:block}
-.editbox textarea{min-height:70px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:12px;padding:10px}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.28),transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent);
+  padding:16px;padding-bottom:48px
+}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.back{
+  width:42px;height:42px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer
+}
+.logo{font-weight:700;font-size:17px;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.box{
+  background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:18px 16px;margin-bottom:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.03) inset;
+  backdrop-filter:blur(16px)
+}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+textarea{
+  width:100%;min-height:110px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:12px;outline:none;color:#fff;font-size:15px;line-height:1.55;
+  resize:none;font-family:inherit
+}
+.row{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.btn{
+  padding:12px 20px;border-radius:999px;border:none;font-weight:600;font-size:13px;cursor:pointer;
+  transition:transform .12s
+}
+.btn:active{transform:scale(.97)}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 6px 20px var(--glow)}
+.btn-g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.1)}
+.screen{display:none}.screen.on{display:block}
+.story{
+  font-size:15.5px;line-height:1.75;color:#ececf1;white-space:pre-wrap;
+  max-height:55vh;overflow-y:auto;padding-right:4px
+}
+.scene{
+  background:rgba(0,0,0,.28);border:1px solid rgba(167,139,250,.18);border-radius:16px;
+  padding:14px;margin-bottom:12px
+}
+.scene .num{
+  display:inline-block;font-size:11px;font-weight:700;color:#0a0a0a;
+  background:linear-gradient(135deg,#e9d5ff,#c084fc);padding:4px 10px;border-radius:999px;margin-bottom:8px
+}
+.scene .body{font-size:14px;line-height:1.55;color:#e4e4e7;margin-bottom:8px}
+.scene .prompt{
+  font-size:12px;line-height:1.45;color:#c4b5fd;background:rgba(124,58,237,.15);
+  border-radius:10px;padding:8px 10px;border:1px dashed rgba(167,139,250,.35)
+}
+.editbox{display:none;margin-top:12px}.editbox.on{display:block}
 .err{color:#f87171;font-size:13px;margin-top:8px}
+.ok{color:#86efac;font-size:12px;margin-top:6px}
+.ov{
+  display:none;position:fixed;inset:0;background:rgba(5,5,10,.82);z-index:50;
+  align-items:center;justify-content:center;flex-direction:column;gap:14px
+}
+.ov.on{display:flex}
+.bar{width:220px;height:8px;background:#1f1f2e;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c084fc,#7c3aed,#ec4899);transition:width .25s}
+.pct{font-size:20px;font-weight:700;color:#e9d5ff}
+.msg{font-size:13px;color:#a1a1aa}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
 </style>
 </head>
 <body>
 <div class="top">
   <button class="back" onclick="goHome()">←</button>
   <div class="logo">Velorix AI</div>
-  <div style="width:40px"></div>
+  <div style="width:42px"></div>
 </div>
 
-<!-- STEP 1: prompt -->
 <div id="s1" class="screen on">
   <div class="box">
-    <label>अपनी कहानी / विषय</label>
-    <textarea id="prompt" placeholder="जैसे: गरीब किसान की स्टोरी"></textarea>
+    <label>कहानी / विषय</label>
+    <textarea id="prompt" placeholder="जैसे: गरीब किसान की स्टोरी — या पूरी कहानी पेस्ट करो"></textarea>
+    <p class="hint">विषय लिखोगे तो AI कहानी बनाएगी। पूरी कहानी डालोगे तो वही save होकर आगे बढ़ेगी।</p>
     <div class="row">
-      <button class="btn btn-p" id="btnGen" onclick="genStory()">Create Story</button>
+      <button class="btn btn-p" onclick="genStory()">Create Story</button>
     </div>
     <div class="err" id="err1"></div>
   </div>
 </div>
 
-<!-- STEP 2: story -->
 <div id="s2" class="screen">
   <div class="box">
     <label>Generated Story</label>
     <div class="story" id="storyText"></div>
+    <div class="ok" id="editOk"></div>
     <div class="editbox" id="editBox">
-      <label style="margin-top:8px">क्या बदलना है? (छोटा सुझाव)</label>
-      <textarea id="editSug" placeholder="जैसे: किसान का नाम राम रखो, अंत खुश रखो"></textarea>
+      <label style="margin-top:10px">क्या बदलना है?</label>
+      <textarea id="editSug" placeholder="जैसे: अंत खुश रखो, नाम राम रखो"></textarea>
       <div class="row">
         <button class="btn btn-g" onclick="closeEdit()">Cancel</button>
         <button class="btn btn-p" onclick="applyEdit()">Apply Edit</button>
@@ -76,20 +117,21 @@ textarea{width:100%;min-height:100px;background:transparent;border:none;outline:
   </div>
 </div>
 
-<!-- STEP 3: scenes -->
 <div id="s3" class="screen">
   <div class="box">
-    <label>Scenes (\~1 min video)</label>
+    <label>Scenes · Photo prompts</label>
     <div id="sceneList"></div>
     <div class="row">
       <button class="btn btn-g" onclick="show('s2')">← Story</button>
       <button class="btn btn-p" onclick="nextPhoto()">Continue → Photos</button>
     </div>
+    <div class="err" id="err3"></div>
   </div>
 </div>
 
 <div class="ov" id="ov">
-  <div class="msg" id="ovMsg">Generating...</div>
+  <div class="pct" id="ovPct">0%</div>
+  <div class="msg" id="ovMsg">Working...</div>
   <div class="bar"><i id="ovBar"></i></div>
 </div>
 
@@ -97,15 +139,19 @@ textarea{width:100%;min-height:100px;background:transparent;border:none;outline:
 var storyFull="";
 var scenes=[];
 
-function goHome(){ window.location.href="home.html"; }
+function goHome(){ location.href="home.html"; }
 function show(id){
   ["s1","s2","s3"].forEach(function(x){ document.getElementById(x).classList.remove("on"); });
   document.getElementById(id).classList.add("on");
 }
 function prog(on,msg,pct){
   var o=document.getElementById("ov");
-  if(on){ o.classList.add("on"); document.getElementById("ovMsg").textContent=msg||"..."; document.getElementById("ovBar").style.width=(pct||10)+"%"; }
-  else o.classList.remove("on");
+  if(!on){ o.classList.remove("on"); return; }
+  o.classList.add("on");
+  pct=Math.max(0,Math.min(100,pct||0));
+  document.getElementById("ovMsg").textContent=msg||"...";
+  document.getElementById("ovPct").textContent=pct+"%";
+  document.getElementById("ovBar").style.width=pct+"%";
 }
 function keys(){
   return {
@@ -114,11 +160,23 @@ function keys(){
     or:(localStorage.getItem("VX_OR")||"").trim()
   };
 }
+function isBad(t){
+  if(!t||t.length<40) return true;
+  var x=t.toLowerCase();
+  if(x.indexOf("user safety")>=0) return true;
+  if(x.indexOf("koi kahani nahi")>=0) return true;
+  if(/^safe\s*$/i.test(t.trim())) return true;
+  return false;
+}
+function looksFullStory(t){
+  // लंबी टेक्स्ट / कई वाक्य = पहले से कहानी
+  if(t.length>180) return true;
+  if((t.match(/[।.!?]/g)||[]).length>=3) return true;
+  return false;
+}
 
 async function callAI(system,user){
-  var k=keys();
-  var lastErr="No API key";
-  // 1 Groq
+  var k=keys(), lastErr="No API key";
   if(k.groq){
     try{
       var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
@@ -127,18 +185,17 @@ async function callAI(system,user){
         body:JSON.stringify({
           model:"llama-3.1-8b-instant",
           messages:[{role:"system",content:system},{role:"user",content:user}],
-          temperature:0.7,
-          max_tokens:1200
+          temperature:0.75,max_tokens:1400
         })
       });
       var j=await r.json();
       if(!r.ok) throw new Error((j.error&&j.error.message)||("Groq "+r.status));
       var t=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-      if(t&&t.trim()) return t.trim();
-      throw new Error("Groq empty");
+      if(t&&t.trim()&&!isBad(t)) return t.trim();
+      if(t&&t.trim()) lastErr="Bad response: "+t.slice(0,60);
+      else lastErr="Groq empty";
     }catch(e){ lastErr=e.message||String(e); }
   }
-  // 2 OpenRouter
   if(k.or){
     try{
       var r2=await fetch("https://openrouter.ai/api/v1/chat/completions",{
@@ -152,53 +209,68 @@ async function callAI(system,user){
       var j2=await r2.json();
       if(!r2.ok) throw new Error((j2.error&&j2.error.message)||("OR "+r2.status));
       var t2=j2.choices&&j2.choices[0]&&j2.choices[0].message&&j2.choices[0].message.content;
-      if(t2&&t2.trim()) return t2.trim();
-      throw new Error("OR empty");
+      if(t2&&t2.trim()&&!isBad(t2)) return t2.trim();
+      lastErr="OR bad/empty";
     }catch(e){ lastErr=e.message||String(e); }
   }
-  // 3 Gemini
   if(k.gemini){
     try{
       var url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(k.gemini);
       var r3=await fetch(url,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          contents:[{parts:[{text:system+"\n\n"+user}]}]
-        })
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[{text:system+"\n\n"+user}]}]})
       });
       var j3=await r3.json();
       if(!r3.ok) throw new Error((j3.error&&j3.error.message)||("Gemini "+r3.status));
       var t3=j3.candidates&&j3.candidates[0]&&j3.candidates[0].content&&j3.candidates[0].content.parts&&j3.candidates[0].content.parts[0].text;
-      if(t3&&t3.trim()) return t3.trim();
-      throw new Error("Gemini empty");
+      if(t3&&t3.trim()&&!isBad(t3)) return t3.trim();
+      lastErr="Gemini bad/empty";
     }catch(e){ lastErr=e.message||String(e); }
   }
   throw new Error(lastErr);
+}
+
+function setStory(t){
+  storyFull=t;
+  document.getElementById("storyText").textContent=t;
+  try{ localStorage.setItem("VX_STORY",t); }catch(e){}
 }
 
 async function genStory(){
   var p=document.getElementById("prompt").value.trim();
   var err=document.getElementById("err1");
   err.textContent="";
-  if(!p){ err.textContent="पहले विषय लिखो"; return; }
+  if(!p){ err.textContent="पहले लिखो"; return; }
   var k=keys();
-  if(!k.groq&&!k.gemini&&!k.or){ err.textContent="Owner → Profile → API Keys में key सेव करो"; return; }
-  prog(true,"Story बन रही है...",25);
-  try{
-    var sys="Tu Velorix AI story writer hai. User ke topic par Hindi mein ek short video script-style kahani likh. Maximum \~1 minute bolne layak (lagbhag 120-160 words). Simple, clear scenes. Sirf kahani likh, extra heading mat likh.";
-    var out=await callAI(sys,p);
-    storyFull=out;
-    document.getElementById("storyText").textContent=storyFull;
+  if(!k.groq&&!k.gemini&&!k.or){ err.textContent="Profile → API Keys सेव करो"; return; }
+
+  // पहले से पूरी कहानी है तो AI मत चलाओ
+  if(looksFullStory(p)){
+    prog(true,"कहानी save...",60);
+    setStory(p);
     prog(true,"Done",100);
-    setTimeout(function(){ prog(false); show("s2"); },300);
+    setTimeout(function(){ prog(false); show("s2"); },250);
+    return;
+  }
+
+  prog(true,"Story बन रही है...",20);
+  try{
+    var sys="Tu Velorix AI writer hai. User ke topic par Hindi mein short cinematic kahani likh. \~1 minute (130-170 words). Emotional, clear. Sirf kahani. No title, no safety notes, no English meta.";
+    prog(true,"Story बन रही है...",45);
+    var out=await callAI(sys,p);
+    prog(true,"Done",100);
+    setStory(out);
+    setTimeout(function(){ prog(false); show("s2"); },280);
   }catch(e){
     prog(false);
     err.textContent="Story नहीं बनी: "+(e.message||e);
   }
 }
 
-function openEdit(){ document.getElementById("editBox").classList.add("on"); }
+function openEdit(){
+  document.getElementById("editBox").classList.add("on");
+  document.getElementById("editOk").textContent="";
+}
 function closeEdit(){ document.getElementById("editBox").classList.remove("on"); }
 
 async function applyEdit(){
@@ -206,70 +278,100 @@ async function applyEdit(){
   var err=document.getElementById("err2");
   err.textContent="";
   if(!sug){ err.textContent="सुझाव लिखो"; return; }
-  prog(true,"Edit लग रहा है...",40);
+  if(!storyFull){ err.textContent="पहले story बनाओ"; return; }
+  prog(true,"Edit लग रहा है...",35);
   try{
-    var sys="Tu story editor hai. Neeche di hui kahani ko user ke suggestion ke hisaab se thoda change kar. Poori kahani wapas likh. \~1 minute (120-160 words). Hindi. Sirf updated kahani.";
-    var out=await callAI(sys,"STORY:\n"+storyFull+"\n\nSUGGESTION:\n"+sug);
-    storyFull=out;
-    document.getElementById("storyText").textContent=storyFull;
+    var sys="Story editor. Neeche kahani ko SIRF user suggestion ke hisaab se thoda badlo. Baaki same rakho. Poori updated Hindi kahani wapas likho. No meta, no safety line.";
+    prog(true,"Edit लग रहा है...",70);
+    var out=await callAI(sys,"STORY:\n"+storyFull+"\n\nCHANGE ONLY:\n"+sug);
+    setStory(out);
     document.getElementById("editSug").value="";
     closeEdit();
+    document.getElementById("editOk").textContent="✓ Edit लग गई — नीचे नई कहानी है";
     prog(false);
+    // scroll story into view
+    document.getElementById("storyText").scrollTop=0;
   }catch(e){
     prog(false);
     err.textContent="Edit fail: "+(e.message||e);
   }
 }
 
+function fallbackScenes(text){
+  var parts=text.split(/(?<=[।.!?])\s+/).filter(function(x){ return x.trim().length>8; });
+  if(parts.length<2){
+    var mid=Math.floor(text.length/2);
+    parts=[text.slice(0,mid),text.slice(mid)];
+  }
+  var n=Math.min(6,Math.max(3,parts.length));
+  var size=Math.ceil(parts.length/n);
+  var out=[];
+  for(var i=0;i<parts.length;i+=size){
+    var chunk=parts.slice(i,i+size).join(" ").trim();
+    out.push({n:out.length+1, body:chunk, prompt:"Cinematic still, "+chunk.slice(0,120)});
+  }
+  return out;
+}
+
+function renderScenes(){
+  var box=document.getElementById("sceneList");
+  box.innerHTML="";
+  scenes.forEach(function(s){
+    var d=document.createElement("div");
+    d.className="scene";
+    d.innerHTML='<div class="num">सीन '+s.n+'</div><div class="body"></div><div class="prompt"></div>';
+    d.querySelector(".body").textContent=s.body;
+    d.querySelector(".prompt").textContent="🎞 "+s.prompt;
+    box.appendChild(d);
+  });
+  try{ localStorage.setItem("VX_SCENES",JSON.stringify(scenes)); }catch(e){}
+}
+
 async function genScenes(){
   var err=document.getElementById("err2");
   err.textContent="";
-  prog(true,"Scenes टूट रहे हैं...",50);
+  if(!storyFull||isBad(storyFull)){
+    err.textContent="Valid story नहीं है — वापस Create करो";
+    return;
+  }
+  prog(true,"Scenes टूट रहे हैं...",25);
   try{
-    var sys="Is kahani ko 4 se 6 short scenes mein todo. Har line format EXACT: SCENE|number|text. Example: SCENE|1|Kisaan subah khet mein pahunchta hai. Sirf ye format, aur kuch mat likh. Hindi.";
+    var sys="Kahani ko 4-6 scenes mein todo. Har line EXACT format:\nSCENE|number|scene_text|image_prompt_english\nscene_text Hindi. image_prompt short English for AI image. No other text.";
+    prog(true,"Scenes टूट रहे हैं...",55);
     var out=await callAI(sys,storyFull);
     scenes=[];
     out.split("\n").forEach(function(line){
       line=line.trim();
-      var m=line.match(/^SCENE\|(\d+)\|(.+)$/i);
-      if(m) scenes.push({n:m[1],t:m[2].trim()});
-    });
-    if(!scenes.length){
-      // fallback split
-      var parts=storyFull.split(/(?<=[।.!?])\s+/).filter(Boolean);
-      var chunk=Math.max(1,Math.ceil(parts.length/5));
-      for(var i=0;i<parts.length;i+=chunk){
-        scenes.push({n:String(scenes.length+1),t:parts.slice(i,i+chunk).join(" ")});
+      var m=line.match(/^SCENE\|(\d+)\|([^|]+)\|(.+)$/i);
+      if(m){
+        scenes.push({n:+m[1], body:m[2].trim(), prompt:m[3].trim()});
+      }else{
+        var m2=line.match(/^SCENE\|(\d+)\|(.+)$/i);
+        if(m2) scenes.push({n:+m2[1], body:m2[2].trim(), prompt:"Cinematic frame: "+m2[2].trim().slice(0,100)});
       }
-    }
-    var box=document.getElementById("sceneList");
-    box.innerHTML="";
-    scenes.forEach(function(s){
-      var d=document.createElement("div");
-      d.className="scene";
-      d.innerHTML="<h3>सीन "+s.n+"</h3><p></p>";
-      d.querySelector("p").textContent=s.t;
-      box.appendChild(d);
     });
-    try{ localStorage.setItem("VX_STORY",storyFull); localStorage.setItem("VX_SCENES",JSON.stringify(scenes)); }catch(e){}
+    if(scenes.length<2) scenes=fallbackScenes(storyFull);
+    prog(true,"Done",100);
+    renderScenes();
+    setTimeout(function(){ prog(false); show("s3"); },250);
+  }catch(e){
+    // fallback still works
+    scenes=fallbackScenes(storyFull);
+    renderScenes();
     prog(false);
     show("s3");
-  }catch(e){
-    prog(false);
-    err.textContent="Scenes fail: "+(e.message||e);
   }
 }
 
 function nextPhoto(){
-  alert("अगला स्टेप: Photos / Characters — जल्द");
+  alert("अगला: Photos / Characters (जल्द)");
 }
 
-// home se prompt
 (function(){
   var q=new URLSearchParams(location.search).get("q");
-  if(q) document.getElementById("prompt").value=q;
   var h=localStorage.getItem("VX_PROMPT");
-  if(!q&&h) document.getElementById("prompt").value=h;
+  if(q) document.getElementById("prompt").value=q;
+  else if(h) document.getElementById("prompt").value=h;
 })();
 </script>
 </body>
