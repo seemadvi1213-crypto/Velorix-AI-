@@ -472,7 +472,15 @@ function startCreate(){
   try{ localStorage.setItem("VX_PROMPT",t); }catch(e){}
   window.location.href="create.html?q="+encodeURIComponent(t);
   }
-function selectMode(m){alert("Mode: "+m);}
+function selectMode(m){
+  if(m==="text2video"||m==="fullstory"){
+    var t=document.getElementById("promptInput").value.trim();
+    if(t) try{ localStorage.setItem("VX_PROMPT",t); }catch(e){}
+    window.location.href="create.html"+(t?("?q="+encodeURIComponent(t)):"");
+    return;
+  }
+  alert("Mode: "+m);
+}
 function selectStyle(s){alert("Style: "+s);}
 function openGallery(){alert("Gallery");}
 function goPromo(){alert("Promo");}
