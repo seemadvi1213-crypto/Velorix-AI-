@@ -469,8 +469,9 @@ function loadUser(){
 function startCreate(){
   var t=document.getElementById("promptInput").value.trim();
   if(!t)return alert("पहले कहानी लिखो");
-  alert("Create शुरू होगा");
-}
+  try{ localStorage.setItem("VX_PROMPT",t); }catch(e){}
+  window.location.href="create.html?q="+encodeURIComponent(t);
+  }
 function selectMode(m){alert("Mode: "+m);}
 function selectStyle(s){alert("Style: "+s);}
 function openGallery(){alert("Gallery");}
