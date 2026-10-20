@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>API Center · Velorix AI</title>
+<style>
+:root{--bg:#07060c;--card:rgba(255,255,255,.07);--border:rgba(167,139,250,.22);--p:#c084fc;--p2:#7c3aed;--muted:#a1a1aa}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:#fff;min-height:100vh;
+background-image:radial-gradient(ellipse 80% 45% at 10% -10%,rgba(124,58,237,.3),transparent);padding:16px;padding-bottom:40px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.back{width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;font-size:18px}
+.logo{font-weight:700;color:var(--p)}
+.cat{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:14px}
+.cat h2{font-size:15px;margin-bottom:4px}
+.cat p{font-size:11px;color:var(--muted);margin-bottom:12px}
+.slot{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;margin-bottom:10px}
+.slot label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}
+.slot input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);color:#fff;font-size:13px;margin-bottom:8px;outline:none}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:10px 16px;border-radius:999px;border:none;font-weight:600;font-size:12px;cursor:pointer}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
+.btn-g{background:rgba(255,255,255,.1);color:#fff}
+.btn-add{width:100%;padding:12px;border-radius:12px;border:1px dashed rgba(167,139,250,.4);background:transparent;color:var(--p);font-weight:600;font-size:13px;margin-top:4px;cursor:pointer}
+.tag{display:inline-block;font-size:10px;padding:3px 8px;border-radius:999px;background:rgba(124,58,237,.25);color:#e9d5ff;margin-left:6px}
+.tag.prem{background:rgba(251,191,36,.2);color:#fbbf24}
+.ok{color:#86efac;font-size:12px;margin-top:8px;min-height:16px}
+</style>
+</head>
+<body>
+<div class="top">
+  <button class="back" onclick="location.href='home.html'">←</button>
+  <div class="logo">API Center</div>
+  <div style="width:42px"></div>
+</div>
+
+<div class="cat">
+  <h2>Story Writing <span class="tag">Free · 3</span></h2>
+  <p>कहानी / scenes — Groq, Gemini, OpenRouter</p>
+  <div class="slot">
+    <label>Groq</label>
+    <input id="k_groq" type="password" placeholder="gsk_...">
+  </div>
+  <div class="slot">
+    <label>Gemini (Google AI Studio)</label>
+    <input id="k_gemini" type="password" placeholder="API key">
+  </div>
+  <div class="slot">
+    <label>OpenRouter</label>
+    <input id="k_or" type="password" placeholder="sk-or-...">
+  </div>
+  <div class="row"><button class="btn btn-p" onclick="saveStory()">Save Story Keys</button></div>
+  <div class="ok" id="okStory"></div>
+</div>
+
+<div class="cat">
+  <h2>Image Generation <span class="tag">Free · 6</span></h2>
+  <p>Characters / backgrounds — 6 normal keys</p>
+  <div id="imgSlots"></div>
+  <button class="btn-add" type="button" onclick="addImgSlot(false)">+ Add Image Key (Free)</button>
+  <div class="row" style="margin-top:10px"><button class="btn btn-p" onclick="saveImg()">Save Image Keys</button></div>
+  <div class="ok" id="okImg"></div>
+</div>
+
+<div class="cat">
+  <h2>Image Premium <span class="tag prem">Premium</span></h2>
+  <p>बाद में better quality — अभी slots तैयार</p>
+  <div id="premSlots"></div>
+  <button class="btn-add" type="button" onclick="addImgSlot(true)">+ Add Premium Key</button>
+  <div class="row" style="margin-top:10px"><button class="btn btn-p" onclick="savePrem()">Save Premium Keys</button></div>
+  <div class="ok" id="okPrem"></div>
+</div>
+
+<script>
+function loadStory(){
+  document.getElementById("k_groq").value=localStorage.getItem("VX_GROQ")||"";
+  document.getElementById("k_gemini").value=localStorage.getItem("VX_GEMINI")||"";
+  document.getElementById("k_or").value=localStorage.getItem("VX_OR")||"";
+}
+function saveStory(){
+  localStorage.setItem("VX_GROQ",document.getElementById("k_groq").value.trim());
+  localStorage.setItem("VX_GEMINI",document.getElementById("k_gemini").value.trim());
+  localStorage.setItem("VX_OR",document.getElementById("k_or").value.trim());
+  document.getElementById("okStory").textContent="✓ Story keys saved — तुरंत active";
+}
+function getArr(key){
+  try{ return JSON.parse(localStorage.getItem(key)||"[]"); }catch(e){ return []; }
+}
+function renderSlots(boxId, arr, prefix){
+  var box=document.getElementById(boxId); box.innerHTML="";
+  if(!arr.length){ arr=[{name:"",key:""},{name:"",key:""},{name:"",key:""}]; }
+  arr.forEach(function(item,i){
+    var d=document.createElement("div"); d.className="slot";
+    d.innerHTML='<label>'+prefix+' '+(i+1)+' — Name</label>'+
+      '<input data-i="'+i+'" data-f="name" placeholder="Provider name" value="">'+
+      '<label>API Key</label>'+
+      '<input data-i="'+i+'" data-f="key" type="password" placeholder="key">';
+    d.querySelector('[data-f="name"]').value=item.name||"";
+    d.querySelector('[data-f="key"]').value=item.key||"";
+    box.appendChild(d);
+  });
+  box._data=arr;
+}
+function readSlots(boxId){
+  var box=document.getElementById(boxId);
+  var inputs=box.querySelectorAll("input");
+  var map={};
+  inputs.forEach(function(inp){
+    var i=+inp.getAttribute("data-i");
+    var f=inp.getAttribute("data-f");
+    if(!map[i]) map[i]={name:"",key:""};
+    map[i][f]=inp.value.trim();
+  });
+  return Object.keys(map).sort(function(a,b){return a-b;}).map(function(k){return map[k];});
+}
+function addImgSlot(prem){
+  var key=prem?"VX_IMG_PREM":"VX_IMG_FREE";
+  var arr=getArr(key);
+  arr.push({name:"",key:""});
+  localStorage.setItem(key,JSON.stringify(arr));
+  if(prem) renderSlots("premSlots",arr,"Premium");
+  else renderSlots("imgSlots",arr,"Image");
+}
+function saveImg(){
+  var arr=readSlots("imgSlots");
+  localStorage.setItem("VX_IMG_FREE",JSON.stringify(arr));
+  document.getElementById("okImg").textContent="✓ Image keys saved ("+arr.filter(function(x){return x.key;}).length+" active)";
+}
+function savePrem(){
+  var arr=readSlots("premSlots");
+  localStorage.setItem("VX_IMG_PREM",JSON.stringify(arr));
+  document.getElementById("okPrem").textContent="✓ Premium keys saved";
+}
+(function(){
+  loadStory();
+  var free=getArr("VX_IMG_FREE");
+  if(free.length<6){
+    while(free.length<6) free.push({name:"",key:""});
+    localStorage.setItem("VX_IMG_FREE",JSON.stringify(free));
+  }
+  renderSlots("imgSlots",free,"Image");
+  renderSlots("premSlots",getArr("VX_IMG_PREM"),"Premium");
+})();
+</script>
+</body>
+</html>
