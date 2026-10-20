@@ -5,97 +5,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Create · Velorix AI</title>
 <style>
-:root{
-  --bg:#07060c;--card:rgba(255,255,255,.07);--border:rgba(167,139,250,.22);
-  --p:#c084fc;--p2:#7c3aed;--glow:rgba(124,58,237,.35);--text:#fafafa;--muted:#a1a1aa
-}
+:root{--bg:#07060c;--card:rgba(255,255,255,.07);--border:rgba(167,139,250,.22);--p:#c084fc;--p2:#7c3aed;--glow:rgba(124,58,237,.35);--text:#fafafa;--muted:#a1a1aa}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-  background:var(--bg);color:var(--text);min-height:100vh;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.28),transparent),
-    radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent);
-  padding:16px;padding-bottom:48px
-}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.back{
-  width:42px;height:42px;border-radius:14px;border:1px solid var(--border);
-  background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer
-}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+background-image:radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.28),transparent),radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent);
+padding:16px;padding-bottom:56px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.back{width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer}
 .logo{font-weight:700;font-size:17px;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.box{
-  background:var(--card);border:1px solid var(--border);border-radius:22px;
-  padding:18px 16px;margin-bottom:14px;
-  box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.03) inset;
-  backdrop-filter:blur(16px)
-}
+.box{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:18px 16px;margin-bottom:14px;box-shadow:0 8px 32px rgba(0,0,0,.35);backdrop-filter:blur(16px)}
 label{display:block;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
-textarea{
-  width:100%;min-height:110px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;padding:12px;outline:none;color:#fff;font-size:15px;line-height:1.55;
-  resize:none;font-family:inherit
-}
+textarea{width:100%;min-height:130px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;outline:none;color:#fff;font-size:15px;line-height:1.55;resize:none;font-family:inherit}
 .row{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
-.btn{
-  padding:12px 20px;border-radius:999px;border:none;font-weight:600;font-size:13px;cursor:pointer;
-  transition:transform .12s
-}
-.btn:active{transform:scale(.97)}
+.btn{padding:12px 20px;border-radius:999px;border:none;font-weight:600;font-size:13px;cursor:pointer}
 .btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 6px 20px var(--glow)}
 .btn-g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.1)}
 .screen{display:none}.screen.on{display:block}
-.story{
-  font-size:15.5px;line-height:1.75;color:#ececf1;white-space:pre-wrap;
-  max-height:55vh;overflow-y:auto;padding-right:4px
-}
-.scene{
-  background:rgba(0,0,0,.28);border:1px solid rgba(167,139,250,.18);border-radius:16px;
-  padding:14px;margin-bottom:12px
-}
-.scene .num{
-  display:inline-block;font-size:11px;font-weight:700;color:#0a0a0a;
-  background:linear-gradient(135deg,#e9d5ff,#c084fc);padding:4px 10px;border-radius:999px;margin-bottom:8px
-}
+.story{font-size:15.5px;line-height:1.75;color:#ececf1;white-space:pre-wrap;max-height:52vh;overflow-y:auto}
+.scene{background:rgba(0,0,0,.28);border:1px solid rgba(167,139,250,.18);border-radius:16px;padding:14px;margin-bottom:12px}
+.scene .num{display:inline-block;font-size:11px;font-weight:700;color:#0a0a0a;background:linear-gradient(135deg,#e9d5ff,#c084fc);padding:4px 10px;border-radius:999px;margin-bottom:8px}
 .scene .body{font-size:14px;line-height:1.55;color:#e4e4e7;margin-bottom:8px}
-.scene .prompt{
-  font-size:12px;line-height:1.45;color:#c4b5fd;background:rgba(124,58,237,.15);
-  border-radius:10px;padding:8px 10px;border:1px dashed rgba(167,139,250,.35)
-}
+.scene .prompt{font-size:12px;line-height:1.45;color:#c4b5fd;background:rgba(124,58,237,.15);border-radius:10px;padding:8px 10px;border:1px dashed rgba(167,139,250,.35)}
 .editbox{display:none;margin-top:12px}.editbox.on{display:block}
-.err{color:#f87171;font-size:13px;margin-top:8px}
-.ok{color:#86efac;font-size:12px;margin-top:6px}
-.ov{
-  display:none;position:fixed;inset:0;background:rgba(5,5,10,.82);z-index:50;
-  align-items:center;justify-content:center;flex-direction:column;gap:14px
-}
+.err{color:#f87171;font-size:13px;margin-top:8px}.ok{color:#86efac;font-size:12px;margin-top:6px}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
+.ov{display:none;position:fixed;inset:0;background:rgba(5,5,10,.82);z-index:50;align-items:center;justify-content:center;flex-direction:column;gap:14px}
 .ov.on{display:flex}
 .bar{width:220px;height:8px;background:#1f1f2e;border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c084fc,#7c3aed,#ec4899);transition:width .25s}
-.pct{font-size:20px;font-weight:700;color:#e9d5ff}
-.msg{font-size:13px;color:#a1a1aa}
-.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
+.pct{font-size:20px;font-weight:700;color:#e9d5ff}.msg{font-size:13px;color:#a1a1aa}
+/* settings */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{padding:10px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);font-size:12px;font-weight:600;color:#ddd;cursor:pointer}
+.chip.on{border-color:var(--p);background:rgba(124,58,237,.25);color:#fff;box-shadow:0 0 0 1px var(--p)}
+.chip .sub{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-top:2px}
+.chip.prem{opacity:.85}.chip.prem .sub{color:#fbbf24}
+select,input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:#fff;font-size:14px;margin-bottom:12px;outline:none}
+/* cards grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:rgba(0,0,0,.28);border:1px solid rgba(167,139,250,.2);border-radius:16px;overflow:hidden;position:relative}
+.card img,.card .ph{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#1a1525}
+.card .ph{display:flex;align-items:center;justify-content:center;font-size:28px;color:#666}
+.card .meta{padding:10px}
+.card .name{font-size:13px;font-weight:600;margin-bottom:6px}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap}
+.card .acts button{flex:1;padding:8px;border-radius:10px;border:none;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.1);color:#fff}
+.card .acts button.p{background:linear-gradient(135deg,var(--p),var(--p2))}
+.sec{font-size:13px;font-weight:700;color:var(--p);margin:16px 0 10px}
+/* lightbox */
+.lb{display:none;position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.92);flex-direction:column}
+.lb.on{display:flex}
+.lb-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
+.lb img{max-width:100%;max-height:70vh;margin:auto;object-fit:contain}
+.lb-bot{padding:16px;display:flex;gap:10px;justify-content:center}
 </style>
 </head>
 <body>
 <div class="top">
-  <button class="back" onclick="goHome()">←</button>
+  <button class="back" id="topBack" onclick="navBack()">←</button>
   <div class="logo">Velorix AI</div>
   <div style="width:42px"></div>
 </div>
 
+<!-- S1 prompt -->
 <div id="s1" class="screen on">
   <div class="box">
     <label>कहानी / विषय</label>
-    <textarea id="prompt" placeholder="जैसे: गरीब किसान की स्टोरी — या पूरी कहानी पेस्ट करो"></textarea>
+    <textarea id="prompt" placeholder="जैसे: एक गरीब किसान की बढ़िया सी स्टोरी लिख दो"></textarea>
     <p class="hint">विषय लिखोगे तो AI कहानी बनाएगी। पूरी कहानी डालोगे तो वही save होकर आगे बढ़ेगी।</p>
-    <div class="row">
-      <button class="btn btn-p" onclick="genStory()">Create Story</button>
-    </div>
+    <div class="row"><button class="btn btn-p" onclick="genStory()">Create Story</button></div>
     <div class="err" id="err1"></div>
   </div>
 </div>
 
+<!-- S2 story -->
 <div id="s2" class="screen">
   <div class="box">
     <label>Generated Story</label>
@@ -103,7 +86,7 @@ textarea{
     <div class="ok" id="editOk"></div>
     <div class="editbox" id="editBox">
       <label style="margin-top:10px">क्या बदलना है?</label>
-      <textarea id="editSug" placeholder="जैसे: अंत खुश रखो, नाम राम रखो"></textarea>
+      <textarea id="editSug" placeholder="जैसे: अंत खुश रखो"></textarea>
       <div class="row">
         <button class="btn btn-g" onclick="closeEdit()">Cancel</button>
         <button class="btn btn-p" onclick="applyEdit()">Apply Edit</button>
@@ -117,15 +100,72 @@ textarea{
   </div>
 </div>
 
+<!-- S3 scenes -->
 <div id="s3" class="screen">
   <div class="box">
-    <label>Scenes · Photo prompts</label>
+    <label>Scenes · \~1 min video parts</label>
+    <p class="hint" style="margin-top:-4px;margin-bottom:12px">ये पार्ट्स आगे images + video बनेंगे। हर सीन = एक shot।</p>
     <div id="sceneList"></div>
     <div class="row">
       <button class="btn btn-g" onclick="show('s2')">← Story</button>
-      <button class="btn btn-p" onclick="nextPhoto()">Continue → Photos</button>
+      <button class="btn btn-p" onclick="show('s4')">Continue → Settings</button>
     </div>
-    <div class="err" id="err3"></div>
+  </div>
+</div>
+
+<!-- S4 settings -->
+<div id="s4" class="screen">
+  <div class="box">
+    <label>Video size</label>
+    <div class="chips" id="sizeChips">
+      <div class="chip on" data-v="yt-short" onclick="pickChip('size',this)"><span>YouTube Short</span><span class="sub">9:16 · Shorts</span></div>
+      <div class="chip" data-v="yt-long" onclick="pickChip('size',this)"><span>YouTube बड़ी</span><span class="sub">16:9 · Long</span></div>
+      <div class="chip" data-v="fb-short" onclick="pickChip('size',this)"><span>Facebook Short</span><span class="sub">9:16 · Reels</span></div>
+      <div class="chip" data-v="fb-long" onclick="pickChip('size',this)"><span>Facebook बड़ी</span><span class="sub">16:9 · Feed</span></div>
+    </div>
+    <label>भाषा</label>
+    <input type="text" id="langInput" list="langList" placeholder="Hindi / English / ...">
+    <datalist id="langList">
+      <option value="Hindi"><option value="English"><option value="Hinglish">
+      <option value="Punjabi"><option value="Gujarati"><option value="Marathi">
+      <option value="Bengali"><option value="Tamil"><option value="Telugu">
+      <option value="Kannada"><option value="Malayalam"><option value="Urdu">
+    </datalist>
+    <label>Style</label>
+    <div class="chips" id="styleChips">
+      <div class="chip on" data-v="mix" onclick="pickChip('style',this)"><span>Mix 3D+Real</span><span class="sub">Recommended</span></div>
+      <div class="chip" data-v="3d" onclick="pickChip('style',this)"><span>3D</span><span class="sub">Pixar-like</span></div>
+      <div class="chip" data-v="2d" onclick="pickChip('style',this)"><span>2D / Anime</span><span class="sub">Flat</span></div>
+      <div class="chip" data-v="real" onclick="pickChip('style',this)"><span>Realistic</span><span class="sub">Cinematic</span></div>
+      <div class="chip" data-v="cartoon" onclick="pickChip('style',this)"><span>HD Cartoon</span><span class="sub">Clean</span></div>
+    </div>
+    <label>Quality</label>
+    <div class="chips" id="qualChips">
+      <div class="chip on" data-v="standard" onclick="pickChip('qual',this)"><span>Standard</span><span class="sub">Free</span></div>
+      <div class="chip" data-v="high" onclick="pickChip('qual',this)"><span>High</span><span class="sub">Free+</span></div>
+      <div class="chip prem" data-v="max" onclick="pickChip('qual',this)"><span>Max / 4K</span><span class="sub">Premium · जल्द</span></div>
+    </div>
+    <div class="row">
+      <button class="btn btn-g" onclick="show('s3')">← Scenes</button>
+      <button class="btn btn-p" onclick="goChars()">Continue → Characters</button>
+    </div>
+    <div class="err" id="err4"></div>
+  </div>
+</div>
+
+<!-- S5 characters + backgrounds -->
+<div id="s5" class="screen">
+  <div class="box">
+    <label>Characters · lock</label>
+    <p class="hint">एक बार approve = चेहरा/कपड़े आगे नहीं बदलेंगे। टैप = बड़ी photo · Download</p>
+    <div class="grid" id="charGrid"></div>
+    <div class="sec">Backgrounds · lock</div>
+    <div class="grid" id="bgGrid"></div>
+    <div class="row">
+      <button class="btn btn-g" onclick="show('s4')">← Settings</button>
+      <button class="btn btn-p" onclick="nextVideo()">Continue → Video</button>
+    </div>
+    <div class="err" id="err5"></div>
   </div>
 </div>
 
@@ -135,14 +175,34 @@ textarea{
   <div class="bar"><i id="ovBar"></i></div>
 </div>
 
+<div class="lb" id="lb">
+  <div class="lb-top">
+    <button class="btn btn-g" onclick="closeLb()">← Back</button>
+    <button class="btn btn-p" id="lbDl" onclick="dlLb()">Download</button>
+  </div>
+  <img id="lbImg" alt="">
+  <div class="lb-bot"></div>
+</div>
+
+<input type="file" id="filePick" accept="image/*" style="display:none">
+
 <script>
-var storyFull="";
-var scenes=[];
+var storyFull="",scenes=[],chars=[],bgs=[];
+var settings={size:"yt-short",style:"mix",qual:"standard",lang:"Hindi"};
+var screenStack=["s1"];
+var lbUrl="";
+var pickTarget=null;
 
 function goHome(){ location.href="home.html"; }
 function show(id){
-  ["s1","s2","s3"].forEach(function(x){ document.getElementById(x).classList.remove("on"); });
+  ["s1","s2","s3","s4","s5"].forEach(function(x){ document.getElementById(x).classList.remove("on"); });
   document.getElementById(id).classList.add("on");
+  if(screenStack[screenStack.length-1]!==id) screenStack.push(id);
+}
+function navBack(){
+  if(document.getElementById("lb").classList.contains("on")){ closeLb(); return; }
+  if(screenStack.length>1){ screenStack.pop(); show(screenStack[screenStack.length-1]); screenStack.pop(); }
+  else goHome();
 }
 function prog(on,msg,pct){
   var o=document.getElementById("ov");
@@ -163,18 +223,11 @@ function keys(){
 function isBad(t){
   if(!t||t.length<40) return true;
   var x=t.toLowerCase();
-  if(x.indexOf("user safety")>=0) return true;
-  if(x.indexOf("koi kahani nahi")>=0) return true;
-  if(/^safe\s*$/i.test(t.trim())) return true;
-  return false;
+  return x.indexOf("user safety")>=0||x.indexOf("koi kahani nahi")>=0;
 }
 function looksFullStory(t){
-  // लंबी टेक्स्ट / कई वाक्य = पहले से कहानी
-  if(t.length>180) return true;
-  if((t.match(/[।.!?]/g)||[]).length>=3) return true;
-  return false;
+  return t.length>180||((t.match(/[।.!?]/g)||[]).length>=3);
 }
-
 async function callAI(system,user){
   var k=keys(), lastErr="No API key";
   if(k.groq){
@@ -182,18 +235,13 @@ async function callAI(system,user){
       var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer "+k.groq},
-        body:JSON.stringify({
-          model:"llama-3.1-8b-instant",
-          messages:[{role:"system",content:system},{role:"user",content:user}],
-          temperature:0.75,max_tokens:1400
-        })
+        body:JSON.stringify({model:"llama-3.1-8b-instant",messages:[{role:"system",content:system},{role:"user",content:user}],temperature:0.75,max_tokens:1400})
       });
       var j=await r.json();
       if(!r.ok) throw new Error((j.error&&j.error.message)||("Groq "+r.status));
       var t=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
       if(t&&t.trim()&&!isBad(t)) return t.trim();
-      if(t&&t.trim()) lastErr="Bad response: "+t.slice(0,60);
-      else lastErr="Groq empty";
+      lastErr="Groq bad";
     }catch(e){ lastErr=e.message||String(e); }
   }
   if(k.or){
@@ -201,124 +249,78 @@ async function callAI(system,user){
       var r2=await fetch("https://openrouter.ai/api/v1/chat/completions",{
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer "+k.or},
-        body:JSON.stringify({
-          model:"openrouter/free",
-          messages:[{role:"system",content:system},{role:"user",content:user}]
-        })
+        body:JSON.stringify({model:"openrouter/free",messages:[{role:"system",content:system},{role:"user",content:user}]})
       });
       var j2=await r2.json();
       if(!r2.ok) throw new Error((j2.error&&j2.error.message)||("OR "+r2.status));
       var t2=j2.choices&&j2.choices[0]&&j2.choices[0].message&&j2.choices[0].message.content;
       if(t2&&t2.trim()&&!isBad(t2)) return t2.trim();
-      lastErr="OR bad/empty";
+      lastErr="OR bad";
     }catch(e){ lastErr=e.message||String(e); }
   }
   if(k.gemini){
     try{
       var url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(k.gemini);
-      var r3=await fetch(url,{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({contents:[{parts:[{text:system+"\n\n"+user}]}]})
-      });
+      var r3=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:system+"\n\n"+user}]}]})});
       var j3=await r3.json();
       if(!r3.ok) throw new Error((j3.error&&j3.error.message)||("Gemini "+r3.status));
       var t3=j3.candidates&&j3.candidates[0]&&j3.candidates[0].content&&j3.candidates[0].content.parts&&j3.candidates[0].content.parts[0].text;
       if(t3&&t3.trim()&&!isBad(t3)) return t3.trim();
-      lastErr="Gemini bad/empty";
+      lastErr="Gemini bad";
     }catch(e){ lastErr=e.message||String(e); }
   }
   throw new Error(lastErr);
 }
-
 function setStory(t){
   storyFull=t;
   document.getElementById("storyText").textContent=t;
   try{ localStorage.setItem("VX_STORY",t); }catch(e){}
 }
-
 async function genStory(){
   var p=document.getElementById("prompt").value.trim();
-  var err=document.getElementById("err1");
-  err.textContent="";
+  var err=document.getElementById("err1"); err.textContent="";
   if(!p){ err.textContent="पहले लिखो"; return; }
   var k=keys();
-  if(!k.groq&&!k.gemini&&!k.or){ err.textContent="Profile → API Keys सेव करो"; return; }
-
-  // पहले से पूरी कहानी है तो AI मत चलाओ
+  if(!k.groq&&!k.gemini&&!k.or){ err.textContent="Profile → API Keys"; return; }
   if(looksFullStory(p)){
-    prog(true,"कहानी save...",60);
-    setStory(p);
-    prog(true,"Done",100);
-    setTimeout(function(){ prog(false); show("s2"); },250);
-    return;
+    prog(true,"Save...",70); setStory(p); prog(true,"Done",100);
+    setTimeout(function(){ prog(false); show("s2"); },250); return;
   }
-
-  prog(true,"Story बन रही है...",20);
+  prog(true,"Story...",30);
   try{
-    var sys="Tu Velorix AI writer hai. User ke topic par Hindi mein short cinematic kahani likh. \~1 minute (130-170 words). Emotional, clear. Sirf kahani. No title, no safety notes, no English meta.";
-    prog(true,"Story बन रही है...",45);
+    var sys="Tu Velorix AI writer. Hindi short cinematic kahani. \~1 min (130-170 words). Sirf kahani. No meta.";
     var out=await callAI(sys,p);
-    prog(true,"Done",100);
-    setStory(out);
+    setStory(out); prog(true,"Done",100);
     setTimeout(function(){ prog(false); show("s2"); },280);
-  }catch(e){
-    prog(false);
-    err.textContent="Story नहीं बनी: "+(e.message||e);
-  }
+  }catch(e){ prog(false); err.textContent="Fail: "+(e.message||e); }
 }
-
-function openEdit(){
-  document.getElementById("editBox").classList.add("on");
-  document.getElementById("editOk").textContent="";
-}
+function openEdit(){ document.getElementById("editBox").classList.add("on"); document.getElementById("editOk").textContent=""; }
 function closeEdit(){ document.getElementById("editBox").classList.remove("on"); }
-
 async function applyEdit(){
   var sug=document.getElementById("editSug").value.trim();
-  var err=document.getElementById("err2");
-  err.textContent="";
-  if(!sug){ err.textContent="सुझाव लिखो"; return; }
-  if(!storyFull){ err.textContent="पहले story बनाओ"; return; }
-  prog(true,"Edit लग रहा है...",35);
+  var err=document.getElementById("err2"); err.textContent="";
+  if(!sug||!storyFull){ err.textContent="सुझाव / story जरूरी"; return; }
+  prog(true,"Edit...",50);
   try{
-    var sys="Story editor. Neeche kahani ko SIRF user suggestion ke hisaab se thoda badlo. Baaki same rakho. Poori updated Hindi kahani wapas likho. No meta, no safety line.";
-    prog(true,"Edit लग रहा है...",70);
-    var out=await callAI(sys,"STORY:\n"+storyFull+"\n\nCHANGE ONLY:\n"+sug);
-    setStory(out);
-    document.getElementById("editSug").value="";
-    closeEdit();
-    document.getElementById("editOk").textContent="✓ Edit लग गई — नीचे नई कहानी है";
-    prog(false);
-    // scroll story into view
-    document.getElementById("storyText").scrollTop=0;
-  }catch(e){
-    prog(false);
-    err.textContent="Edit fail: "+(e.message||e);
-  }
+    var out=await callAI("Story editor. Sirf suggestion ke hisaab se thoda badlo. Poori Hindi kahani. No meta.","STORY:\n"+storyFull+"\n\nCHANGE:\n"+sug);
+    setStory(out); document.getElementById("editSug").value=""; closeEdit();
+    document.getElementById("editOk").textContent="✓ Edit लग गई"; prog(false);
+  }catch(e){ prog(false); err.textContent="Edit fail: "+(e.message||e); }
 }
-
 function fallbackScenes(text){
   var parts=text.split(/(?<=[।.!?])\s+/).filter(function(x){ return x.trim().length>8; });
-  if(parts.length<2){
-    var mid=Math.floor(text.length/2);
-    parts=[text.slice(0,mid),text.slice(mid)];
-  }
-  var n=Math.min(6,Math.max(3,parts.length));
-  var size=Math.ceil(parts.length/n);
-  var out=[];
+  if(parts.length<2){ var m=Math.floor(text.length/2); parts=[text.slice(0,m),text.slice(m)]; }
+  var n=Math.min(6,Math.max(3,parts.length)), size=Math.ceil(parts.length/n), out=[];
   for(var i=0;i<parts.length;i+=size){
-    var chunk=parts.slice(i,i+size).join(" ").trim();
-    out.push({n:out.length+1, body:chunk, prompt:"Cinematic still, "+chunk.slice(0,120)});
+    var c=parts.slice(i,i+size).join(" ").trim();
+    out.push({n:out.length+1,body:c,prompt:"Cinematic still, "+c.slice(0,100)});
   }
   return out;
 }
-
 function renderScenes(){
-  var box=document.getElementById("sceneList");
-  box.innerHTML="";
+  var box=document.getElementById("sceneList"); box.innerHTML="";
   scenes.forEach(function(s){
-    var d=document.createElement("div");
-    d.className="scene";
+    var d=document.createElement("div"); d.className="scene";
     d.innerHTML='<div class="num">सीन '+s.n+'</div><div class="body"></div><div class="prompt"></div>';
     d.querySelector(".body").textContent=s.body;
     d.querySelector(".prompt").textContent="🎞 "+s.prompt;
@@ -326,53 +328,60 @@ function renderScenes(){
   });
   try{ localStorage.setItem("VX_SCENES",JSON.stringify(scenes)); }catch(e){}
 }
-
 async function genScenes(){
-  var err=document.getElementById("err2");
-  err.textContent="";
-  if(!storyFull||isBad(storyFull)){
-    err.textContent="Valid story नहीं है — वापस Create करो";
-    return;
-  }
-  prog(true,"Scenes टूट रहे हैं...",25);
+  var err=document.getElementById("err2"); err.textContent="";
+  if(!storyFull||isBad(storyFull)){ err.textContent="Valid story नहीं"; return; }
+  prog(true,"Scenes...",40);
   try{
-    var sys="Kahani ko 4-6 scenes mein todo. Har line EXACT format:\nSCENE|number|scene_text|image_prompt_english\nscene_text Hindi. image_prompt short English for AI image. No other text.";
-    prog(true,"Scenes टूट रहे हैं...",55);
-    var out=await callAI(sys,storyFull);
+    var out=await callAI("4-6 scenes. Har line: SCENE|num|hindi_text|english_image_prompt","STORY:\n"+storyFull);
     scenes=[];
     out.split("\n").forEach(function(line){
       line=line.trim();
       var m=line.match(/^SCENE\|(\d+)\|([^|]+)\|(.+)$/i);
-      if(m){
-        scenes.push({n:+m[1], body:m[2].trim(), prompt:m[3].trim()});
-      }else{
-        var m2=line.match(/^SCENE\|(\d+)\|(.+)$/i);
-        if(m2) scenes.push({n:+m2[1], body:m2[2].trim(), prompt:"Cinematic frame: "+m2[2].trim().slice(0,100)});
-      }
+      if(m) scenes.push({n:+m[1],body:m[2].trim(),prompt:m[3].trim()});
+      else { var m2=line.match(/^SCENE\|(\d+)\|(.+)$/i); if(m2) scenes.push({n:+m2[1],body:m2[2].trim(),prompt:"Cinematic: "+m2[2].trim().slice(0,90)}); }
     });
     if(scenes.length<2) scenes=fallbackScenes(storyFull);
-    prog(true,"Done",100);
-    renderScenes();
+    renderScenes(); prog(true,"Done",100);
     setTimeout(function(){ prog(false); show("s3"); },250);
-  }catch(e){
-    // fallback still works
-    scenes=fallbackScenes(storyFull);
-    renderScenes();
-    prog(false);
-    show("s3");
+  }catch(e){ scenes=fallbackScenes(storyFull); renderScenes(); prog(false); show("s3"); }
+}
+
+/* settings */
+function pickChip(group,el){
+  var parent=el.parentElement;
+  parent.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("on"); });
+  el.classList.add("on");
+  var v=el.getAttribute("data-v");
+  if(group==="size") settings.size=v;
+  if(group==="style") settings.style=v;
+  if(group==="qual"){
+    if(v==="max"){ alert("Max / 4K Premium जल्द — अभी High चुनो"); return; }
+    settings.qual=v;
   }
+  saveSettings();
+}
+function saveSettings(){
+  settings.lang=(document.getElementById("langInput").value||"Hindi").trim();
+  try{ localStorage.setItem("VX_SETTINGS",JSON.stringify(settings)); }catch(e){}
+}
+function goChars(){
+  saveSettings();
+  extractCast();
 }
 
-function nextPhoto(){
-  alert("अगला: Photos / Characters (जल्द)");
-}
-
-(function(){
-  var q=new URLSearchParams(location.search).get("q");
-  var h=localStorage.getItem("VX_PROMPT");
-  if(q) document.getElementById("prompt").value=q;
-  else if(h) document.getElementById("prompt").value=h;
-})();
-</script>
-</body>
-</html>
+async function extractCast(){
+  var err=document.getElementById("err4"); err.textContent="";
+  prog(true,"Characters निकाल रहे हैं...",35);
+  try{
+    var sys="Story se unique characters aur main locations nikaalo. Format EXACT lines only:\nCHAR|name|short_visual_english\nLOC|name|short_visual_english\nMax 6 CHAR, max 4 LOC. English visual = face, clothes, age, colors.";
+    var out=await callAI(sys,storyFull);
+    chars=[]; bgs=[];
+    out.split("\n").forEach(function(line){
+      line=line.trim();
+      var c=line.match(/^CHAR\|([^|]+)\|(.+)$/i);
+      if(c) chars.push({name:c[1].trim(),desc:c[2].trim(),url:"",lock:false});
+      var l=line.match(/^LOC\|([^|]+)\|(.+)$/i);
+      if(l) bgs.push({name:l[1].trim(),desc:l[2].trim(),url:"",lock:false});
+    });
+    if(!chars.length
