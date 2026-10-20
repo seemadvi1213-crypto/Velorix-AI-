@@ -491,11 +491,6 @@ function goInvite(){alert("Invite");}
 function openApiModal(){
   window.location.href="api.html";
   }
-  document.getElementById("keyGroq").value=localStorage.getItem("VX_GROQ")||"";
-  document.getElementById("keyGemini").value=localStorage.getItem("VX_GEMINI")||"";
-  document.getElementById("keyOpenRouter").value=localStorage.getItem("VX_OR")||"";
-  document.getElementById("apiModal").classList.add("show");
-}
 function closeApiModal(){document.getElementById("apiModal").classList.remove("show");}
 function saveApiKeys(){
   localStorage.setItem("VX_GROQ",document.getElementById("keyGroq").value.trim());
