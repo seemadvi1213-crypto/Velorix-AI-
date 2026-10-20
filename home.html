@@ -489,6 +489,8 @@ function goShare(){alert("Share");}
 function goPremium(){alert("Premium");}
 function goInvite(){alert("Invite");}
 function openApiModal(){
+  window.location.href="api.html";
+  }
   document.getElementById("keyGroq").value=localStorage.getItem("VX_GROQ")||"";
   document.getElementById("keyGemini").value=localStorage.getItem("VX_GEMINI")||"";
   document.getElementById("keyOpenRouter").value=localStorage.getItem("VX_OR")||"";
