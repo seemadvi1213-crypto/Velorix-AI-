@@ -197,8 +197,7 @@ function goHome(){ location.href="home.html"; }
 function show(id){
   ["s1","s2","s3","s4","s5"].forEach(function(x){ document.getElementById(x).classList.remove("on"); });
   document.getElementById(id).classList.add("on");
-  if(screenStack[screenStack.length-1]!==id) screenStack.push(id);
-}
+  }
 function navBack(){
   if(document.getElementById("lb").classList.contains("on")){ closeLb(); return; }
   var order=["s1","s2","s3","s4","s5"];
