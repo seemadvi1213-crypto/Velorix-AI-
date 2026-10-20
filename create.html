@@ -201,9 +201,13 @@ function show(id){
 }
 function navBack(){
   if(document.getElementById("lb").classList.contains("on")){ closeLb(); return; }
-  if(screenStack.length>1){ screenStack.pop(); show(screenStack[screenStack.length-1]); screenStack.pop(); }
-  else goHome();
-}
+  var order=["s1","s2","s3","s4","s5"];
+  var cur=order.find(function(id){ return document.getElementById(id).classList.contains("on"); })||"s1";
+  var i=order.indexOf(cur);
+  if(i<=0){ location.href="home.html"; return; }
+  order.forEach(function(id){ document.getElementById(id).classList.remove("on"); });
+  document.getElementById(order[i-1]).classList.add("on");
+  }
 function prog(on,msg,pct){
   var o=document.getElementById("ov");
   if(!on){ o.classList.remove("on"); return; }
