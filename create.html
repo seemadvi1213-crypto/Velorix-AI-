@@ -34,51 +34,45 @@ textarea{width:100%;min-height:130px;background:rgba(0,0,0,.22);border:1px solid
 .bar{width:220px;height:8px;background:#1f1f2e;border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c084fc,#7c3aed,#ec4899);transition:width .25s}
 .pct{font-size:20px;font-weight:700;color:#e9d5ff}.msg{font-size:13px;color:#a1a1aa}
-/* settings */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .chip{padding:10px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);font-size:12px;font-weight:600;color:#ddd;cursor:pointer}
 .chip.on{border-color:var(--p);background:rgba(124,58,237,.25);color:#fff;box-shadow:0 0 0 1px var(--p)}
 .chip .sub{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-top:2px}
-.chip.prem{opacity:.85}.chip.prem .sub{color:#fbbf24}
-select,input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:#fff;font-size:14px;margin-bottom:12px;outline:none}
-/* cards grid */
+.chip.prem .sub{color:#fbbf24}
+input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:#fff;font-size:14px;margin-bottom:12px;outline:none}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:rgba(0,0,0,.28);border:1px solid rgba(167,139,250,.2);border-radius:16px;overflow:hidden;position:relative}
+.card{background:rgba(0,0,0,.28);border:1px solid rgba(167,139,250,.2);border-radius:16px;overflow:hidden}
 .card img,.card .ph{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#1a1525}
 .card .ph{display:flex;align-items:center;justify-content:center;font-size:28px;color:#666}
 .card .meta{padding:10px}
 .card .name{font-size:13px;font-weight:600;margin-bottom:6px}
 .card .acts{display:flex;gap:6px;flex-wrap:wrap}
 .card .acts button{flex:1;padding:8px;border-radius:10px;border:none;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,255,255,.1);color:#fff}
-.card .acts button.p{background:linear-gradient(135deg,var(--p),var(--p2))}
+.card .acts button.p{background:linear-gradient prioritise(135deg,var(--p),var(--p2))}
 .sec{font-size:13px;font-weight:700;color:var(--p);margin:16px 0 10px}
-/* lightbox */
 .lb{display:none;position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.92);flex-direction:column}
 .lb.on{display:flex}
 .lb-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
 .lb img{max-width:100%;max-height:70vh;margin:auto;object-fit:contain}
-.lb-bot{padding:16px;display:flex;gap:10px;justify-content:center}
 </style>
 </head>
 <body>
 <div class="top">
-  <button class="back" id="topBack" onclick="navBack()">←</button>
+  <button class="back" type="button" onclick="navBack()">←</button>
   <div class="logo">Velorix AI</div>
   <div style="width:42px"></div>
 </div>
 
-<!-- S1 prompt -->
 <div id="s1" class="screen on">
   <div class="box">
     <label>कहानी / विषय</label>
     <textarea id="prompt" placeholder="जैसे: एक गरीब किसान की बढ़िया सी स्टोरी लिख दो"></textarea>
-    <p class="hint">विषय लिखोगे तो AI कहानी बनाएगी। पूरी कहानी डालोगे तो वही save होकर आगे बढ़ेगी।</p>
-    <div class="row"><button class="btn btn-p" onclick="genStory()">Create Story</button></div>
+    <p class="hint">Home से आए हो तो text पहले से भरा होगा। Create Story दबाओ — दोबारा लिखने की जरूरत नहीं।</p>
+    <div class="row"><button class="btn btn-p" type="button" onclick="genStory()">Create Story</button></div>
     <div class="err" id="err1"></div>
   </div>
 </div>
 
-<!-- S2 story -->
 <div id="s2" class="screen">
   <div class="box">
     <label>Generated Story</label>
@@ -88,82 +82,77 @@ select,input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px so
       <label style="margin-top:10px">क्या बदलना है?</label>
       <textarea id="editSug" placeholder="जैसे: अंत खुश रखो"></textarea>
       <div class="row">
-        <button class="btn btn-g" onclick="closeEdit()">Cancel</button>
-        <button class="btn btn-p" onclick="applyEdit()">Apply Edit</button>
+        <button class="btn btn-g" type="button" onclick="closeEdit()">Cancel</button>
+        <button class="btn btn-p" type="button" onclick="applyEdit()">Apply Edit</button>
       </div>
     </div>
     <div class="row">
-      <button class="btn btn-g" onclick="openEdit()">Edit</button>
-      <button class="btn btn-p" onclick="genScenes()">Continue</button>
+      <button class="btn btn-g" type="button" onclick="openEdit()">Edit</button>
+      <button class="btn btn-p" type="button" onclick="genScenes()">Continue</button>
     </div>
     <div class="err" id="err2"></div>
   </div>
 </div>
 
-<!-- S3 scenes -->
 <div id="s3" class="screen">
   <div class="box">
-    <label>Scenes · \~1 min video parts</label>
-    <p class="hint" style="margin-top:-4px;margin-bottom:12px">ये पार्ट्स आगे images + video बनेंगे। हर सीन = एक shot।</p>
+    <label>Scenes</label>
+    <p class="hint" style="margin-top:-4px;margin-bottom:12px">हर सीन = एक shot · आगे images + video</p>
     <div id="sceneList"></div>
     <div class="row">
-      <button class="btn btn-g" onclick="show('s2')">← Story</button>
-      <button class="btn btn-p" onclick="show('s4')">Continue → Settings</button>
+      <button class="btn btn-g" type="button" onclick="show('s2')">← Story</button>
+      <button class="btn btn-p" type="button" onclick="show('s4')">Continue → Settings</button>
     </div>
   </div>
 </div>
 
-<!-- S4 settings -->
 <div id="s4" class="screen">
   <div class="box">
     <label>Video size</label>
     <div class="chips" id="sizeChips">
-      <div class="chip on" data-v="yt-short" onclick="pickChip('size',this)"><span>YouTube Short</span><span class="sub">9:16 · Shorts</span></div>
-      <div class="chip" data-v="yt-long" onclick="pickChip('size',this)"><span>YouTube बड़ी</span><span class="sub">16:9 · Long</span></div>
-      <div class="chip" data-v="fb-short" onclick="pickChip('size',this)"><span>Facebook Short</span><span class="sub">9:16 · Reels</span></div>
-      <div class="chip" data-v="fb-long" onclick="pickChip('size',this)"><span>Facebook बड़ी</span><span class="sub">16:9 · Feed</span></div>
+      <div class="chip on" data-v="yt-short" onclick="pickChip('size',this)"><span>YouTube Short</span><span class="sub">9:16</span></div>
+      <div class="chip" data-v="yt-long" onclick="pickChip('size',this)"><span>YouTube बड़ी</span><span class="sub">16:9</span></div>
+      <div class="chip" data-v="fb-short" onclick="pickChip('size',this)"><span>Facebook Short</span><span class="sub">9:16</span></div>
+      <div class="chip" data-v="fb-long" onclick="pickChip('size',this)"><span>Facebook बड़ी</span><span class="sub">16:9</span></div>
     </div>
     <label>भाषा</label>
-    <input type="text" id="langInput" list="langList" placeholder="Hindi / English / ...">
+    <input type="text" id="langInput" list="langList" placeholder="Hindi / English">
     <datalist id="langList">
       <option value="Hindi"><option value="English"><option value="Hinglish">
       <option value="Punjabi"><option value="Gujarati"><option value="Marathi">
       <option value="Bengali"><option value="Tamil"><option value="Telugu">
-      <option value="Kannada"><option value="Malayalam"><option value="Urdu">
     </datalist>
     <label>Style</label>
     <div class="chips" id="styleChips">
-      <div class="chip on" data-v="mix" onclick="pickChip('style',this)"><span>Mix 3D+Real</span><span class="sub">Recommended</span></div>
-      <div class="chip" data-v="3d" onclick="pickChip('style',this)"><span>3D</span><span class="sub">Pixar-like</span></div>
-      <div class="chip" data-v="2d" onclick="pickChip('style',this)"><span>2D / Anime</span><span class="sub">Flat</span></div>
-      <div class="chip" data-v="real" onclick="pickChip('style',this)"><span>Realistic</span><span class="sub">Cinematic</span></div>
-      <div class="chip" data-v="cartoon" onclick="pickChip('style',this)"><span>HD Cartoon</span><span class="sub">Clean</span></div>
+      <div class="chip on" data-v="mix" onclick="pickChip('style',this)"><span>Mix 3D+Real</span><span class="sub">Best</span></div>
+      <div class="chip" data-v="3d" onclick="pickChip('style',this)"><span>3D</span><span class="sub">Pixar</span></div>
+      <div class="chip" data-v="2d" onclick="pickChip('style',this)"><span>2D</span><span class="sub">Anime</span></div>
+      <div class="chip" data-v="real" onclick="pickChip('style',this)"><span>Realistic</span><span class="sub">Cinema</span></div>
     </div>
     <label>Quality</label>
     <div class="chips" id="qualChips">
       <div class="chip on" data-v="standard" onclick="pickChip('qual',this)"><span>Standard</span><span class="sub">Free</span></div>
       <div class="chip" data-v="high" onclick="pickChip('qual',this)"><span>High</span><span class="sub">Free+</span></div>
-      <div class="chip prem" data-v="max" onclick="pickChip('qual',this)"><span>Max / 4K</span><span class="sub">Premium · जल्द</span></div>
+      <div class="chip prem" data-v="max" onclick="pickChip('qual',this)"><span>Max</span><span class="sub">Premium</span></div>
     </div>
     <div class="row">
-      <button class="btn btn-g" onclick="show('s3')">← Scenes</button>
-      <button class="btn btn-p" onclick="goChars()">Continue → Characters</button>
+      <button class="btn btn-g" type="button" onclick="show('s3')">← Scenes</button>
+      <button class="btn btn-p" type="button" onclick="goChars()">Continue → Characters</button>
     </div>
     <div class="err" id="err4"></div>
   </div>
 </div>
 
-<!-- S5 characters + backgrounds -->
 <div id="s5" class="screen">
   <div class="box">
     <label>Characters · lock</label>
-    <p class="hint">एक बार approve = चेहरा/कपड़े आगे नहीं बदलेंगे। टैप = बड़ी photo · Download</p>
+    <p class="hint">टैप = बड़ी photo · Download · Lock = आगे नहीं बदलेगा</p>
     <div class="grid" id="charGrid"></div>
     <div class="sec">Backgrounds · lock</div>
     <div class="grid" id="bgGrid"></div>
     <div class="row">
-      <button class="btn btn-g" onclick="show('s4')">← Settings</button>
-      <button class="btn btn-p" onclick="nextVideo()">Continue → Video</button>
+      <button class="btn btn-g" type="button" onclick="show('s4')">← Settings</button>
+      <button class="btn btn-p" type="button" onclick="nextVideo()">Continue → Video</button>
     </div>
     <div class="err" id="err5"></div>
   </div>
@@ -174,39 +163,37 @@ select,input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px so
   <div class="msg" id="ovMsg">Working...</div>
   <div class="bar"><i id="ovBar"></i></div>
 </div>
-
 <div class="lb" id="lb">
   <div class="lb-top">
-    <button class="btn btn-g" onclick="closeLb()">← Back</button>
-    <button class="btn btn-p" id="lbDl" onclick="dlLb()">Download</button>
+    <button class="btn btn-g" type="button" onclick="closeLb()">← Back</button>
+    <button class="btn btn-p" type="button" onclick="dlLb()">Download</button>
   </div>
   <img id="lbImg" alt="">
-  <div class="lb-bot"></div>
 </div>
-
 <input type="file" id="filePick" accept="image/*" style="display:none">
 
 <script>
 var storyFull="",scenes=[],chars=[],bgs=[];
 var settings={size:"yt-short",style:"mix",qual:"standard",lang:"Hindi"};
-var screenStack=["s1"];
-var lbUrl="";
-var pickTarget=null;
+var lbUrl="",pickTarget=null,autoStarted=false;
 
-function goHome(){ location.href="home.html"; }
 function show(id){
-  ["s1","s2","s3","s4","s5"].forEach(function(x){ document.getElementById(x).classList.remove("on"); });
-  document.getElementById(id).classList.add("on");
-  }
+  ["s1","s2","s3","s4","s5"].forEach(function(x){
+    var el=document.getElementById(x);
+    if(el) el.classList.toggle("on", x===id);
+  });
+}
 function navBack(){
   if(document.getElementById("lb").classList.contains("on")){ closeLb(); return; }
   var order=["s1","s2","s3","s4","s5"];
-  var cur=order.find(function(id){ return document.getElementById(id).classList.contains("on"); })||"s1";
-  var i=order.indexOf(cur);
-  if(i<=0){ location.href="home.html"; return; }
-  order.forEach(function(id){ document.getElementById(id).classList.remove("on"); });
-  document.getElementById(order[i-1]).classList.add("on");
+  var cur="s1";
+  for(var i=0;i<order.length;i++){
+    if(document.getElementById(order[i]).classList.contains("on")){ cur=order[i]; break; }
   }
+  var idx=order.indexOf(cur);
+  if(idx<=0){ location.href="home.html"; return; }
+  show(order[idx-1]);
+}
 function prog(on,msg,pct){
   var o=document.getElementById("ov");
   if(!on){ o.classList.remove("on"); return; }
@@ -226,13 +213,13 @@ function keys(){
 function isBad(t){
   if(!t||t.length<40) return true;
   var x=t.toLowerCase();
-  return x.indexOf("user safety")>=0||x.indexOf("koi kahani nahi")>=0;
+  return x.indexOf("user safety")>=0;
 }
 function looksFullStory(t){
   return t.length>180||((t.match(/[।.!?]/g)||[]).length>=3);
 }
 async function callAI(system,user){
-  var k=keys(), lastErr="No API key";
+  var k=keys(), lastErr="No API key — Profile → API Keys → Story Writing";
   if(k.groq){
     try{
       var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
@@ -244,7 +231,7 @@ async function callAI(system,user){
       if(!r.ok) throw new Error((j.error&&j.error.message)||("Groq "+r.status));
       var t=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
       if(t&&t.trim()&&!isBad(t)) return t.trim();
-      lastErr="Groq bad";
+      lastErr="Groq empty";
     }catch(e){ lastErr=e.message||String(e); }
   }
   if(k.or){
@@ -258,7 +245,7 @@ async function callAI(system,user){
       if(!r2.ok) throw new Error((j2.error&&j2.error.message)||("OR "+r2.status));
       var t2=j2.choices&&j2.choices[0]&&j2.choices[0].message&&j2.choices[0].message.content;
       if(t2&&t2.trim()&&!isBad(t2)) return t2.trim();
-      lastErr="OR bad";
+      lastErr="OpenRouter empty";
     }catch(e){ lastErr=e.message||String(e); }
   }
   if(k.gemini){
@@ -269,7 +256,7 @@ async function callAI(system,user){
       if(!r3.ok) throw new Error((j3.error&&j3.error.message)||("Gemini "+r3.status));
       var t3=j3.candidates&&j3.candidates[0]&&j3.candidates[0].content&&j3.candidates[0].content.parts&&j3.candidates[0].content.parts[0].text;
       if(t3&&t3.trim()&&!isBad(t3)) return t3.trim();
-      lastErr="Gemini bad";
+      lastErr="Gemini empty";
     }catch(e){ lastErr=e.message||String(e); }
   }
   throw new Error(lastErr);
@@ -281,39 +268,57 @@ function setStory(t){
 }
 async function genStory(){
   var p=document.getElementById("prompt").value.trim();
-  var err=document.getElementById("err1"); err.textContent="";
+  var err=document.getElementById("err1");
+  err.textContent="";
   if(!p){ err.textContent="पहले लिखो"; return; }
   var k=keys();
-  if(!k.groq&&!k.gemini&&!k.or){ err.textContent="Profile → API Keys"; return; }
+  if(!k.groq&&!k.gemini&&!k.or){ err.textContent="API Keys → Story Writing में key डालो"; return; }
   if(looksFullStory(p)){
     prog(true,"Save...",70); setStory(p); prog(true,"Done",100);
-    setTimeout(function(){ prog(false); show("s2"); },250); return;
+    setTimeout(function(){ prog(false); show("s2"); },250);
+    return;
   }
-  prog(true,"Story...",30);
+  prog(true,"Story बना रहे हैं...",30);
   try{
-    var sys="Tu Velorix AI writer. Hindi short cinematic kahani. \~1 min (130-170 words). Sirf kahani. No meta.";
+    var sys="Tu Velorix AI writer. Hindi short cinematic kahani. About 1 minute spoken (130-170 words). Sirf kahani. No meta text.";
     var out=await callAI(sys,p);
-    setStory(out); prog(true,"Done",100);
+    setStory(out);
+    prog(true,"Done",100);
     setTimeout(function(){ prog(false); show("s2"); },280);
-  }catch(e){ prog(false); err.textContent="Fail: "+(e.message||e); }
+  }catch(e){
+    prog(false);
+    err.textContent="Fail: "+(e.message||e);
+  }
 }
 function openEdit(){ document.getElementById("editBox").classList.add("on"); document.getElementById("editOk").textContent=""; }
 function closeEdit(){ document.getElementById("editBox").classList.remove("on"); }
 async function applyEdit(){
   var sug=document.getElementById("editSug").value.trim();
-  var err=document.getElementById("err2"); err.textContent="";
+  var err=document.getElementById("err2");
+  err.textContent="";
   if(!sug||!storyFull){ err.textContent="सुझाव / story जरूरी"; return; }
   prog(true,"Edit...",50);
   try{
     var out=await callAI("Story editor. Sirf suggestion ke hisaab se thoda badlo. Poori Hindi kahani. No meta.","STORY:\n"+storyFull+"\n\nCHANGE:\n"+sug);
-    setStory(out); document.getElementById("editSug").value=""; closeEdit();
-    document.getElementById("editOk").textContent="✓ Edit लग गई"; prog(false);
-  }catch(e){ prog(false); err.textContent="Edit fail: "+(e.message||e); }
+    setStory(out);
+    document.getElementById("editSug").value="";
+    closeEdit();
+    document.getElementById("editOk").textContent="Edit OK";
+    prog(false);
+  }catch(e){
+    prog(false);
+    err.textContent="Edit fail: "+(e.message||e);
+  }
 }
 function fallbackScenes(text){
   var parts=text.split(/(?<=[।.!?])\s+/).filter(function(x){ return x.trim().length>8; });
-  if(parts.length<2){ var m=Math.floor(text.length/2); parts=[text.slice(0,m),text.slice(m)]; }
-  var n=Math.min(6,Math.max(3,parts.length)), size=Math.ceil(parts.length/n), out=[];
+  if(parts.length<2){
+    var m=Math.floor(text.length/2);
+    parts=[text.slice(0,m),text.slice(m)];
+  }
+  var n=Math.min(6,Math.max(3,parts.length));
+  var size=Math.ceil(parts.length/n);
+  var out=[];
   for(var i=0;i<parts.length;i+=size){
     var c=parts.slice(i,i+size).join(" ").trim();
     out.push({n:out.length+1,body:c,prompt:"Cinematic still, "+c.slice(0,100)});
@@ -321,36 +326,46 @@ function fallbackScenes(text){
   return out;
 }
 function renderScenes(){
-  var box=document.getElementById("sceneList"); box.innerHTML="";
+  var box=document.getElementById("sceneList");
+  box.innerHTML="";
   scenes.forEach(function(s){
-    var d=document.createElement("div"); d.className="scene";
+    var d=document.createElement("div");
+    d.className="scene";
     d.innerHTML='<div class="num">सीन '+s.n+'</div><div class="body"></div><div class="prompt"></div>';
     d.querySelector(".body").textContent=s.body;
-    d.querySelector(".prompt").textContent="🎞 "+s.prompt;
+    d.querySelector(".prompt").textContent=s.prompt;
     box.appendChild(d);
   });
   try{ localStorage.setItem("VX_SCENES",JSON.stringify(scenes)); }catch(e){}
 }
 async function genScenes(){
-  var err=document.getElementById("err2"); err.textContent="";
+  var err=document.getElementById("err2");
+  err.textContent="";
   if(!storyFull||isBad(storyFull)){ err.textContent="Valid story नहीं"; return; }
   prog(true,"Scenes...",40);
   try{
-    var out=await callAI("4-6 scenes. Har line: SCENE|num|hindi_text|english_image_prompt","STORY:\n"+storyFull);
+    var out=await callAI("4 to 6 scenes. Each line EXACT format: SCENE|num|hindi_text|english_image_prompt","STORY:\n"+storyFull);
     scenes=[];
     out.split("\n").forEach(function(line){
       line=line.trim();
       var m=line.match(/^SCENE\|(\d+)\|([^|]+)\|(.+)$/i);
       if(m) scenes.push({n:+m[1],body:m[2].trim(),prompt:m[3].trim()});
-      else { var m2=line.match(/^SCENE\|(\d+)\|(.+)$/i); if(m2) scenes.push({n:+m2[1],body:m2[2].trim(),prompt:"Cinematic: "+m2[2].trim().slice(0,90)}); }
+      else {
+        var m2=line.match(/^SCENE\|(\d+)\|(.+)$/i);
+        if(m2) scenes.push({n:+m2[1],body:m2[2].trim(),prompt:"Cinematic: "+m2[2].trim().slice(0,90)});
+      }
     });
     if(scenes.length<2) scenes=fallbackScenes(storyFull);
-    renderScenes(); prog(true,"Done",100);
+    renderScenes();
+    prog(true,"Done",100);
     setTimeout(function(){ prog(false); show("s3"); },250);
-  }catch(e){ scenes=fallbackScenes(storyFull); renderScenes(); prog(false); show("s3"); }
+  }catch(e){
+    scenes=fallbackScenes(storyFull);
+    renderScenes();
+    prog(false);
+    show("s3");
+  }
 }
-
-/* settings */
 function pickChip(group,el){
   var parent=el.parentElement;
   parent.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("on"); });
@@ -359,7 +374,7 @@ function pickChip(group,el){
   if(group==="size") settings.size=v;
   if(group==="style") settings.style=v;
   if(group==="qual"){
-    if(v==="max"){ alert("Max / 4K Premium जल्द — अभी High चुनो"); return; }
+    if(v==="max"){ alert("Max Premium जल्द — अभी High चुनो"); return; }
     settings.qual=v;
   }
   saveSettings();
@@ -372,9 +387,10 @@ function goChars(){
   saveSettings();
   extractCast();
 }
-
-async function extractCast(){
-  var err=document.getElementById("err4"); err.textContent="";
+/* === END PART 1 — PART 2 yahan se seedha neeche paste === */
+  async function extractCast(){
+  var err=document.getElementById("err4");
+  if(err) err.textContent="";
   prog(true,"Characters निकाल रहे हैं...",35);
   try{
     var sys="Story se unique characters aur main locations nikaalo. Format EXACT lines only:\nCHAR|name|short_visual_english\nLOC|name|short_visual_english\nMax 6 CHAR, max 4 LOC. English visual = face, clothes, age, colors.";
@@ -387,4 +403,128 @@ async function extractCast(){
       var l=line.match(/^LOC\|([^|]+)\|(.+)$/i);
       if(l) bgs.push({name:l[1].trim(),desc:l[2].trim(),url:"",lock:false});
     });
-    if(!chars.length
+    if(!chars.length) chars=[{name:"Main Character",desc:"Indian villager, simple clothes",url:"",lock:false}];
+    if(!bgs.length) bgs=[{name:"Village field",desc:"rural farmland India golden light",url:"",lock:false}];
+    renderCast();
+    prog(false);
+    show("s5");
+  }catch(e){
+    chars=[{name:"Main",desc:"story hero",url:"",lock:false}];
+    bgs=[{name:"Scene",desc:"story location",url:"",lock:false}];
+    renderCast();
+    prog(false);
+    show("s5");
+  }
+}
+function stylePrefix(){
+  var m={mix:"cinematic mixed 3D and realistic","3d":"Pixar-like 3D animation","2d":"2D anime",real:"photorealistic cinematic",cartoon:"HD cartoon"};
+  return m[settings.style]||m.mix;
+}
+function renderCast(){
+  var cg=document.getElementById("charGrid");
+  var bg=document.getElementById("bgGrid");
+  cg.innerHTML=""; bg.innerHTML="";
+  chars.forEach(function(ch,i){ cg.appendChild(makeCard(ch,i,"char")); });
+  bgs.forEach(function(b,i){ bg.appendChild(makeCard(b,i,"bg")); });
+  try{
+    localStorage.setItem("VX_CHARS",JSON.stringify(chars));
+    localStorage.setItem("VX_BGS",JSON.stringify(bgs));
+  }catch(e){}
+}
+function makeCard(item,i,type){
+  var d=document.createElement("div");
+  d.className="card";
+  var imgHtml=item.url?('<img src="'+item.url+'" alt="">'):('<div class="ph">'+(type==="bg"?"🏞":"👤")+'</div>');
+  d.innerHTML=imgHtml+'<div class="meta"><div class="name"></div><div class="acts">'+
+    '<button type="button" class="gen">AI</button>'+
+    '<button type="button" class="up">Gallery</button>'+
+    '<button type="button" class="p lock">'+(item.lock?"Locked":"Lock")+'</button></div></div>';
+  d.querySelector(".name").textContent=item.name;
+  var im=d.querySelector("img");
+  if(im) im.onclick=function(){ openLb(item.url); };
+  d.querySelector(".gen").onclick=function(){ genImg(type,i); };
+  d.querySelector(".up").onclick=function(){
+    pickTarget={type:type,i:i};
+    document.getElementById("filePick").click();
+  };
+  d.querySelector(".lock").onclick=function(){ item.lock=!item.lock; renderCast(); };
+  return d;
+}
+async function genImg(type,i){
+  var item=type==="char"?chars[i]:bgs[i];
+  var prompt=stylePrefix()+", "+item.desc+", "+item.name+", high detail, consistent character design";
+  prog(true,"Image...",50);
+  var url="https://image.pollinations.ai/prompt/"+encodeURIComponent(prompt)+"?width=768&height=768&nologo=true&seed="+Math.floor(Math.random()*99999);
+  item.url=url;
+  item.lock=true;
+  renderCast();
+  prog(false);
+}
+document.getElementById("filePick").onchange=function(e){
+  var f=e.target.files&&e.target.files[0];
+  if(!f||!pickTarget) return;
+  var r=new FileReader();
+  r.onload=function(){
+    var item=pickTarget.type==="char"?chars[pickTarget.i]:bgs[pickTarget.i];
+    item.url=r.result;
+    item.lock=true;
+    renderCast();
+  };
+  r.readAsDataURL(f);
+  e.target.value="";
+};
+function openLb(url){
+  if(!url) return;
+  lbUrl=url;
+  document.getElementById("lbImg").src=url;
+  document.getElementById("lb").classList.add("on");
+}
+function closeLb(){
+  document.getElementById("lb").classList.remove("on");
+  lbUrl="";
+}
+function dlLb(){
+  if(!lbUrl) return;
+  var a=document.createElement("a");
+  a.href=lbUrl;
+  a.download="velorix-"+Date.now()+".jpg";
+  a.target="_blank";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+function nextVideo(){
+  saveSettings();
+  try{
+    localStorage.setItem("VX_CHARS",JSON.stringify(chars));
+    localStorage.setItem("VX_BGS",JSON.stringify(bgs));
+  }catch(e){}
+  alert("Video step जल्द — Characters / BG lock save हो चुके।");
+}
+
+/* Home se aaya text: fill + auto story start (dobara khali box nahi) */
+(function(){
+  var q="";
+  try{ q=new URLSearchParams(location.search).get("q")||""; }catch(e){}
+  var h="";
+  try{ h=localStorage.getItem("VX_PROMPT")||""; }catch(e){}
+  var text=(q||h||"").trim();
+  var lang="Hindi";
+  try{ lang=localStorage.getItem("velorix_lang")||localStorage.getItem("VX_LANG")||"Hindi"; }catch(e){}
+  document.getElementById("langInput").value=lang;
+  settings.lang=lang;
+  try{
+    var st=JSON.parse(localStorage.getItem("VX_SETTINGS")||"null");
+    if(st) settings=st;
+  }catch(e){}
+  if(text){
+    document.getElementById("prompt").value=text;
+    if(!autoStarted){
+      autoStarted=true;
+      setTimeout(function(){ genStory(); },400);
+    }
+  }
+})();
+</script>
+</body>
+</html>
