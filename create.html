@@ -207,9 +207,23 @@ document.getElementById("btnToScenes").onclick = function () {
   } catch (e) {}
   alert("PART 2 · Scenes + Size स्क्रीन");
 };
+/* === CREATE PART 2 · full · no script-tag inside comments === */
+(function vxPart2Css() {
+  var s = document.createElement("style");
+  s.textContent = [
+    ".prog-bar{height:10px!important;background:#1a1228!important;border:1px solid rgba(168,85,247,.25)!important}",
+    ".prog-bar i{background:linear-gradient(90deg,#7c3aed,#a855f7,#e9d5ff)!important}",
+    ".prog-text{font-size:14px!important;font-weight:600!important;color:#e9d5ff!important}",
+    ".story-view{max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px}",
+    ".story-view.on{display:block!important;white-space:pre-wrap;font-size:15px;line-height:1.65;color:#f3e8ff}"
+  ].join("");
+  document.head.appendChild(s);
+})();
 
-/* === END PART 1 · PART 2 yahan SE neeche paste === */
-  /* === CREATE PART 2 · Story AI · Edit AI · Scenes · PART 1 ke neeche === */
+VX.scenes = VX.scenes || [];
+VX.MAX_STORY_CHARS = 900;
+VX.MIN_STORY_CHARS = 80;
+
 function vxKeys() {
   return {
     groq: (localStorage.getItem("VX_GROQ") || "").trim(),
@@ -226,6 +240,30 @@ function vxLangName() {
   };
   return m[VX.lang] || VX.lang;
 }
+function vxLooksLikeFullStory(t) {
+  t = (t || "").trim();
+  if (t.length >= 160) return true;
+  if ((t.match(/[.।!?\n]/g) || []).length >= 3 && t.length >= 120) return true;
+  return false;
+}
+function vxIsBadStory(t) {
+  t = (t || "").trim();
+  if (t.length < VX.MIN_STORY_CHARS) return true;
+  if (/user\s*safety/i.test(t)) return true;
+  if (/^safe\.?$/i.test(t)) return true;
+  if (/^(ok|okay|yes|no|safe)\s*$/i.test(t)) return true;
+  if (t.length > VX.MAX_STORY_CHARS + 200) return true;
+  return false;
+}
+function vxTrimToMinute(t) {
+  t = (t || "").trim();
+  if (t.length <= VX.MAX_STORY_CHARS) return t;
+  var cut = t.slice(0, VX.MAX_STORY_CHARS);
+  var i = Math.max(cut.lastIndexOf("।"), cut.lastIndexOf("."), cut.lastIndexOf("\n"));
+  if (i > 200) cut = cut.slice(0, i + 1);
+  return cut.trim();
+}
+
 async function vxCallGroq(system, user) {
   var k = vxKeys().groq;
   if (!k) throw new Error("Groq key नहीं");
@@ -237,23 +275,16 @@ async function vxCallGroq(system, user) {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
         body: JSON.stringify({
-          model: models[i], temperature: 0.7, max_tokens: 2048,
-          messages: [
-            { role: "system", content: system },
-            { role: "user", content: user }
-          ]
+          model: models[i], temperature: 0.7, max_tokens: 900,
+          messages: [{ role: "system", content: system }, { role: "user", content: user }]
         })
       });
       var j = await r.json();
-      if (!r.ok) {
-        last = (j.error && j.error.message) || ("Groq " + r.status);
-        continue;
-      }
+      if (!r.ok) { last = (j.error && j.error.message) || ("Groq " + r.status); continue; }
       var t = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
-      if (t && t.trim()) return t.trim();
-    } catch (e) {
-      last = String(e.message || e);
-    }
+      if (t && t.trim() && !vxIsBadStory(t)) return t.trim();
+      if (t) last = "Groq bad/short: " + String(t).slice(0, 40);
+    } catch (e) { last = String(e.message || e); }
   }
   throw new Error(last);
 }
@@ -264,17 +295,14 @@ async function vxCallOR(system, user) {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
     body: JSON.stringify({
-      model: "openrouter/free", temperature: 0.7, max_tokens: 2048,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user }
-      ]
+      model: "openrouter/free", temperature: 0.7, max_tokens: 900,
+      messages: [{ role: "system", content: system }, { role: "user", content: user }]
     })
   });
   var j = await r.json();
   if (!r.ok) throw new Error((j.error && j.error.message) || ("OR " + r.status));
   var t = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
-  if (!t || !t.trim()) throw new Error("OR empty");
+  if (!t || !t.trim() || vxIsBadStory(t)) throw new Error("OR empty/safety");
   return t.trim();
 }
 async function vxCallGemini(system, user) {
@@ -286,7 +314,7 @@ async function vxCallGemini(system, user) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       contents: [{ role: "user", parts: [{ text: system + "\n\n" + user }] }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+      generationConfig: { temperature: 0.7, maxOutputTokens: 900 }
     })
   });
   var j = await r.json();
@@ -294,7 +322,7 @@ async function vxCallGemini(system, user) {
   var t = j.candidates && j.candidates[0] && j.candidates[0].content &&
     j.candidates[0].content.parts && j.candidates[0].content.parts[0] &&
     j.candidates[0].content.parts[0].text;
-  if (!t || !t.trim()) throw new Error("Gemini empty");
+  if (!t || !t.trim() || vxIsBadStory(t)) throw new Error("Gemini empty/safety");
   return t.trim();
 }
 async function vxCallAI(system, user) {
@@ -302,8 +330,9 @@ async function vxCallAI(system, user) {
   try { return await vxCallGroq(system, user); } catch (e) { errs.push("Groq: " + e.message); }
   try { return await vxCallOR(system, user); } catch (e) { errs.push("OR: " + e.message); }
   try { return await vxCallGemini(system, user); } catch (e) { errs.push("Gemini: " + e.message); }
-  throw new Error(errs.join(" | ") || "api.html / keys चेक करो");
+  throw new Error(errs.join(" | ") || "keys / api.html चेक करो");
 }
+
 function vxParseScenes(text) {
   var lines = String(text).split(/\n+/), out = [], buf = "";
   for (var i = 0; i < lines.length; i++) {
@@ -312,9 +341,7 @@ function vxParseScenes(text) {
     if (/^(scene|सीन|Scene)\s*\d+/i.test(ln) || /^\d+[\.\)]\s+/.test(ln)) {
       if (buf) out.push(buf.trim());
       buf = ln.replace(/^(scene|सीन|Scene)\s*\d+[:\.\-\s]*/i, "").replace(/^\d+[\.\)]\s*/, "");
-    } else {
-      buf += (buf ? " " : "") + ln;
-    }
+    } else buf += (buf ? " " : "") + ln;
   }
   if (buf) out.push(buf.trim());
   if (out.length < 2) {
@@ -323,12 +350,28 @@ function vxParseScenes(text) {
   }
   return out.slice(0, 6);
 }
+
 async function vxRunStoryAI() {
   var topic = (document.getElementById("topicInput").value || "").trim();
   var err = document.getElementById("errBox");
   if (err) err.textContent = "";
   if (!topic) {
-    if (err) err.textContent = "पहले विषय लिखो";
+    if (err) err.textContent = "पहले विषय / story लिखो";
+    return;
+  }
+  if (topic.length > VX.MAX_STORY_CHARS + 250) {
+    if (err) err.textContent = "Story बहुत लंबी · लगभग 1 मिनट (थोड़ा कम लिखो)";
+    return;
+  }
+  /* user ने पूरी story पहले लिख दी = AI से मत बदलो */
+  if (vxLooksLikeFullStory(topic)) {
+    var keep = vxTrimToMinute(topic);
+    try {
+      localStorage.setItem("VX_PROMPT", topic.slice(0, 120));
+      localStorage.setItem("VX_STORY", keep);
+      localStorage.setItem("VX_CREATE_STEP", "story_done");
+    } catch (e) {}
+    vxShowResult(keep);
     return;
   }
   var k = vxKeys();
@@ -338,11 +381,12 @@ async function vxRunStoryAI() {
   }
   var btn = document.getElementById("btnCreate");
   if (btn) btn.disabled = true;
-  vxSetProg(true, 18, "Story लिख रहे हैं…");
+  vxSetProg(true, 15, "Story (\~1 मिनट)…");
   try {
-    var system = "You are Velorix AI. Write one complete short-video story in " + vxLangName() + " (" + VX.lang + "). About 1 minute spoken. Clear beginning, middle, end. No markdown fences.";
-    var story = await vxCallAI(system, "Topic:\n" + topic + "\n\nFull story only in " + vxLangName() + ".");
-    vxSetProg(true, 70, "सँभाल रहे हैं…");
+    var system = "You are Velorix AI. Write ONE short-video story in " + vxLangName() + " (" + VX.lang + "). STRICT length: about 1 minute when spoken aloud (roughly 120-150 words). Clear beginning, middle, end. No markdown. No safety labels. Output story text only.";
+    var story = await vxCallAI(system, "Topic:\n" + topic + "\n\nWrite the full story only in " + vxLangName() + ", max \~1 minute spoken.");
+    story = vxTrimToMinute(story);
+    if (vxIsBadStory(story)) throw new Error("Story valid नहीं बनी · keys/model बदलो");
     try {
       localStorage.setItem("VX_PROMPT", topic);
       localStorage.setItem("VX_STORY", story);
@@ -357,21 +401,18 @@ async function vxRunStoryAI() {
     if (btn) btn.disabled = false;
   }
 }
+
 async function vxRunStoryEdit() {
   var note = (document.getElementById("editInput").value || "").trim();
-  if (!note) {
-    alert("सुझाव लिखो");
-    return;
-  }
-  if (!VX.story) {
-    alert("पहले story बनाओ");
-    return;
-  }
+  if (!note) { alert("सुझाव लिखो"); return; }
+  if (!VX.story) { alert("पहले story"); return; }
   document.getElementById("editSheet").classList.remove("on");
-  vxSetProg(true, 25, "Story edit…");
+  vxSetProg(true, 20, "Edit…");
   try {
-    var system = "Edit the story as requested. Keep language: " + vxLangName() + ". Keep length similar. Output only the full revised story.";
-    var story = await vxCallAI(system, "Current story:\n" + VX.story + "\n\nEdit request:\n" + note);
+    var system = "Edit the story per user note. Keep language " + vxLangName() + ". Keep about 1 minute spoken length. Output only full revised story. No safety labels.";
+    var story = await vxCallAI(system, "Story:\n" + VX.story + "\n\nEdit:\n" + note);
+    story = vxTrimToMinute(story);
+    if (vxIsBadStory(story)) throw new Error("Edit fail");
     try { localStorage.setItem("VX_STORY", story); } catch (e) {}
     vxShowResult(story);
   } catch (e) {
@@ -380,15 +421,13 @@ async function vxRunStoryEdit() {
     vxSetProg(false);
   }
 }
+
 async function vxGoScenes() {
-  if (!VX.story) {
-    alert("पहले story");
-    return;
-  }
-  vxSetProg(true, 30, "Scenes…");
+  if (!VX.story) { alert("पहले story"); return; }
+  vxSetProg(true, 25, "Scenes…");
   try {
     var scenesText = await vxCallAI(
-      "Split story into 4-6 short video scenes. Language: " + vxLangName() + ". Each line: Scene N: 1-2 sentences. Only scene lines.",
+      "Split into 4-6 short scenes for a 1-minute video. Language: " + vxLangName() + ". Each line: Scene N: 1-2 sentences. Only scene lines.",
       VX.story
     );
     var scenes = vxParseScenes(scenesText);
@@ -398,12 +437,10 @@ async function vxGoScenes() {
       localStorage.setItem("VX_SCENES", JSON.stringify(scenes));
       localStorage.setItem("VX_CREATE_STEP", "scenes_done");
     } catch (e) {}
-    vxSetProg(true, 100, "Scenes ready");
-    /* PART 3: Size + Characters UI yahan call hoga */
     if (typeof vxShowSizeScreen === "function") {
       vxShowSizeScreen();
     } else {
-      alert("Scenes save · PART 3 = Size + Characters + Photos\n\n" + scenes.map(function (s, i) { return (i + 1) + ". " + s; }).join("\n"));
+      alert("Scenes ready · PART 3 = Size + Characters\n\n" + scenes.map(function (s, i) { return (i + 1) + ". " + s; }).join("\n"));
     }
   } catch (e) {
     alert(String(e.message || e));
@@ -411,7 +448,23 @@ async function vxGoScenes() {
     vxSetProg(false);
   }
 }
-/* === END PART 2 · PART 3 yahan se pehle paste karo === */
+
+/* back button solid re-bind */
+document.getElementById("btnBack").onclick = function () {
+  if (VX.step === "story") {
+    document.getElementById("resultCard").style.display = "none";
+    document.getElementById("inputCard").style.display = "block";
+    document.getElementById("bottomBar").style.display = "flex";
+    document.getElementById("heroText").textContent = "विषय लिखो · AI पूरी short-video स्टोरी बनाएगा";
+    VX.step = "topic";
+    return;
+  }
+  try { history.length > 1 ? history.back() : (location.href = "home.html"); }
+  catch (e) { location.href = "home.html"; }
+};
+
+/* === END PART 2 · PART 3 yahan se pehle paste === */
 </script>
 </body>
 </html>
+ 
