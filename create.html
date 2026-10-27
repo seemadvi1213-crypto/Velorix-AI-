@@ -33,19 +33,10 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Ro
 .gal-thumb{aspect-ratio:1;border-radius:12px;overflow:hidden;background:#1a1325;border:1px solid var(--border);cursor:pointer}
 .gal-thumb img{width:100%;height:100%;object-fit:cover}
 .gal-empty{grid-column:1/-1;text-align:center;padding:24px 12px;color:var(--muted);font-size:13px;border:1px dashed var(--border);border-radius:14px}
-.scene{background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
-.scene b{color:var(--p);font-size:12px}
-.scene p{font-size:14px;line-height:1.45;margin-top:4px;color:#e4e4e7}
 .bottom{position:fixed;left:0;right:0;bottom:0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(13,10,20,.96) 28%);display:flex;gap:10px;z-index:30}
 .btn{flex:1;padding:14px;border-radius:14px;border:none;font-weight:700;font-size:14px;cursor:pointer}
 .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--border)}
 .btn-main{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff}
-.btn:disabled{opacity:.5}
-.prog{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);align-items:center;justify-content:center;flex-direction:column;gap:12px}
-.prog.on{display:flex}
-.bar{width:64%;height:6px;background:#27272a;border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;width:8%;background:linear-gradient(90deg,var(--p),var(--p2));transition:width .3s}
-.prog p{font-size:13px;color:#ddd}
 .viewer{display:none;position:fixed;inset:0;z-index:100;background:#000;flex-direction:column}
 .viewer.on{display:flex}
 .viewer-top{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(0,0,0,.7)}
@@ -57,6 +48,14 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Ro
 .edit-sheet.on{display:block}
 .edit-sheet textarea{width:100%;min-height:80px;border-radius:12px;border:1px solid var(--border);background:rgba(0,0,0,.3);color:#fff;padding:12px;font-size:14px;resize:none}
 #filePick{display:none}
+#scenesCard{display:none}
+.scene{background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+.scene b{color:var(--p);font-size:12px}
+.scene p{font-size:14px;line-height:1.45;margin-top:4px}
+.prog{display:none;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.prog.on{display:flex}
+.bar{width:64%;height:6px;background:#27272a;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:8%;background:linear-gradient(90deg,var(--p),var(--p2))}
 .err{color:#f87171;font-size:12px;margin-top:8px}
 </style>
 </head>
@@ -74,9 +73,9 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Ro
       <p class="err" id="storyErr"></p>
     </div>
     <div class="card">
-      <h3>Size · पूरी पाइपलाइन</h3>
-      <div class="size-grid" id="sizeGrid">
-        <div class="size-item on" data-size="9:16"><b>9:16</b>Reels / Shorts</div>
+      <h3>Size</h3>
+      <div class="size-grid">
+        <div class="size-item on" data-size="9:16"><b>9:16</b>Reels</div>
         <div class="size-item" data-size="1:1"><b>1:1</b>Square</div>
         <div class="size-item" data-size="16:9"><b>16:9</b>YouTube</div>
         <div class="size-item" data-size="4:5"><b>4:5</b>Feed</div>
@@ -92,17 +91,17 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Ro
         <span class="chip" data-style="anime">Anime</span>
       </div>
     </div>
-    <div class="card" id="scenesCard" style="display:none">
+    <div class="card" id="scenesCard">
       <h3>Scenes</h3>
       <div id="scenesList"></div>
     </div>
     <div class="card">
       <div class="gal-head">
         <h3>Gallery</h3>
-        <button class="btn-sm" type="button" id="btnPickPhone">📱 फोन से</button>
+        <button class="btn-sm" type="button" id="btnPickPhone">फोन से</button>
       </div>
       <div class="gal-grid" id="galGrid">
-        <div class="gal-empty">अभी कोई फोटो नहीं · AI फोटो PART 3</div>
+        <div class="gal-empty">फोटो PART 3 में</div>
       </div>
       <input type="file" id="filePick" accept="image/*" multiple>
     </div>
@@ -112,9 +111,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Ro
     <button class="btn btn-main" type="button" id="btnNext">Create Story</button>
   </div>
 </div>
-
 <div class="prog" id="prog"><div class="bar"><i id="progBar"></i></div><p id="progText">…</p></div>
-
 <div class="viewer" id="viewer">
   <div class="viewer-top">
     <button class="back" type="button" id="btnViewerBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="#fff" stroke-width="2"/></svg></button>
@@ -127,270 +124,323 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Ro
   </div>
 </div>
 <div class="edit-sheet" id="editSheet">
-  <p style="font-size:13px;color:var(--muted);margin-bottom:8px">क्या बदलना है?</p>
-  <textarea id="editPrompt" placeholder="जैसे: कपड़े लाल…"></textarea>
+  <textarea id="editPrompt" placeholder="क्या बदलना है?"></textarea>
   <div class="row" style="margin-top:10px">
     <button class="btn btn-ghost" type="button" id="btnEditCancel">Cancel</button>
-    <button class="btn btn-main" type="button" id="btnEditGo">Apply Edit</button>
+    <button class="btn btn-main" type="button" id="btnEditGo">Apply</button>
   </div>
 </div>
-
 <script>
-(function(){
-  var size="9:16", style="3d", currentPhoto=null, lastStory="", lastScenes=[];
-  var lang=(localStorage.getItem("velorix_lang")||localStorage.getItem("VX_LANG")||"hi").toLowerCase();
-  document.getElementById("langPill").textContent=lang.toUpperCase();
-
-  try{
-    var q=new URLSearchParams(location.search).get("q");
-    var p=q||localStorage.getItem("VX_PROMPT")||"";
-    if(p) document.getElementById("storyInput").value=p;
-    size=localStorage.getItem("VX_SIZE")||size;
-    style=localStorage.getItem("VX_STYLE")||style;
-  }catch(e){}
-
-  function keys(){
-    return {
-      groq: (localStorage.getItem("VX_GROQ")||"").trim(),
-      gemini: (localStorage.getItem("VX_GEMINI")||"").trim(),
-      or: (localStorage.getItem("VX_OR")||"").trim()
-    };
+/* === CREATE PART 1 · shell only · PART 2 iske neeche paste === */
+var VX = { size: "9:16", style: "3d", lang: "hi", photo: null, scenes: [] };
+VX.lang = (localStorage.getItem("velorix_lang") || localStorage.getItem("VX_LANG") || "hi").toLowerCase();
+document.getElementById("langPill").textContent = VX.lang.toUpperCase();
+try {
+  var q = new URLSearchParams(location.search).get("q");
+  var p = q || localStorage.getItem("VX_PROMPT") || "";
+  if (p) document.getElementById("storyInput").value = p;
+  VX.size = localStorage.getItem("VX_SIZE") || VX.size;
+  VX.style = localStorage.getItem("VX_STYLE") || VX.style;
+} catch (e) {}
+[].forEach.call(document.querySelectorAll(".size-item"), function (el) {
+  el.classList.toggle("on", el.getAttribute("data-size") === VX.size);
+  el.onclick = function () {
+    VX.size = el.getAttribute("data-size");
+    [].forEach.call(document.querySelectorAll(".size-item"), function (x) { x.classList.remove("on"); });
+    el.classList.add("on");
+    try { localStorage.setItem("VX_SIZE", VX.size); } catch (e) {}
+  };
+});
+[].forEach.call(document.querySelectorAll("#styleRow .chip"), function (el) {
+  el.classList.toggle("on", el.getAttribute("data-style") === VX.style);
+  el.onclick = function () {
+    VX.style = el.getAttribute("data-style");
+    [].forEach.call(document.querySelectorAll("#styleRow .chip"), function (x) { x.classList.remove("on"); });
+    el.classList.add("on");
+    try { localStorage.setItem("VX_STYLE", VX.style); } catch (e) {}
+  };
+});
+function vxLoadGallery() {
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem("VX_GALLERY") || "[]"); } catch (e) { list = []; }
+  var grid = document.getElementById("galGrid");
+  grid.innerHTML = "";
+  if (!list.length) {
+    grid.innerHTML = '<div class="gal-empty">फोटो PART 3 में</div>';
+    return;
   }
-
-  function setProg(on,pct,msg){
-    var el=document.getElementById("prog");
-    if(on){el.classList.add("on");document.getElementById("progBar").style.width=(pct||10)+"%";document.getElementById("progText").textContent=msg||"…";}
-    else el.classList.remove("on");
-  }
-
-  [].forEach.call(document.querySelectorAll(".size-item"),function(el){
-    el.classList.toggle("on",el.getAttribute("data-size")===size);
-    el.onclick=function(){
-      size=el.getAttribute("data-size");
-      [].forEach.call(document.querySelectorAll(".size-item"),function(x){x.classList.remove("on");});
-      el.classList.add("on");
-      try{localStorage.setItem("VX_SIZE",size);}catch(e){}
-    };
+  list.forEach(function (item) {
+    var d = document.createElement("div");
+    d.className = "gal-thumb";
+    d.innerHTML = "<img alt=\"\">";
+    d.querySelector("img").src = item.thumb || item.url;
+    d.onclick = function () { vxOpenViewer(item); };
+    grid.appendChild(d);
   });
-  [].forEach.call(document.querySelectorAll("#styleRow .chip"),function(el){
-    el.classList.toggle("on",el.getAttribute("data-style")===style);
-    el.onclick=function(){
-      style=el.getAttribute("data-style");
-      [].forEach.call(document.querySelectorAll("#styleRow .chip"),function(x){x.classList.remove("on");});
-      el.classList.add("on");
-      try{localStorage.setItem("VX_STYLE",style);}catch(e){}
-    };
-  });
-
-  function langName(){
-    var m={hi:"हिन्दी",en:"English",pa:"Punjabi",gu:"Gujarati",mr:"Marathi",bn:"Bengali",ta:"Tamil",te:"Telugu"};
-    return m[lang]||lang;
-  }
-
-  async function callGroq(system,user){
-    var k=keys().groq; if(!k) throw new Error("Groq key नहीं");
-    var models=["llama-3.3-70b-versatile","llama-3.1-8b-instant","gemma2-9b-it"];
-    var lastErr="Groq fail";
-    for(var i=0;i<models.length;i++){
-      try{
-        var r=await fetch("https://api.groq.com/openai/v1/chat/completions",{
-          method:"POST",
-          headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},
-          body:JSON.stringify({model:models[i],temperature:0.7,max_tokens:2048,messages:[{role:"system",content:system},{role:"user",content:user}]})
-        });
-        var j=await r.json();
-        if(!r.ok){lastErr=(j.error&&j.error.message)||("Groq "+r.status);continue;}
-        var t=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-        if(t&&t.trim()) return t.trim();
-      }catch(e){lastErr=String(e.message||e);}
-    }
-    throw new Error(lastErr);
-  }
-
-  async function callOpenRouter(system,user){
-    var k=keys().or; if(!k) throw new Error("OpenRouter key नहीं");
-    var r=await fetch("https://openrouter.ai/api/v1/chat/completions",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+k},
-      body:JSON.stringify({model:"openrouter/free",temperature:0.7,max_tokens:2048,messages:[{role:"system",content:system},{role:"user",content:user}]})
-    });
-    var j=await r.json();
-    if(!r.ok) throw new Error((j.error&&j.error.message)||("OR "+r.status));
-    var t=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
-    if(!t||!t.trim()) throw new Error("OR empty");
-    return t.trim();
-  }
-
-  async function callGemini(system,user){
-    var k=keys().gemini; if(!k) throw new Error("Gemini key नहीं");
-    var url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+encodeURIComponent(k);
-    var r=await fetch(url,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({contents:[{role:"user",parts:[{text:system+"\n\n"+user}]}],generationConfig:{temperature:0.7,maxOutputTokens:2048}})
-    });
-    var j=await r.json();
-    if(!r.ok) throw new Error((j.error&&j.error.message)||("Gemini "+r.status));
-    var t=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text;
-    if(!t||!t.trim()) throw new Error("Gemini empty");
-    return t.trim();
-  }
-
-  async function callAI(system,user){
-    var errs=[];
-    try{return await callGroq(system,user);}catch(e){errs.push("Groq: "+e.message);}
-    try{return await callOpenRouter(system,user);}catch(e){errs.push("OR: "+e.message);}
-    try{return await callGemini(system,user);}catch(e){errs.push("Gemini: "+e.message);}
-    throw new Error(errs.join(" | ")||"कोई AI key काम नहीं की · api.html चेक करो");
-  }
-
-  function parseScenes(text){
-    var lines=String(text).split(/\n+/), out=[], buf="";
-    for(var i=0;i<lines.length;i++){
-      var ln=lines[i].trim();
-      if(!ln) continue;
-      if(/^(scene|सीन|Scene)\s*\d+/i.test(ln) || /^\d+[\.\)]\s+/.test(ln)){
-        if(buf) out.push(buf.trim());
-        buf=ln.replace(/^(scene|सीन|Scene)\s*\d+[:\.\-\s]*/i,"").replace(/^\d+[\.\)]\s*/,"");
-      } else buf+=(buf?" ":"")+ln;
-    }
-    if(buf) out.push(buf.trim());
-    if(out.length<2){
-      var parts=String(text).split(/[\n]+/).filter(function(x){return x.trim().length>20;});
-      if(parts.length>=2) out=parts.slice(0,6);
-    }
-    return out.slice(0,6);
-  }
-
-  function showScenes(arr){
-    var box=document.getElementById("scenesList");
-    var card=document.getElementById("scenesCard");
-    box.innerHTML="";
-    arr.forEach(function(s,i){
-      var d=document.createElement("div");
-      d.className="scene";
-      d.innerHTML="<b>सीन "+(i+1)+"</b><p></p>";
-      d.querySelector("p").textContent=s;
-      box.appendChild(d);
-    });
-    card.style.display=arr.length?"block":"none";
-  }
-
-  async function runStoryAI(){
-    var topic=(document.getElementById("storyInput").value||"").trim();
-    var err=document.getElementById("storyErr");
-    err.textContent="";
-    if(!topic){err.textContent="पहले कहानी / विषय लिखो";return;}
-    var k=keys();
-    if(!k.groq&&!k.gemini&&!k.or){err.textContent="API key नहीं · home → Profile → API Keys / api.html";return;}
-
-    document.getElementById("btnNext").disabled=true;
-    setProg(true,15,"Story लिख रहे हैं…");
-    try{
-      var system="You are Velorix AI story writer for short vertical videos. Write a complete short story in language: "+langName()+" ("+lang+"). Style hint: "+style+". Keep under \~1 minute spoken length. Clear beginning, middle, end. No markdown fences.";
-      var user="Topic / draft:\n"+topic+"\n\nWrite the full story only in "+langName()+".";
-      var story=await callAI(system,user);
-      setProg(true,55,"Scenes बना रहे हैं…");
-      lastStory=story;
-      document.getElementById("storyInput").value=story;
-
-      var sys2="Split the story into 4 to 6 short scenes for a video. Language: "+langName()+". Each line: Scene N: one or two sentences. Aspect ratio will be "+size+". Output only scene lines.";
-      var scenesText=await callAI(sys2,story);
-      lastScenes=parseScenes(scenesText);
-      if(!lastScenes.length) lastScenes=[story.slice(0,180)];
-      showScenes(lastScenes);
-
-      try{
-        localStorage.setItem("VX_PROMPT",story);
-        localStorage.setItem("VX_STORY",story);
-        localStorage.setItem("VX_SCENES",JSON.stringify(lastScenes));
-        localStorage.setItem("VX_SIZE",size);
-        localStorage.setItem("VX_STYLE",style);
-        localStorage.setItem("VX_CREATE_STEP","scenes_done");
-      }catch(e){}
-
-      setProg(true,100,"हो गया");
-      document.getElementById("btnNext").textContent="अगला · Photos (PART 3)";
-    }catch(e){
-      err.textContent=String(e.message||e);
-    }finally{
-      setProg(false);
-      document.getElementById("btnNext").disabled=false;
-    }
-  }
-
-  /* gallery */
-  function loadGallery(){
-    var list=[];
-    try{list=JSON.parse(localStorage.getItem("VX_GALLERY")||"[]");}catch(e){list=[];}
-    var grid=document.getElementById("galGrid");
-    grid.innerHTML="";
-    if(!list.length){grid.innerHTML='<div class="gal-empty">अभी कोई फोटो नहीं · AI फोटो PART 3</div>';return;}
-    list.forEach(function(item){
-      var d=document.createElement("div");
-      d.className="gal-thumb";
-      d.innerHTML='<img alt="">';
-      d.querySelector("img").src=item.thumb||item.url;
-      d.onclick=function(){openViewer(item);};
-      grid.appendChild(d);
-    });
-  }
-  function openViewer(item){
-    currentPhoto=item;
-    document.getElementById("viewerImg").src=item.url||item.thumb;
-    document.getElementById("viewerTitle").textContent=item.title||"Photo";
-    document.getElementById("viewer").classList.add("on");
-  }
-  document.getElementById("btnViewerBack").onclick=function(){document.getElementById("viewer").classList.remove("on");};
-  document.getElementById("btnDownload").onclick=function(){
-    if(!currentPhoto)return;
-    var a=document.createElement("a");
-    a.href=currentPhoto.url||currentPhoto.thumb;
-    a.download="velorix-"+(currentPhoto.id||Date.now())+".jpg";
-    a.target="_blank";document.body.appendChild(a);a.click();a.remove();
-  };
-  document.getElementById("btnEdit").onclick=function(){document.getElementById("editSheet").classList.add("on");};
-  document.getElementById("btnEditCancel").onclick=function(){document.getElementById("editSheet").classList.remove("on");};
-  document.getElementById("btnEditGo").onclick=function(){
-    var t=(document.getElementById("editPrompt").value||"").trim();
-    if(!t){alert("लिखो क्या बदलना है");return;}
-    try{localStorage.setItem("VX_EDIT_PENDING",JSON.stringify({id:currentPhoto&&currentPhoto.id,prompt:t}));}catch(e){}
-    document.getElementById("editSheet").classList.remove("on");
-    alert("Edit queue · AI PART 3");
-  };
-  document.getElementById("btnPickPhone").onclick=function(){document.getElementById("filePick").click();};
-  document.getElementById("filePick").onchange=function(ev){
-    var files=ev.target.files;if(!files||!files.length)return;
-    var list=[];try{list=JSON.parse(localStorage.getItem("VX_GALLERY")||"[]");}catch(e){list=[];}
-    var i=0;
-    function next(){
-      if(i>=files.length){try{localStorage.setItem("VX_GALLERY",JSON.stringify(list.slice(0,60)));}catch(e){}loadGallery();return;}
-      var f=files[i++];var r=new FileReader();
-      r.onload=function(){list.unshift({id:"loc_"+Date.now()+"_"+i,thumb:r.result,url:r.result,title:f.name||"Phone",source:"phone",size:size,style:style,ts:Date.now()});next();};
-      r.readAsDataURL(f);
-    }
-    next();
-  };
-
-  document.getElementById("btnBackHome").onclick=function(){location.href="home.html";};
-  document.getElementById("btnSaveDraft").onclick=function(){
-    try{
-      localStorage.setItem("VX_PROMPT",document.getElementById("storyInput").value||"");
-      localStorage.setItem("VX_SIZE",size);localStorage.setItem("VX_STYLE",style);
-    }catch(e){}
-    alert("Draft save");
-  };
-  document.getElementById("btnNext").onclick=function(){
-    if(lastScenes.length&&document.getElementById("btnNext").textContent.indexOf("PART 3")>=0){
-      alert("PART 3 में रियल AI फोटो + gallery add");
+}
+function vxOpenViewer(item) {
+  VX.photo = item;
+  document.getElementById("viewerImg").src = item.url || item.thumb;
+  document.getElementById("viewerTitle").textContent = item.title || "Photo";
+  document.getElementById("viewer").classList.add("on");
+}
+document.getElementById("btnViewerBack").onclick = function () {
+  document.getElementById("viewer").classList.remove("on");
+};
+document.getElementById("btnDownload").onclick = function () {
+  if (!VX.photo) return;
+  var a = document.createElement("a");
+  a.href = VX.photo.url || VX.photo.thumb;
+  a.download = "velorix-" + (VX.photo.id || Date.now()) + ".jpg";
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+document.getElementById("btnEdit").onclick = function () {
+  document.getElementById("editSheet").classList.add("on");
+};
+document.getElementById("btnEditCancel").onclick = function () {
+  document.getElementById("editSheet").classList.remove("on");
+};
+document.getElementById("btnEditGo").onclick = function () {
+  var t = (document.getElementById("editPrompt").value || "").trim();
+  if (!t) { alert("लिखो क्या बदलना है"); return; }
+  try {
+    localStorage.setItem("VX_EDIT_PENDING", JSON.stringify({ id: VX.photo && VX.photo.id, prompt: t }));
+  } catch (e) {}
+  document.getElementById("editSheet").classList.remove("on");
+  alert("Edit queue · PART 3");
+};
+document.getElementById("btnPickPhone").onclick = function () {
+  document.getElementById("filePick").click();
+};
+document.getElementById("filePick").onchange = function (ev) {
+  var files = ev.target.files;
+  if (!files || !files.length) return;
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem("VX_GALLERY") || "[]"); } catch (e) { list = []; }
+  var i = 0;
+  function next() {
+    if (i >= files.length) {
+      try { localStorage.setItem("VX_GALLERY", JSON.stringify(list.slice(0, 60))); } catch (e) {}
+      vxLoadGallery();
       return;
     }
-    runStoryAI();
+    var f = files[i++];
+    var r = new FileReader();
+    r.onload = function () {
+      list.unshift({
+        id: "loc_" + Date.now() + "_" + i,
+        thumb: r.result,
+        url: r.result,
+        title: f.name || "Phone",
+        source: "phone",
+        size: VX.size,
+        style: VX.style,
+        ts: Date.now()
+      });
+      next();
+    };
+    r.readAsDataURL(f);
+  }
+  next();
+};
+document.getElementById("btnBackHome").onclick = function () {
+  location.href = "home.html";
+};
+document.getElementById("btnSaveDraft").onclick = function () {
+  try {
+    localStorage.setItem("VX_PROMPT", document.getElementById("storyInput").value || "");
+    localStorage.setItem("VX_SIZE", VX.size);
+    localStorage.setItem("VX_STYLE", VX.style);
+  } catch (e) {}
+  alert("Draft save");
+};
+document.getElementById("btnNext").onclick = function () {
+  alert("PART 2 लगाओ · Story AI");
+};
+vxLoadGallery();
+/* === END PART 1 · PART 2 yahan SE neeche paste (btnNext overwrite) === */
+  /* === CREATE PART 2 · Story AI · PART 1 ke turant neeche === */
+function vxKeys() {
+  return {
+    groq: (localStorage.getItem("VX_GROQ") || "").trim(),
+    gemini: (localStorage.getItem("VX_GEMINI") || "").trim(),
+    or: (localStorage.getItem("VX_OR") || "").trim()
   };
-
-  try{
-    var sc=JSON.parse(localStorage.getItem("VX_SCENES")||"[]");
-    if(sc&&sc.length){lastScenes=sc;showScenes(sc);document.getElementById("btnNext").textContent="अगला · Photos (PART 3)";}
-    var st=localStorage.getItem("VX_STORY");
-    if(st) {lastStory=st;document.getElementById("storyInput").value=st;}
-  }cat
+}
+function vxSetProg(on, pct, msg) {
+  var el = document.getElementById("prog");
+  if (!el) return;
+  if (on) {
+    el.classList.add("on");
+    var b = document.getElementById("progBar");
+    var t = document.getElementById("progText");
+    if (b) b.style.width = (pct || 10) + "%";
+    if (t) t.textContent = msg || "…";
+  } else el.classList.remove("on");
+}
+function vxLangName() {
+  var m = { hi: "हिन्दी", en: "English", pa: "Punjabi", gu: "Gujarati", mr: "Marathi", bn: "Bengali", ta: "Tamil", te: "Telugu" };
+  return m[VX.lang] || VX.lang;
+}
+async function vxCallGroq(system, user) {
+  var k = vxKeys().groq;
+  if (!k) throw new Error("Groq key नहीं");
+  var models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it"];
+  var last = "Groq fail";
+  for (var i = 0; i < models.length; i++) {
+    try {
+      var r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
+        body: JSON.stringify({
+          model: models[i], temperature: 0.7, max_tokens: 2048,
+          messages: [{ role: "system", content: system }, { role: "user", content: user }]
+        })
+      });
+      var j = await r.json();
+      if (!r.ok) { last = (j.error && j.error.message) || ("Groq " + r.status); continue; }
+      var t = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+      if (t && t.trim()) return t.trim();
+    } catch (e) { last = String(e.message || e); }
+  }
+  throw new Error(last);
+}
+async function vxCallOR(system, user) {
+  var k = vxKeys().or;
+  if (!k) throw new Error("OpenRouter key नहीं");
+  var r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
+    body: JSON.stringify({
+      model: "openrouter/free", temperature: 0.7, max_tokens: 2048,
+      messages: [{ role: "system", content: system }, { role: "user", content: user }]
+    })
+  });
+  var j = await r.json();
+  if (!r.ok) throw new Error((j.error && j.error.message) || ("OR " + r.status));
+  var t = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+  if (!t || !t.trim()) throw new Error("OR empty");
+  return t.trim();
+}
+async function vxCallGemini(system, user) {
+  var k = vxKeys().gemini;
+  if (!k) throw new Error("Gemini key नहीं");
+  var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + encodeURIComponent(k);
+  var r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: system + "\n\n" + user }] }],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+    })
+  });
+  var j = await r.json();
+  if (!r.ok) throw new Error((j.error && j.error.message) || ("Gemini " + r.status));
+  var t = j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0] && j.candidates[0].content.parts[0].text;
+  if (!t || !t.trim()) throw new Error("Gemini empty");
+  return t.trim();
+}
+async function vxCallAI(system, user) {
+  var errs = [];
+  try { return await vxCallGroq(system, user); } catch (e) { errs.push("Groq: " + e.message); }
+  try { return await vxCallOR(system, user); } catch (e) { errs.push("OR: " + e.message); }
+  try { return await vxCallGemini(system, user); } catch (e) { errs.push("Gemini: " + e.message); }
+  throw new Error(errs.join(" | ") || "API key / api.html चेक करो");
+}
+function vxParseScenes(text) {
+  var lines = String(text).split(/\n+/), out = [], buf = "";
+  for (var i = 0; i < lines.length; i++) {
+    var ln = lines[i].trim();
+    if (!ln) continue;
+    if (/^(scene|सीन|Scene)\s*\d+/i.test(ln) || /^\d+[\.\)]\s+/.test(ln)) {
+      if (buf) out.push(buf.trim());
+      buf = ln.replace(/^(scene|सीन|Scene)\s*\d+[:\.\-\s]*/i, "").replace(/^\d+[\.\)]\s*/, "");
+    } else buf += (buf ? " " : "") + ln;
+  }
+  if (buf) out.push(buf.trim());
+  if (out.length < 2) {
+    var parts = String(text).split(/\n+/).filter(function (x) { return x.trim().length > 20; });
+    if (parts.length >= 2) out = parts.slice(0, 6);
+  }
+  return out.slice(0, 6);
+}
+function vxShowScenes(arr) {
+  var box = document.getElementById("scenesList");
+  var card = document.getElementById("scenesCard");
+  if (!box || !card) return;
+  box.innerHTML = "";
+  arr.forEach(function (s, i) {
+    var d = document.createElement("div");
+    d.className = "scene";
+    d.innerHTML = "<b>सीन " + (i + 1) + "</b><p></p>";
+    d.querySelector("p").textContent = s;
+    box.appendChild(d);
+  });
+  card.style.display = arr.length ? "block" : "none";
+}
+async function vxRunStoryAI() {
+  var topic = (document.getElementById("storyInput").value || "").trim();
+  var err = document.getElementById("storyErr");
+  if (err) err.textContent = "";
+  if (!topic) { if (err) err.textContent = "पहले कहानी / विषय लिखो"; return; }
+  var k = vxKeys();
+  if (!k.groq && !k.gemini && !k.or) {
+    if (err) err.textContent = "API key नहीं · api.html / Profile";
+    return;
+  }
+  var btn = document.getElementById("btnNext");
+  if (btn) btn.disabled = true;
+  vxSetProg(true, 15, "Story…");
+  try {
+    var system = "You are Velorix AI. Write a complete short video story in " + vxLangName() + " (" + VX.lang + "). Style: " + VX.style + ". About 1 minute spoken. Clear start-middle-end. No markdown.";
+    var story = await vxCallAI(system, "Topic:\n" + topic + "\n\nFull story in " + vxLangName() + " only.");
+    vxSetProg(true, 55, "Scenes…");
+    document.getElementById("storyInput").value = story;
+    var scenesText = await vxCallAI(
+      "Split into 4-6 short video scenes. Language: " + vxLangName() + ". Each line: Scene N: 1-2 sentences. Size " + VX.size + ". Only scene lines.",
+      story
+    );
+    VX.scenes = vxParseScenes(scenesText);
+    if (!VX.scenes.length) VX.scenes = [story.slice(0, 180)];
+    vxShowScenes(VX.scenes);
+    try {
+      localStorage.setItem("VX_PROMPT", story);
+      localStorage.setItem("VX_STORY", story);
+      localStorage.setItem("VX_SCENES", JSON.stringify(VX.scenes));
+      localStorage.setItem("VX_SIZE", VX.size);
+      localStorage.setItem("VX_STYLE", VX.style);
+      localStorage.setItem("VX_CREATE_STEP", "scenes_done");
+    } catch (e) {}
+    vxSetProg(true, 100, "OK");
+    if (btn) btn.textContent = "अगला · Photos";
+  } catch (e) {
+    if (err) err.textContent = String(e.message || e);
+  } finally {
+    vxSetProg(false);
+    if (btn) btn.disabled = false;
+  }
+}
+document.getElementById("btnNext").onclick = function () {
+  if (VX.scenes && VX.scenes.length && (document.getElementById("btnNext").textContent || "").indexOf("Photos") >= 0) {
+    alert("PART 3 लगाओ · रियल AI फोटो");
+    return;
+  }
+  vxRunStoryAI();
+};
+try {
+  var sc = JSON.parse(localStorage.getItem("VX_SCENES") || "[]");
+  if (sc && sc.length) {
+    VX.scenes = sc;
+    vxShowScenes(sc);
+    document.getElementById("btnNext").textContent = "अगला · Photos";
+  }
+  var st = localStorage.getItem("VX_STORY");
+  if (st) document.getElementById("storyInput").value = st;
+} catch (e) {}
+/* === END PART 2 · PART 3 isse PEHLE paste (</script> se upar) === */
+</script>
+</body>
+</html>
