@@ -115,16 +115,38 @@ var VX = {
   step: "topic"
 };
 document.getElementById("langPill").textContent = VX.lang.toUpperCase();
+/* boot: home से prompt · पुरानी story auto-open नहीं */
+  try {
+    var q = new URLSearchParams(location.search).get("q");
+    var p = q || localStorage.getItem("VX_PROMPT") || "";
+    if (q) {
+      /* Home से नया विषय = पुरानी story/scenes हटाओ */
+      try {
+        localStorage.removeItem("VX_STORY");
+        localStorage.removeItem("VX_SCENES");
+        localStorage.removeItem("VX_SCENE_PACK");
+        localStorage.removeItem("VX_CREATE_STEP");
+      } catch (e1) {}
+      VX.story = "";
+      VX.scenes = [];
+      VX.scenePack = [];
+    }
+    if (p && document.getElementById("topicInput")) {
+      document.getElementById("topicInput").value = p;
+    }
+    /* result card शुरू में बंद · सिर्फ Create Story से खुले */
+    var rc = document.getElementById("resultCard");
+    if (rc) {
+      rc.style.display = "none";
+      rc.classList.remove("on");
+    }
+    var ic = document.getElementById("inputCard");
+    if (ic) ic.style.display = "block";
+    var bb = document.getElementById("bottomBar");
+    if (bb) bb.style.display = "flex";
+  } catch (e) {}
 
-try {
-  var q = new URLSearchParams(location.search).get("q");
-  var p = q || localStorage.getItem("VX_PROMPT") || "";
-  if (p) document.getElementById("topicInput").value = p;
-  var st = localStorage.getItem("VX_STORY") || "";
-  if (st && st.length > 40) {
-    VX.story = st;
-    vxShowResult(st);
-  }
+  
 } catch (e) {}
 
 function vxShowResult(text) {
