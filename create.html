@@ -199,48 +199,44 @@ document.getElementById("btnEditApply").onclick = function () {
   } catch (e) {}
   alert("PART 2 · Scenes + Size स्क्रीन");
 };
-/* === CREATE PART 2 · full story layout · scenes + prompts · premium progress === */
+/* === CREATE PART 2 FINAL · models + premium small loader + full story === */
 (function () {
   var s = document.createElement("style");
   s.textContent = [
-    "#resultCard{display:none;flex-direction:column;flex:1;min-height:0;padding:0!important;border:none!important;background:transparent!important;box-shadow:none!important}",
+    "#resultCard{display:none!important;flex-direction:column;flex:1;min-height:0;padding:0!important;border:none!important;background:transparent!important;box-shadow:none!important}",
     "#resultCard.on{display:flex!important}",
-    ".story-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 4px 16px;min-height:45vh;max-height:none}",
-    ".story-scroll .label{margin-bottom:10px}",
-    ".story-body{font-size:16px;line-height:1.7;color:#f3e8ff;white-space:pre-wrap}",
-    ".scenes-wrap{margin-top:18px}",
-    ".scene-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px;margin-bottom:10px}",
-    ".scene-card .sn{font-size:11px;font-weight:700;letter-spacing:.08em;color:#c084fc;text-transform:uppercase}",
-    ".scene-card .st{margin:8px 0 10px;font-size:14px;line-height:1.5;color:#efe8ff}",
-    ".scene-card .pr{font-size:11px;color:#a78bfa;margin-top:8px;line-height:1.4}",
-    ".scene-card .pr b{color:#ddd6fe}",
-    ".result-bottom{flex-shrink:0;display:flex;gap:10px;padding:12px 0 calc(8px + env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,rgba(10,7,18,.96) 30%)}",
-    ".prog{background:rgba(4,2,10,.94)!important;backdrop-filter:blur(14px)}",
+    ".story-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 2px 12px;min-height:48vh}",
+    ".story-body{font-size:16px;line-height:1.75;color:#f5f0ff;white-space:pre-wrap}",
+    ".scenes-wrap{margin-top:16px}",
+    ".scene-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:12px;margin-bottom:10px}",
+    ".scene-card .sn{font-size:11px;font-weight:700;color:#c084fc;letter-spacing:.06em}",
+    ".scene-card .st{margin:6px 0 8px;font-size:14px;line-height:1.5;color:#efe8ff}",
+    ".scene-card .pr{font-size:11px;color:#a78bfa;line-height:1.4;margin-top:6px}",
+    ".result-bottom{flex-shrink:0;display:flex;gap:10px;padding:12px 0 calc(10px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(10,7,18,.97) 28%)}",
+    ".prog{background:rgba(6,4,12,.9)!important;backdrop-filter:blur(12px)}",
     ".prog-ring{display:none!important}",
-    ".prog-wrap{width:82%;max-width:320px;text-align:center}",
-    ".prog-pct{font-size:40px;font-weight:800;color:#faf5ff;margin-bottom:18px;text-shadow:0 0 40px rgba(168,85,247,.45)}",
-    ".prog-bar{height:14px!important;border-radius:99px;background:#0c0618!important;border:1px solid rgba(168,85,247,.4)!important;overflow:hidden;box-shadow:0 0 24px rgba(124,58,237,.25)}",
-    ".prog-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4c1d95,#7c3aed,#a855f7,#f0abfc)!important;transition:width .2s ease}",
-    ".prog-text{margin-top:14px;font-size:13px;font-weight:600;color:#c4b5fd}",
-    "#editStoryPreview{max-height:28vh;overflow:auto;font-size:13px;line-height:1.55;color:#e9e4f5;margin:0 0 10px;padding:12px;border-radius:14px;background:rgba(0,0,0,.4);white-space:pre-wrap;border:1px solid rgba(255,255,255,.08)}"
+    ".prog-wrap{width:56%;max-width:220px;text-align:center}",
+    ".prog-pct{font-size:22px;font-weight:800;color:#faf5ff;margin-bottom:10px}",
+    ".prog-bar{height:6px!important;border-radius:99px;background:#160e28!important;border:1px solid rgba(168,85,247,.35)!important;overflow:hidden}",
+    ".prog-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#c084fc)!important;transition:width .2s ease}",
+    ".prog-text{margin-top:10px;font-size:12px;font-weight:600;color:#c4b5fd}",
+    "#editStoryPreview{max-height:26vh;overflow:auto;font-size:13px;line-height:1.5;color:#e9e4f5;margin:0 0 10px;padding:12px;border-radius:14px;background:rgba(0,0,0,.4);white-space:pre-wrap;border:1px solid rgba(255,255,255,.08)}"
   ].join("");
   document.head.appendChild(s);
   var prog = document.getElementById("prog");
-  if (prog && !document.getElementById("progPct")) {
+  if (prog) {
     prog.innerHTML = '<div class="prog-wrap"><div class="prog-pct" id="progPct">0%</div><div class="prog-bar"><i id="progBar"></i></div><p class="prog-text" id="progText">…</p></div>';
   }
   var rc = document.getElementById("resultCard");
-  if (rc && !document.getElementById("storyScroll")) {
+  if (rc) {
     rc.innerHTML =
       '<div class="story-scroll" id="storyScroll">' +
       '<div class="label">GENERATED STORY</div>' +
       '<div class="story-body" id="storyView"></div>' +
-      '<div class="scenes-wrap" id="scenesBlock" style="display:none"></div>' +
-      "</div>" +
+      '<div class="scenes-wrap" id="scenesBlock" style="display:none"></div></div>' +
       '<div class="result-bottom">' +
       '<button class="btn btn-ghost" type="button" id="btnEdit">Edit</button>' +
-      '<button class="btn btn-main" type="button" id="btnToScenes">Continue → Scenes</button>' +
-      "</div>";
+      '<button class="btn btn-main" type="button" id="btnToScenes">Continue → Scenes</button></div>';
   }
 })();
 
@@ -299,7 +295,7 @@ function vxSetProg(on, pct, msg) {
     VX._progVal += 1;
     if (bar) bar.style.width = VX._progVal + "%";
     if (p) p.textContent = VX._progVal + "%";
-  }, 350);
+  }, 320);
 }
 
 async function vxFetchJson(url, opt, ms) {
@@ -318,55 +314,83 @@ async function vxFetchJson(url, opt, ms) {
 async function vxCallGroq(system, user) {
   var k = vxKeys().groq;
   if (!k) throw new Error("Groq key नहीं");
-  var models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it"];
+  var models = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"];
   var last = "Groq fail";
   for (var i = 0; i < models.length; i++) {
     try {
       var res = await vxFetchJson("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
-        body: JSON.stringify({ model: models[i], temperature: 0.7, max_tokens: 1200, messages: [{ role: "system", content: system }, { role: "user", content: user }] })
+        body: JSON.stringify({
+          model: models[i], temperature: 0.7, max_tokens: 1200,
+          messages: [{ role: "system", content: system }, { role: "user", content: user }]
+        })
       }, 35000);
       if (!res.r.ok) { last = (res.j.error && res.j.error.message) || ("Groq " + res.r.status); continue; }
       var t = res.j.choices && res.j.choices[0] && res.j.choices[0].message && res.j.choices[0].message.content;
       if (t && !vxIsBadStory(t)) return t.trim();
-      last = "Groq bad";
-    } catch (e) { last = /abort/i.test(String(e)) ? "timeout" : String(e.message || e); }
+      last = "Groq bad/short";
+    } catch (e) { last = /abort/i.test(String(e)) ? "Groq timeout" : String(e.message || e); }
   }
   throw new Error(last);
 }
+
 async function vxCallOR(system, user) {
   var k = vxKeys().or;
   if (!k) throw new Error("OpenRouter key नहीं");
-  var res = await vxFetchJson("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
-    body: JSON.stringify({ model: "openrouter/free", temperature: 0.7, max_tokens: 1200, messages: [{ role: "system", content: system }, { role: "user", content: user }] })
-  }, 40000);
-  if (!res.r.ok) throw new Error((res.j.error && res.j.error.message) || ("OR " + res.r.status));
-  var t = res.j.choices && res.j.choices[0] && res.j.choices[0].message && res.j.choices[0].message.content;
-  if (!t || vxIsBadStory(t)) throw new Error("OR empty/safety");
-  return t.trim();
+  var models = ["openrouter/free", "meta-llama/llama-3.3-70b-instruct:free", "google/gemma-2-9b-it:free"];
+  var last = "OR fail";
+  for (var i = 0; i < models.length; i++) {
+    try {
+      var res = await vxFetchJson("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
+        body: JSON.stringify({
+          model: models[i], temperature: 0.7, max_tokens: 1200,
+          messages: [{ role: "system", content: system }, { role: "user", content: user }]
+        })
+      }, 40000);
+      if (!res.r.ok) { last = (res.j.error && res.j.error.message) || ("OR " + res.r.status); continue; }
+      var t = res.j.choices && res.j.choices[0] && res.j.choices[0].message && res.j.choices[0].message.content;
+      if (t && !vxIsBadStory(t)) return t.trim();
+      last = "OR empty/safety";
+    } catch (e) { last = String(e.message || e); }
+  }
+  throw new Error(last);
 }
+
 async function vxCallGemini(system, user) {
   var k = vxKeys().gemini;
   if (!k) throw new Error("Gemini key नहीं");
-  var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + encodeURIComponent(k);
-  var res = await vxFetchJson(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: system + "\n\n" + user }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 1200 } })
-  }, 40000);
-  if (!res.r.ok) throw new Error((res.j.error && res.j.error.message) || ("Gemini " + res.r.status));
-  var t = res.j.candidates && res.j.candidates[0] && res.j.candidates[0].content && res.j.candidates[0].content.parts && res.j.candidates[0].content.parts[0] && res.j.candidates[0].content.parts[0].text;
-  if (!t || vxIsBadStory(t)) throw new Error("Gemini empty/safety");
-  return t.trim();
+  var models = ["gemini-2.5-flash", "gemini-3.8-flash", "gemini-flash-latest"];
+  var last = "Gemini fail";
+  for (var i = 0; i < models.length; i++) {
+    try {
+      var url = "https://generativelanguage.googleapis.com/v1beta/models/" + models[i] + ":generateContent?key=" + encodeURIComponent(k);
+      var res = await vxFetchJson(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: system + "\n\n" + user }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 1200 }
+        })
+      }, 40000);
+      if (!res.r.ok) { last = (res.j.error && res.j.error.message) || ("Gemini " + res.r.status); continue; }
+      var t = res.j.candidates && res.j.candidates[0] && res.j.candidates[0].content &&
+        res.j.candidates[0].content.parts && res.j.candidates[0].content.parts[0] &&
+        res.j.candidates[0].content.parts[0].text;
+      if (t && !vxIsBadStory(t)) return t.trim();
+      last = "Gemini empty";
+    } catch (e) { last = String(e.message || e); }
+  }
+  throw new Error(last);
 }
+
 async function vxCallAI(system, user) {
   var errs = [];
-  try { return await vxCallGroq(system, user); } catch (e) { errs.push(e.message); }
-  try { return await vxCallOR(system, user); } catch (e) { errs.push(e.message); }
-  try { return await vxCallGemini(system, user); } catch (e) { errs.push(e.message); }
+  try { return await vxCallGroq(system, user); } catch (e) { errs.push("Groq: " + e.message); }
+  try { return await vxCallOR(system, user); } catch (e) { errs.push("OR: " + e.message); }
+  try { return await vxCallGemini(system, user); } catch (e) { errs.push("Gemini: " + e.message); }
   throw new Error(errs.join(" | "));
 }
 
@@ -395,26 +419,39 @@ async function vxRunStoryAI() {
   var err = document.getElementById("errBox");
   if (err) err.textContent = "";
   if (!topic) { if (err) err.textContent = "विषय लिखो"; return; }
-  if (topic.length > VX.MAX_STORY_CHARS + 250) { if (err) err.textContent = "\~1 मिनट से लंबी"; return; }
+  if (topic.length > VX.MAX_STORY_CHARS + 250) {
+    if (err) err.textContent = "बहुत लंबी · \~1 मिनट";
+    return;
+  }
+  /* पहले से पूरी story = AI स्किप, सीधा आगे */
   if (vxLooksLikeFullStory(topic)) {
     var keep = vxTrimToMinute(topic);
-    try { localStorage.setItem("VX_STORY", keep); localStorage.setItem("VX_PROMPT", topic.slice(0, 120)); } catch (e) {}
+    try {
+      localStorage.setItem("VX_PROMPT", topic.slice(0, 120));
+      localStorage.setItem("VX_STORY", keep);
+    } catch (e) {}
     vxShowResult(keep);
     return;
   }
   var k = vxKeys();
-  if (!k.groq && !k.gemini && !k.or) { if (err) err.textContent = "API key · api.html"; return; }
+  if (!k.groq && !k.gemini && !k.or) {
+    if (err) err.textContent = "API key · api.html";
+    return;
+  }
   var btn = document.getElementById("btnCreate");
   if (btn) btn.disabled = true;
-  vxSetProg(true, 4, "Story (\~1 मिनट)…");
+  vxSetProg(true, 4, "Story…");
   try {
     var story = await vxCallAI(
-      "Write ONE short-video story in " + vxLangName() + ". \~1 minute spoken (120-150 words). No markdown. No safety labels. Story only.",
+      "Write ONE short-video story in " + vxLangName() + ". About 1 minute spoken. No markdown. No safety labels. Story text only.",
       "Topic: " + topic
     );
     story = vxTrimToMinute(story);
     if (vxIsBadStory(story)) throw new Error("Story valid नहीं");
-    try { localStorage.setItem("VX_PROMPT", topic); localStorage.setItem("VX_STORY", story); } catch (e) {}
+    try {
+      localStorage.setItem("VX_PROMPT", topic);
+      localStorage.setItem("VX_STORY", story);
+    } catch (e) {}
     if (document.getElementById("progPct")) document.getElementById("progPct").textContent = "100%";
     if (document.getElementById("progBar")) document.getElementById("progBar").style.width = "100%";
     vxShowResult(story);
@@ -470,7 +507,11 @@ function vxParseScenePack(raw) {
       ln = ln.trim();
       if (!ln) return;
       if (/^(scene|सीन)\s*\d+/i.test(ln) || /^\d+[\.\)]/.test(ln)) {
-        pack.push({ n: pack.length + 1, text: ln.replace(/^(scene|सीन)\s*\d+[:\.\-\s]*/i, "").replace(/^\d+[\.\)]\s*/, ""), photo: "", video: "" });
+        pack.push({
+          n: pack.length + 1,
+          text: ln.replace(/^(scene|सीन)\s*\d+[:\.\-\s]*/i, "").replace(/^\d+[\.\)]\s*/, ""),
+          photo: "", video: ""
+        });
       }
     });
   }
@@ -481,18 +522,17 @@ function vxRenderScenes(pack) {
   var box = document.getElementById("scenesBlock");
   if (!box) return;
   box.style.display = "block";
-  box.innerHTML = '<div class="label">SCENES · PHOTO · VIDEO PROMPTS</div>';
+  box.innerHTML = '<div class="label">SCENES · PHOTO · VIDEO</div>';
   pack.forEach(function (sc) {
     var d = document.createElement("div");
     d.className = "scene-card";
     d.innerHTML =
-      '<div class="sn">सीन ' + sc.n + '</div>' +
-      '<div class="st"></div>' +
+      '<div class="sn">सीन ' + sc.n + '</div><div class="st"></div>' +
       '<div class="pr"><b>Photo:</b> <span class="ph"></span></div>' +
       '<div class="pr"><b>Video:</b> <span class="vid"></span></div>';
     d.querySelector(".st").textContent = sc.text || "—";
-    d.querySelector(".ph").textContent = sc.photo || "(PART 3 में lock के साथ)";
-    d.querySelector(".vid").textContent = sc.video || "(PART 3 में lock के साथ)";
+    d.querySelector(".ph").textContent = sc.photo || "—";
+    d.querySelector(".vid").textContent = sc.video || "—";
     box.appendChild(d);
   });
   var btn = document.getElementById("btnToScenes");
@@ -511,11 +551,11 @@ function vxRenderScenes(pack) {
 
 async function vxGoScenes() {
   if (!VX.story) { alert("पहले story"); return; }
-  vxSetProg(true, 6, "Scenes + prompts…");
+  vxSetProg(true, 6, "Scenes…");
   try {
     var raw = await vxCallAI(
-      "Split story into 4-6 video scenes. Language " + vxLangName() +
-      ". Reply ONLY JSON array: [{\"text\":\"scene action/dialogue\",\"photo_prompt\":\"still image prompt, same character face clothes\",\"video_prompt\":\"motion/dialogue prompt, same character locked\"}]. No markdown.",
+      "Split into 4-6 scenes. Language " + vxLangName() +
+      '. JSON only: [{"text":"...","photo_prompt":"...","video_prompt":"..."}]. Same character lock in prompts.',
       VX.story
     );
     var pack = vxParseScenePack(raw);
