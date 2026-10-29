@@ -731,3 +731,443 @@ document.getElementById("btnBack").onclick = function (e) {
 </script>
 </body>
 </html>
+/* === CREATE PART 3 · premium Size · Characters/BG lock · AI photo · Gallery === */
+(function () {
+  var css = document.createElement("style");
+  css.textContent = [
+    "#sizeScreen{display:none;padding:4px 0 90px}",
+    "#sizeScreen.on{display:block!important}",
+    "#charScreen{display:none;padding:4px 0 100px}",
+    "#charScreen.on{display:block!important}",
+    ".p3-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:16px;margin-top:10px}",
+    ".p3-label{font-size:11px;font-weight:700;letter-spacing:.08em;color:#a78bfa;margin:12px 0 8px;text-transform:uppercase}",
+    ".p3-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}",
+    ".p3-chip{padding:12px 10px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);text-align:center;cursor:pointer;color:#ddd;font-size:12px;font-weight:600}",
+    ".p3-chip small{display:block;font-weight:500;opacity:.7;margin-top:2px;font-size:10px}",
+    ".p3-chip.on{border-color:#a855f7;background:linear-gradient(145deg,rgba(124,58,237,.45),rgba(88,28,135,.35));color:#fff;box-shadow:0 0 20px rgba(168,85,247,.25)}",
+    ".p3-chip .prem{color:#fbbf24;font-size:10px}",
+    ".lang-row,.style-row,.qual-row{display:flex;flex-wrap:wrap;gap:8px}",
+    ".lang-chip,.style-chip,.qual-chip{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);font-size:12px;color:#ccc;cursor:pointer;background:rgba(0,0,0,.2)}",
+    ".lang-chip.on,.style-chip.on,.qual-chip.on{border-color:#a855f7;background:rgba(168,85,247,.22);color:#fff}",
+    ".char-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+    ".char-card{position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);overflow:hidden;min-height:200px;display:flex;flex-direction:column}",
+    ".char-card.locked{border-color:rgba(52,211,153,.55);box-shadow:0 0 16px rgba(52,211,153,.15)}",
+    ".char-preview{flex:1;min-height:120px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1a1028,#0d0814);position:relative}",
+    ".char-preview img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}",
+    ".char-preview .ph{font-size:42px;opacity:.5}",
+    ".char-dl{position:absolute;top:8px;right:8px;z-index:2;width:32px;height:32px;border-radius:10px;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:14px;cursor:pointer}",
+    ".char-meta{padding:10px;background:rgba(0,0,0,.55)}",
+    ".char-meta .nm{font-weight:700;font-size:13px;color:#fff;margin-bottom:6px}",
+    ".char-btns{display:flex;gap:6px;flex-wrap:wrap}",
+    ".char-btns button{flex:1;padding:7px 6px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#e9e4f5;font-size:11px;font-weight:600;cursor:pointer}",
+    ".char-btns button.lock-btn.on{background:rgba(52,211,153,.25);border-color:rgba(52,211,153,.5);color:#6ee7b7}",
+    ".char-hint{font-size:11px;color:#9ca3af;margin:0 0 10px;line-height:1.4}",
+    ".p3-bottom{display:flex;gap:10px;margin-top:16px;position:sticky;bottom:8px}",
+    ".p3-bottom .btn{flex:1}",
+    "#imgFilePick{display:none}",
+    ".zoom-layer{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:16px}",
+    ".zoom-layer.on{display:flex}",
+    ".zoom-layer img{max-width:100%;max-height:85vh;border-radius:12px}",
+    ".zoom-back{position:absolute;top:14px;left:14px;padding:10px 14px;border-radius:12px;border:none;background:rgba(255,255,255,.15);color:#fff;font-weight:600}"
+  ].join("");
+  document.head.appendChild(css);
+
+  /* —— Size screen rebuild —— */
+  var sz = document.getElementById("sizeScreen");
+  if (!sz) {
+    sz = document.createElement("div");
+    sz.id = "sizeScreen";
+    (document.querySelector(".main") || document.body).appendChild(sz);
+  }
+  sz.innerHTML =
+    '<div class="p3-card">' +
+    '<div class="p3-label">VIDEO SIZE</div>' +
+    '<div class="p3-grid" id="p3SizeGrid">' +
+    '<div class="p3-chip on" data-s="9:16" data-plat="yt_short">YouTube Short<small>9:16</small></div>' +
+    '<div class="p3-chip" data-s="16:9" data-plat="yt_long">YouTube बड़ी<small>16:9</small></div>' +
+    '<div class="p3-chip" data-s="9:16" data-plat="fb_short">Facebook Short<small>9:16</small></div>' +
+    '<div class="p3-chip" data-s="16:9" data-plat="fb_long">Facebook बड़ी<small>16:9</small></div></div>' +
+    '<div class="p3-label">भाषा</div>' +
+    '<div class="lang-row" id="p3LangRow"></div>' +
+    '<div class="p3-label">STYLE</div>' +
+    '<div class="style-row" id="p3StyleRow">' +
+    '<span class="style-chip on" data-st="mix">Mix 3D+Real<small style="display:block;opacity:.7">Best</small></span>' +
+    '<span class="style-chip" data-st="3d">3D · Pixar</span>' +
+    '<span class="style-chip" data-st="2d">2D · Anime</span>' +
+    '<span class="style-chip" data-st="real">Realistic · Cinema</span></div>' +
+    '<div class="p3-label">QUALITY</div>' +
+    '<div class="qual-row" id="p3QualRow">' +
+    '<span class="qual-chip" data-q="standard">Standard<small style="display:block">Free</small></span>' +
+    '<span class="qual-chip on" data-q="high">High<small style="display:block">Free+</small></span>' +
+    '<span class="qual-chip" data-q="max">Max <span class="prem">Premium</span></span></div>' +
+    '<div class="p3-bottom">' +
+    '<button type="button" class="btn btn-ghost" id="btnSizeBack">← Scenes</button>' +
+    '<button type="button" class="btn btn-main" id="btnSizeNext">Continue → Characters</button></div></div>';
+
+  var langs = [
+    ["hi", "हिन्दी"], ["en", "English"], ["pa", "ਪੰਜਾਬੀ"], ["gu", "ગુજરાતી"],
+    ["bn", "বাংলা"], ["mr", "मराठी"], ["ta", "தமிழ்"], ["te", "తెలుగు"],
+    ["kn", "ಕನ್ನಡ"], ["ml", "മലയാളം"], ["ur", "اردو"], ["or", "ଓଡ଼ିଆ"]
+  ];
+  var langRow = document.getElementById("p3LangRow");
+  var curLang = (VX.lang || localStorage.getItem("VX_LANG") || "hi").toLowerCase();
+  langs.forEach(function (L) {
+    var sp = document.createElement("span");
+    sp.className = "lang-chip" + (L[0] === curLang ? " on" : "");
+    sp.setAttribute("data-lang", L[0]);
+    sp.textContent = L[1];
+    langRow.appendChild(sp);
+  });
+
+  /* —— Characters screen —— */
+  var ch = document.getElementById("charScreen");
+  if (!ch) {
+    ch = document.createElement("div");
+    ch.id = "charScreen";
+    (document.querySelector(".main") || document.body).appendChild(ch);
+  }
+  ch.innerHTML =
+    '<div class="p3-card">' +
+    '<div class="p3-label">CHARACTERS · LOCK</div>' +
+    '<p class="char-hint">टैप = बड़ी photo · Download · Lock = आगे नहीं बदलेगा · Gallery = अपने फोन से</p>' +
+    '<div class="char-grid" id="charGrid"></div>' +
+    '<div class="p3-label" style="margin-top:18px">Backgrounds · lock</div>' +
+    '<div class="char-grid" id="bgGrid"></div>' +
+    '<div class="p3-bottom">' +
+    '<button type="button" class="btn btn-ghost" id="btnCharBack">← Settings</button>' +
+    '<button type="button" class="btn btn-main" id="btnCharNext">Continue → Video</button></div></div>' +
+    '<input type="file" id="imgFilePick" accept="image/*"/>';
+
+  if (!document.getElementById("zoomLayer")) {
+    var z = document.createElement("div");
+    z.id = "zoomLayer";
+    z.className = "zoom-layer";
+    z.innerHTML = '<button type="button" class="zoom-back" id="zoomBack">← Back</button><img id="zoomImg" alt=""/>';
+    document.body.appendChild(z);
+  }
+})();
+
+VX.size = localStorage.getItem("VX_SIZE") || "9:16";
+VX.platform = localStorage.getItem("VX_PLATFORM") || "yt_short";
+VX.style = localStorage.getItem("VX_STYLE") || "mix";
+VX.quality = localStorage.getItem("VX_QUALITY") || "high";
+VX.chars = [];
+VX.bgs = [];
+VX._pickTarget = null;
+
+function vxGalleryLoad() {
+  try { return JSON.parse(localStorage.getItem("VX_GALLERY") || "[]"); } catch (e) { return []; }
+}
+function vxGallerySave(item) {
+  var g = vxGalleryLoad();
+  g.unshift(item);
+  if (g.length > 40) g = g.slice(0, 40);
+  try { localStorage.setItem("VX_GALLERY", JSON.stringify(g)); } catch (e) {}
+  /* best flag for home feed later */
+  if (item.best) {
+    try { localStorage.setItem("VX_HOME_FEED_TOUCH", String(Date.now())); } catch (e2) {}
+  }
+}
+
+function vxHideAllP3() {
+  ["inputCard", "resultCard", "sizeScreen", "charScreen"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = "none";
+    el.classList.remove("on");
+  });
+  var bb = document.getElementById("bottomBar");
+  if (bb) bb.style.display = "none";
+}
+
+/* override size screen */
+window.vxShowSizeScreen = function () {
+  VX.step = "size";
+  vxHideAllP3();
+  var sz = document.getElementById("sizeScreen");
+  if (sz) { sz.style.display = "block"; sz.classList.add("on"); }
+  var ht = document.getElementById("heroText");
+  if (ht) ht.textContent = "Size · भाषा · Style · Quality";
+};
+
+function vxGuessCharsFromStory() {
+  var story = VX.story || localStorage.getItem("VX_STORY") || "";
+  var pack = VX.scenePack || [];
+  var names = [];
+  var seen = {};
+  /* simple Hindi/English name-ish tokens from scenes */
+  var blob = story + " " + pack.map(function (p) { return p.text || ""; }).join(" ");
+  var candidates = ["किसान", "रामु", "राम", "पति", "पत्नी", "बच्चा", "बच्चे", "व्यापारी", "Farmer", "Villager", "Child", "Children", "Wife", "Trader"];
+  candidates.forEach(function (c) {
+    if (blob.indexOf(c) >= 0 && !seen[c]) {
+      seen[c] = 1;
+      names.push(c);
+    }
+  });
+  if (!names.length) names = ["मुख्य पात्र", "सह पात्र"];
+  if (names.length > 4) names = names.slice(0, 4);
+  return names.map(function (n, i) {
+    return { id: "c" + i, name: n, type: "char", url: "", locked: false, prompt: n + " character portrait, consistent face clothes" };
+  });
+}
+
+function vxGuessBgs() {
+  return [
+    { id: "b0", name: "घर / गाँव", type: "bg", url: "", locked: false, prompt: "rural village house, cinematic" },
+    { id: "b1", name: "खेत", type: "bg", url: "", locked: false, prompt: "farm field crops, cinematic" },
+    { id: "b2", name: "बाजार / रास्ता", type: "bg", url: "", locked: false, prompt: "village path market, cinematic" }
+  ];
+}
+
+function vxStylePrompt() {
+  var st = VX.style || "mix";
+  if (st === "3d") return "pixar 3d style, high detail";
+  if (st === "2d") return "anime 2d illustration";
+  if (st === "real") return "photorealistic cinematic";
+  return "mix of 3d and realistic, premium short-video still";
+}
+
+function vxBuildImageUrl(prompt) {
+  var q = (prompt || "cinematic character") + ", " + vxStylePrompt() + ", locked identity, high quality";
+  var w = 768, h = 1024;
+  if ((VX.size || "").indexOf("16:9") >= 0) { w = 1280; h = 720; }
+  /* Pollinations — free, no key · PART 4 में अपनी API से बदल सकते हो */
+  return "https://image.pollinations.ai/prompt/" + encodeURIComponent(q) +
+    "?width=" + w + "&height=" + h + "&nologo=true&seed=" + Math.floor(Math.random() * 1e9);
+}
+
+function vxRenderEntityGrid(gridId, list) {
+  var grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = "";
+  list.forEach(function (ent, idx) {
+    var card = document.createElement("div");
+    card.className = "char-card" + (ent.locked ? " locked" : "");
+    card.setAttribute("data-id", ent.id);
+    card.innerHTML =
+      '<button type="button" class="char-dl" title="Download">⬇</button>' +
+      '<div class="char-preview">' +
+      (ent.url ? '<img alt=""/>' : '<span class="ph">' + (ent.type === "bg" ? "🏞️" : "👤") + "</span>") +
+      "</div>" +
+      '<div class="char-meta"><div class="nm"></div><div class="char-btns">' +
+      '<button type="button" data-act="ai">AI</button>' +
+      '<button type="button" data-act="gal">Gallery</button>' +
+      '<button type="button" data-act="lock" class="lock-btn' + (ent.locked ? " on" : "") + '">Lock</button>' +
+      "</div></div>";
+    card.querySelector(".nm").textContent = ent.name;
+    if (ent.url) {
+      var im = card.querySelector("img");
+      im.src = ent.url;
+      im.onclick = function () { vxZoom(ent.url); };
+    }
+    card.querySelector(".char-dl").onclick = function (e) {
+      e.stopPropagation();
+      if (!ent.url) { alert("पहले AI या Gallery से photo लगाओ"); return; }
+      var a = document.createElement("a");
+      a.href = ent.url;
+      a.download = (ent.name || "velorix") + ".jpg";
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.click();
+    };
+    card.querySelector('[data-act="ai"]').onclick = function () {
+      if (ent.locked) { alert("Lock है · पहले Unlock करो"); return; }
+      vxGenEntityImage(list, idx, gridId);
+    };
+    card.querySelector('[data-act="gal"]').onclick = function () {
+      if (ent.locked) { alert("Lock है · पहले Unlock करो"); return; }
+      VX._pickTarget = { list: list, idx: idx, gridId: gridId };
+      document.getElementById("imgFilePick").click();
+    };
+    card.querySelector('[data-act="lock"]').onclick = function () {
+      ent.locked = !ent.locked;
+      try {
+        localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars));
+        localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs));
+      } catch (e) {}
+      vxRenderEntityGrid(gridId, list);
+    };
+    grid.appendChild(card);
+  });
+}
+
+function vxGenEntityImage(list, idx, gridId) {
+  var ent = list[idx];
+  if (!ent) return;
+  vxSetProg(true, 10, "Photo…");
+  var url = vxBuildImageUrl(ent.prompt || ent.name);
+  var img = new Image();
+  img.onload = function () {
+    ent.url = url;
+    vxGallerySave({
+      id: "g_" + Date.now(),
+      url: url,
+      name: ent.name,
+      type: ent.type,
+      best: (VX.quality === "max" || VX.quality === "high"),
+      ts: Date.now()
+    });
+    try {
+      localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars));
+      localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs));
+    } catch (e) {}
+    vxSetProg(false);
+    vxRenderEntityGrid(gridId, list);
+  };
+  img.onerror = function () {
+    vxSetProg(false);
+    alert("Photo load fail · फिर AI दबाओ");
+  };
+  img.src = url;
+}
+
+function vxZoom(url) {
+  var layer = document.getElementById("zoomLayer");
+  var im = document.getElementById("zoomImg");
+  if (!layer || !im) return;
+  im.src = url;
+  layer.classList.add("on");
+}
+document.getElementById("zoomBack").onclick = function () {
+  document.getElementById("zoomLayer").classList.remove("on");
+};
+
+document.getElementById("imgFilePick").onchange = function (ev) {
+  var f = ev.target.files && ev.target.files[0];
+  ev.target.value = "";
+  if (!f || !VX._pickTarget) return;
+  var reader = new FileReader();
+  reader.onload = function () {
+    var data = reader.result;
+    var t = VX._pickTarget;
+    var ent = t.list[t.idx];
+    if (!ent) return;
+    ent.url = data;
+    vxGallerySave({ id: "g_" + Date.now(), url: data, name: ent.name, type: ent.type, best: true, ts: Date.now(), source: "gallery" });
+    try {
+      localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars));
+      localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs));
+    } catch (e) {}
+    vxRenderEntityGrid(t.gridId, t.list);
+  };
+  reader.readAsDataURL(f);
+};
+
+window.vxShowCharactersScreen = function () {
+  VX.step = "chars";
+  vxHideAllP3();
+  if (!VX.chars || !VX.chars.length) {
+    try { VX.chars = JSON.parse(localStorage.getItem("VX_CHARS") || "[]"); } catch (e) { VX.chars = []; }
+  }
+  if (!VX.chars.length) VX.chars = vxGuessCharsFromStory();
+  if (!VX.bgs || !VX.bgs.length) {
+    try { VX.bgs = JSON.parse(localStorage.getItem("VX_BGS") || "[]"); } catch (e) { VX.bgs = []; }
+  }
+  if (!VX.bgs.length) VX.bgs = vxGuessBgs();
+  vxRenderEntityGrid("charGrid", VX.chars);
+  vxRenderEntityGrid("bgGrid", VX.bgs);
+  var ch = document.getElementById("charScreen");
+  if (ch) { ch.style.display = "block"; ch.classList.add("on"); }
+  var ht = document.getElementById("heroText");
+  if (ht) ht.textContent = "Characters · Backgrounds · Lock";
+};
+
+/* Size chips */
+(function bindP3Size() {
+  var g = document.getElementById("p3SizeGrid");
+  if (g) {
+    g.onclick = function (e) {
+      var t = e.target.closest(".p3-chip");
+      if (!t) return;
+      Array.prototype.forEach.call(g.querySelectorAll(".p3-chip"), function (c) { c.classList.remove("on"); });
+      t.classList.add("on");
+      VX.size = t.getAttribute("data-s") || "9:16";
+      VX.platform = t.getAttribute("data-plat") || "";
+      try {
+        localStorage.setItem("VX_SIZE", VX.size);
+        localStorage.setItem("VX_PLATFORM", VX.platform);
+      } catch (err) {}
+    };
+  }
+  var lr = document.getElementById("p3LangRow");
+  if (lr) {
+    lr.onclick = function (e) {
+      var t = e.target.closest(".lang-chip");
+      if (!t) return;
+      Array.prototype.forEach.call(lr.querySelectorAll(".lang-chip"), function (c) { c.classList.remove("on"); });
+      t.classList.add("on");
+      VX.lang = t.getAttribute("data-lang") || "hi";
+      try {
+        localStorage.setItem("VX_LANG", VX.lang);
+        localStorage.setItem("velorix_lang", VX.lang);
+      } catch (err) {}
+      var pill = document.getElementById("langPill");
+      if (pill) pill.textContent = VX.lang.toUpperCase();
+    };
+  }
+  var sr = document.getElementById("p3StyleRow");
+  if (sr) {
+    sr.onclick = function (e) {
+      var t = e.target.closest(".style-chip");
+      if (!t) return;
+      Array.prototype.forEach.call(sr.querySelectorAll(".style-chip"), function (c) { c.classList.remove("on"); });
+      t.classList.add("on");
+      VX.style = t.getAttribute("data-st") || "mix";
+      try { localStorage.setItem("VX_STYLE", VX.style); } catch (err) {}
+    };
+  }
+  var qr = document.getElementById("p3QualRow");
+  if (qr) {
+    qr.onclick = function (e) {
+      var t = e.target.closest(".qual-chip");
+      if (!t) return;
+      Array.prototype.forEach.call(qr.querySelectorAll(".qual-chip"), function (c) { c.classList.remove("on"); });
+      t.classList.add("on");
+      VX.quality = t.getAttribute("data-q") || "high";
+      try { localStorage.setItem("VX_QUALITY", VX.quality); } catch (err) {}
+    };
+  }
+  var back = document.getElementById("btnSizeBack");
+  if (back) {
+    back.onclick = function () {
+      var sz = document.getElementById("sizeScreen");
+      if (sz) { sz.classList.remove("on"); sz.style.display = "none"; }
+      var rc = document.getElementById("resultCard");
+      if (rc) { rc.style.display = "flex"; rc.classList.add("on"); }
+      VX.step = "story";
+    };
+  }
+  var next = document.getElementById("btnSizeNext");
+  if (next) {
+    next.onclick = function () {
+      try {
+        localStorage.setItem("VX_SIZE", VX.size || "9:16");
+        localStorage.setItem("VX_STYLE", VX.style || "mix");
+        localStorage.setItem("VX_QUALITY", VX.quality || "high");
+        localStorage.setItem("VX_CREATE_STEP", "size_done");
+      } catch (e) {}
+      vxShowCharactersScreen();
+    };
+  }
+  var cb = document.getElementById("btnCharBack");
+  if (cb) {
+    cb.onclick = function () {
+      var ch = document.getElementById("charScreen");
+      if (ch) { ch.classList.remove("on"); ch.style.display = "none"; }
+      vxShowSizeScreen();
+    };
+  }
+  var cn = document.getElementById("btnCharNext");
+  if (cn) {
+    cn.onclick = function () {
+      try {
+        localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars || []));
+        localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs || []));
+        localStorage.setItem("VX_CREATE_STEP", "chars_done");
+      } catch (e) {}
+      alert("Characters / BG save हो गए · अगला: Video pipeline");
+    };
+  }
+})();
+
+/* === END PART 3 === */
