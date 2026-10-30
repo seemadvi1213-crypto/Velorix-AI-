@@ -1562,6 +1562,308 @@ window.vxOnStoryReady = function () {
 
 /* === END PART 3.1.1 === */
 /* === END PART 3 === */
+  /* === CREATE PART 4 · 6 Image Keys wire · Replicate / fal / Together · fallback Pollinations === */
+(function () {
+  if (!window.VX) window.VX = {};
+
+  /* ---- normalize keys from API Center / localStorage ---- */
+  window.vxLoadImageKeySlots = function () {
+    var slots = [];
+    function add(name, key, provider) {
+      key = String(key || "").trim();
+      if (!key || key.length < 6) return;
+      name = name || provider || "image";
+      provider = (provider || vxDetectImageProvider(name, key)).toLowerCase();
+      slots.push({ name: name, key: key, provider: provider });
+    }
+    function detectFromName(n) {
+      n = String(n || "").toLowerCase();
+      if (n.indexOf("repl") >= 0) return "replicate";
+      if (n.indexOf("fal") >= 0) return "fal";
+      if (n.indexOf("together") >= 0) return "together";
+      return "unknown";
+    }
+    window.vxDetectImageProvider = function (name, key) {
+      var d = detectFromName(name);
+      if (d !== "unknown") return d;
+      var k = String(key || "");
+      if (k.indexOf("r8_") === 0) return "replicate";
+      if (k.indexOf("fal_") >= 0 || k.length > 40 && name.toLowerCase().indexOf("fal") >= 0) return "fal";
+      return detectFromName(name);
+    };
+
+    /* primary format */
+    var primaryKeys = ["VX_IMAGE_KEYS", "VX_IMG_KEYS", "velorix_image_keys", "VX_API_IMAGE_KEYS"];
+    for (var p = 0; p < primaryKeys.length; p++) {
+      try {
+        var raw = localStorage.getItem(primaryKeys[p]);
+        if (!raw) continue;
+        var j = JSON.parse(raw);
+        if (Array.isArray(j)) {
+          j.forEach(function (it) {
+            if (typeof it === "string") add("img", it, "unknown");
+            else add(it.name || it.provider, it.key || it.apiKey || it.token, it.provider);
+          });
+        } else if (j && typeof j === "object") {
+          Object.keys(j).forEach(function (k) {
+            var v = j[k];
+            if (typeof v === "string") add(k, v, detectFromName(k));
+            else if (v && v.key) add(v.name || k, v.key, v.provider || detectFromName(k));
+          });
+        }
+      } catch (e) {}
+      if (slots.length) break;
+    }
+
+    /* numbered slots Image 1..6 style */
+    for (var i = 1; i <= 8; i++) {
+      try {
+        var nm = localStorage.getItem("VX_IMAGE_NAME_" + i) || localStorage.getItem("img_name_" + i);
+        var ky = localStorage.getItem("VX_IMAGE_KEY_" + i) || localStorage.getItem("img_key_" + i);
+        if (ky) add(nm || ("Image " + i), ky, detectFromName(nm));
+      } catch (e2) {}
+    }
+
+    /* singles */
+    [
+      ["VX_REPLICATE", "replicate"],
+      ["VX_REPLICATE_2", "replicate"],
+      ["VX_FAL", "fal"],
+      ["VX_FAL_2", "fal"],
+      ["VX_TOGETHER", "together"],
+      ["VX_TOGETHER_2", "together"]
+    ].forEach(function (pair) {
+      try {
+        var v = localStorage.getItem(pair[0]);
+        if (v) add(pair[0], v, pair[1]);
+      } catch (e3) {}
+    });
+
+    /* de-dupe by key */
+    var seen = {};
+    var out = [];
+    slots.forEach(function (s) {
+      if (seen[s.key]) return;
+      seen[s.key] = 1;
+      out.push(s);
+    });
+    VX._imgSlots = out;
+    return out;
+  };
+
+  window.vxGetImageKeys = function () {
+    return vxLoadImageKeySlots();
+  };
+
+  /* save helper — API Center "Save Image Keys" से भी ये format लिखो */
+  window.vxSaveImageKeySlots = function (arr) {
+    try {
+      localStorage.setItem("VX_IMAGE_KEYS", JSON.stringify(arr || []));
+      VX._imgSlots = arr || [];
+    } catch (e) {}
+  };
+
+  /* ---- prompt (story-aware) ---- */
+  window.vxImagePromptFor = function (ent) {
+    var ctx = (typeof vxStoryContext === "function") ? vxStoryContext() : { blob: (VX.story || ""), style: VX.style };
+    var role = (ent && ent.name) || "character";
+    var isBg = ent && ent.type === "bg";
+    var style = (typeof vxStylePrompt === "function") ? vxStylePrompt() : "cinematic high quality";
+    return [
+      role,
+      isBg ? "cinematic environment background, empty of random faces" : "character portrait, clear face, consistent identity, upper body",
+      ent && ent.prompt ? ent.prompt : "",
+      "story: " + String(ctx.blob || VX.story || "").slice(0, 260),
+      style,
+      "no watermark, high detail"
+    ].filter(Boolean).join(", ");
+  };
+
+  /* ---- providers (browser best-effort; CORS हो तो next) ---- */
+  window.vxImgGenTogether = function (slot, prompt) {
+    return fetch("https://api.together.xyz/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + slot.key,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "black-forest-labs/FLUX.1-schnell-Free",
+        prompt: prompt,
+        width: 768,
+        height: 1024,
+        steps: 4,
+        n: 1
+      })
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error((j && j.error && (j.error.message || j.error)) || ("Together " + r.status));
+        var url = j.data && j.data[0] && (j.data[0].url || (j.data[0].b64_json ? ("data:image/png;base64," + j.data[0].b64_json) : ""));
+        if (!url) throw new Error("Together empty");
+        return url;
+      });
+    });
+  };
+
+  window.vxImgGenFal = function (slot, prompt) {
+    /* fal queue API — may CORS in pure browser; fail → fallback */
+    return fetch("https://fal.run/fal-ai/flux/schnell", {
+      method: "POST",
+      headers: {
+        "Authorization": "Key " + slot.key,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt: prompt, image_size: "portrait_4_3", num_images: 1 })
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error((j && j.detail) || ("fal " + r.status));
+        var url = j.images && j.images[0] && j.images[0].url;
+        if (!url) throw new Error("fal empty");
+        return url;
+      });
+    });
+  };
+
+  window.vxImgGenReplicate = function (slot, prompt) {
+    /* create prediction */
+    return fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Token " + slot.key,
+        "Content-Type": "application/json",
+        "Prefer": "wait"
+      },
+      body: JSON.stringify({
+        version: "black-forest-labs/flux-schnell",
+        input: { prompt: prompt, num_outputs: 1, go_fast: true }
+      })
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error((j && j.detail) || ("Replicate " + r.status));
+        var out = j.output;
+        if (Array.isArray(out) && out[0]) return out[0];
+        if (typeof out === "string") return out;
+        if (j.urls && j.urls.get) {
+          return vxPollReplicate(slot.key, j.urls.get);
+        }
+        throw new Error("Replicate empty");
+      });
+    });
+  };
+
+  window.vxPollReplicate = function (key, url) {
+    var tries = 0;
+    function once() {
+      return fetch(url, { headers: { "Authorization": "Token " + key } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j.status === "succeeded") {
+            var out = j.output;
+            if (Array.isArray(out) && out[0]) return out[0];
+            if (typeof out === "string") return out;
+            throw new Error("Replicate no output");
+          }
+          if (j.status === "failed" || j.status === "canceled") throw new Error("Replicate failed");
+          tries++;
+          if (tries > 40) throw new Error("Replicate timeout");
+          return new Promise(function (res) { setTimeout(res, 1500); }).then(once);
+        });
+    }
+    return once();
+  };
+
+  window.vxImgGenPollinations = function (prompt) {
+    var w = 768, h = 1024;
+    var sz = (VX.size || localStorage.getItem("VX_SIZE") || "9:16");
+    if (String(sz).indexOf("16:9") >= 0) { w = 1280; h = 720; }
+    var url = "https://image.pollinations.ai/prompt/" + encodeURIComponent(prompt) +
+      "?width=" + w + "&height=" + h + "&nologo=true&seed=" + Math.floor(Math.random() * 1e9);
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      var done = false;
+      img.onload = function () { if (!done) { done = true; resolve(url); } };
+      img.onerror = function () { if (!done) { done = true; reject(new Error("Pollinations fail")); } };
+      setTimeout(function () { if (!done) { done = true; reject(new Error("Pollinations timeout")); } }, 40000);
+      img.src = url;
+    });
+  };
+
+  /* round-robin index */
+  VX._imgRR = VX._imgRR || 0;
+
+  window.vxGenerateImageSmart = function (ent, onProg) {
+    var prompt = vxImagePromptFor(ent);
+    var slots = vxLoadImageKeySlots();
+    var order = slots.slice();
+    /* rotate start for load balance */
+    if (order.length) {
+      var start = VX._imgRR % order.length;
+      VX._imgRR++;
+      order = order.slice(start).concat(order.slice(0, start));
+    }
+
+    function trySlot(i) {
+      if (i >= order.length) {
+        if (onProg) onProg(70, "Free fallback…");
+        return vxImgGenPollinations(prompt);
+      }
+      var slot = order[i];
+      if (onProg) onProg(20 + i * 10, (slot.provider || slot.name) + "…");
+      var job =
+        slot.provider === "together" ? vxImgGenTogether(slot, prompt) :
+        slot.provider === "fal" ? vxImgGenFal(slot, prompt) :
+        slot.provider === "replicate" ? vxImgGenReplicate(slot, prompt) :
+        Promise.reject(new Error("unknown provider"));
+      return job.catch(function () { return trySlot(i + 1); });
+    }
+
+    if (!order.length) {
+      if (onProg) onProg(50, "Free image…");
+      return vxImgGenPollinations(prompt);
+    }
+    return trySlot(0);
+  };
+
+  /* override AI photo button path */
+  window.vxGenEntityImage = function (list, idx, gridId) {
+    var ent = list[idx];
+    if (!ent) return;
+    if (ent.locked) { alert("Lock है · पहले Unlock"); return; }
+    if (typeof vxSetProg === "function") vxSetProg(true, 10, "Photo · " + (ent.name || ""));
+    vxGenerateImageSmart(ent, function (pct, msg) {
+      if (typeof vxSetProg === "function") vxSetProg(true, pct, msg || "Photo…");
+    }).then(function (url) {
+      ent.url = url;
+      if (typeof vxGallerySave === "function") {
+        vxGallerySave({
+          id: "g_" + Date.now(),
+          url: url,
+          name: ent.name,
+          type: ent.type || "char",
+          best: true,
+          ts: Date.now(),
+          storyBit: String(VX.story || "").slice(0, 80)
+        });
+      }
+      try {
+        localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars || []));
+        localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs || []));
+      } catch (e) {}
+      if (typeof vxSetProg === "function") vxSetProg(false);
+      if (typeof vxRenderEntityGrid === "function") vxRenderEntityGrid(gridId, list);
+    }).catch(function (err) {
+      if (typeof vxSetProg === "function") vxSetProg(false);
+      alert("Photo नहीं बनी: " + (err && err.message ? err.message : "retry"));
+    });
+  };
+
+  /* optional: expose count for owner debug */
+  window.vxImageKeysStatus = function () {
+    var s = vxLoadImageKeySlots();
+    return { count: s.length, providers: s.map(function (x) { return x.provider + ":" + x.name; }) };
+  };
+})();
+/* === END PART 4 === */
 </script>
 </body>
 </html>
