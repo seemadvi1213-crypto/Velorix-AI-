@@ -1165,7 +1165,230 @@ window.vxShowCharactersScreen = function () {
     };
   }
 })();
+/* === CREATE PART 3.1 · fixed buttons · story→chars · gallery hook · image keys ready === */
+(function () {
+  var s = document.createElement("style");
+  s.id = "vx-p31-css";
+  s.textContent = [
+    "#sizeScreen,#charScreen{padding-bottom:100px!important;}",
+    ".p3-bottom{",
+    "position:fixed!important;left:0;right:0;bottom:0;z-index:90;",
+    "display:flex;gap:10px;padding:12px 14px 16px;",
+    "background:linear-gradient(180deg,transparent,rgba(8,6,14,.95) 28%,#0a0810);",
+    "margin:0!important;box-sizing:border-box;",
+    "max-width:480px;margin-left:auto!important;margin-right:auto!important;",
+    "}",
+    ".p3-bottom .btn{flex:1;min-height:48px;}",
+    ".char-grid{padding-bottom:8px;}"
+  ].join("");
+  if (!document.getElementById("vx-p31-css")) document.head.appendChild(s);
+})();
 
+/* Image keys — API Center से; PART 4 में full wire */
+window.vxGetImageKeys = function () {
+  var out = [];
+  var names = ["VX_IMAGE_KEYS", "VX_IMG_KEYS", "velorix_image_keys", "VX_API_IMAGE"];
+  for (var i = 0; i < names.length; i++) {
+    try {
+      var raw = localStorage.getItem(names[i]);
+      if (!raw) continue;
+      var j = JSON.parse(raw);
+      if (Array.isArray(j)) out = j;
+      else if (j && typeof j === "object") {
+        Object.keys(j).forEach(function (k) {
+          out.push({ name: k, key: j[k] });
+        });
+      }
+      if (out.length) break;
+    } catch (e) {}
+  }
+  /* single keys optional */
+  ["VX_REPLICATE", "VX_FAL", "VX_TOGETHER"].forEach(function (k) {
+    try {
+      var v = localStorage.getItem(k);
+      if (v && v.length > 8) out.push({ name: k.replace("VX_", ""), key: v });
+    } catch (e2) {}
+  });
+  return out.filter(function (x) { return x && x.key; });
+};
+
+/* Gallery — local अब; cloud storage API PART 5 */
+window.vxGallerySave = function (item) {
+  try {
+    var g = JSON.parse(localStorage.getItem("VX_GALLERY") || "[]");
+    g.unshift(item);
+    if (g.length > 60) g = g.slice(0, 60);
+    localStorage.setItem("VX_GALLERY", JSON.stringify(g));
+    if (item && item.best) localStorage.setItem("VX_HOME_FEED_TOUCH", String(Date.now()));
+    /* PART 5: if (window.vxCloudGalleryUpload) vxCloudGalleryUpload(item); */
+  } catch (e) {}
+};
+
+/* Story हर step — character prompt मजबूत */
+window.vxStoryContext = function () {
+  var story = "";
+  try { story = VX.story || localStorage.getItem("VX_STORY") || ""; } catch (e) {}
+  var scenes = "";
+  try {
+    var pack = VX.scenePack || JSON.parse(localStorage.getItem("VX_SCENE_PACK") || "[]");
+    scenes = (pack || []).map(function (p) { return p.text || p || ""; }).join(" ");
+  } catch (e2) {}
+  var style = (VX.style || localStorage.getItem("VX_STYLE") || "mix");
+  var lang = (VX.lang || localStorage.getItem("VX_LANG") || "hi");
+  return { story: story, scenes: scenes, style: style, lang: lang, blob: (story + " " + scenes).slice(0, 1200) };
+};
+
+window.vxStylePrompt = function () {
+  var st = (VX.style || localStorage.getItem("VX_STYLE") || "mix");
+  if (st === "3d") return "pixar 3d character design, consistent face, high detail";
+  if (st === "2d") return "anime 2d illustration, consistent character design";
+  if (st === "real") return "photorealistic cinematic portrait, natural skin, film still";
+  return "premium mix of 3d and realistic, short-form video still, locked identity";
+};
+
+window.vxBuildImageUrl = function (prompt, ent) {
+  var ctx = vxStoryContext();
+  var role = (ent && ent.name) || "character";
+  var kind = (ent && ent.type) === "bg" ? "cinematic background environment, no people focus" : "character portrait, upper body, face clear, same person every time";
+  var q = [
+    role,
+    kind,
+    prompt || "",
+    "from story context: " + (ctx.blob || "").slice(0, 280),
+    vxStylePrompt(),
+    "high quality, consistent design"
+  ].join(", ");
+  var w = 768, h = 1024;
+  var sz = VX.size || localStorage.getItem("VX_SIZE") || "9:16";
+  if (String(sz).indexOf("16:9") >= 0) { w = 1280; h = 720; }
+  /* Demo image path — PART 4: Replicate/fal/Together keys from vxGetImageKeys() */
+  return "https://image.pollinations.ai/prompt/" + encodeURIComponent(q) +
+    "?width=" + w + "&height=" + h + "&nologo=true&seed=" + Math.floor(Math.random() * 1e9);
+};
+
+/* Better names from story */
+window.vxGuessCharsFromStory = function () {
+  var ctx = vxStoryContext();
+  var blob = ctx.blob || "";
+  var found = [];
+  var seen = {};
+  function add(n) {
+    n = (n || "").trim();
+    if (!n || seen[n]) return;
+    seen[n] = 1;
+    found.push(n);
+  }
+  /* English proper-ish */
+  var m;
+  var re = /\b([A-Z][a-z]{2,}(?:\s+[A-Z][a-z]+)?)\b/g;
+  while ((m = re.exec(blob)) && found.length < 6) {
+    if (!/^(The|And|But|For|With|From|This|That|When|After|Scene)$/.test(m[1])) add(m[1]);
+  }
+  /* Hindi common roles */
+  ["रामू", "रामु", "किसान", "पत्नी", "बीवी", "बच्चे", "बच्चा", "व्यापारी", "अधिकारी", "Ramu", "Farmer", "Wife", "Children", "Trader", "Official"].forEach(function (c) {
+    if (blob.indexOf(c) >= 0) add(c);
+  });
+  if (!found.length) found = ["मुख्य पात्र", "सह पात्र"];
+  if (found.length > 5) found = found.slice(0, 5);
+  return found.map(function (n, i) {
+    return {
+      id: "c" + i,
+      name: n,
+      type: "char",
+      url: "",
+      locked: false,
+      prompt: n + " character from the story, consistent face clothes age"
+    };
+  });
+};
+
+window.vxGuessBgs = function () {
+  var ctx = vxStoryContext();
+  var blob = (ctx.blob || "").toLowerCase();
+  var list = [];
+  function bg(name, prompt) {
+    list.push({ id: "b" + list.length, name: name, type: "bg", url: "", locked: false, prompt: prompt });
+  }
+  bg("गाँव / घर", "rural indian village house courtyard cinematic");
+  bg("खेत", "farm field crops indian countryside cinematic");
+  if (/बाजार|market|shop|व्याप/.test(blob)) bg("बाजार", "village market street cinematic");
+  else bg("रास्ता / बाहर", "village path dusty road cinematic");
+  return list.slice(0, 4);
+};
+
+/* Override gen to use improved URL + progress */
+window.vxGenEntityImage = function (list, idx, gridId) {
+  var ent = list[idx];
+  if (!ent) return;
+  if (ent.locked) { alert("Lock है · पहले Unlock"); return; }
+  if (typeof vxSetProg === "function") vxSetProg(true, 15, "Photo · " + (ent.name || ""));
+  var url = vxBuildImageUrl(ent.prompt || ent.name, ent);
+  var img = new Image();
+  var done = false;
+  function finish(ok) {
+    if (done) return;
+    done = true;
+    if (typeof vxSetProg === "function") vxSetProg(false);
+    if (!ok) {
+      alert("Photo load fail · फिर AI दबाओ");
+      return;
+    }
+    ent.url = url;
+    if (typeof vxGallerySave === "function") {
+      vxGallerySave({
+        id: "g_" + Date.now(),
+        url: url,
+        name: ent.name,
+        type: ent.type,
+        best: true,
+        ts: Date.now(),
+        storyBit: (vxStoryContext().story || "").slice(0, 80)
+      });
+    }
+    try {
+      localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars || []));
+      localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs || []));
+    } catch (e) {}
+    if (typeof vxRenderEntityGrid === "function") vxRenderEntityGrid(gridId, list);
+  }
+  img.onload = function () { finish(true); };
+  img.onerror = function () { finish(false); };
+  setTimeout(function () { if (!done) finish(false); }, 45000);
+  img.src = url;
+  /* PART 4: var keys = vxGetImageKeys(); if (keys.length) { ... Replicate/fal/Together ... } */
+};
+
+/* Re-open characters uses new guess if empty */
+var _oldShowChars = window.vxShowCharactersScreen;
+window.vxShowCharactersScreen = function () {
+  try {
+    if (!VX.chars || !VX.chars.length) {
+      VX.chars = JSON.parse(localStorage.getItem("VX_CHARS") || "[]");
+    }
+  } catch (e) { VX.chars = []; }
+  if (!VX.chars || !VX.chars.length) VX.chars = vxGuessCharsFromStory();
+  try {
+    if (!VX.bgs || !VX.bgs.length) VX.bgs = JSON.parse(localStorage.getItem("VX_BGS") || "[]");
+  } catch (e2) { VX.bgs = []; }
+  if (!VX.bgs || !VX.bgs.length) VX.bgs = vxGuessBgs();
+  if (typeof _oldShowChars === "function") {
+    _oldShowChars();
+  } else {
+    VX.step = "chars";
+    ["inputCard", "resultCard", "sizeScreen"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) { el.style.display = "none"; el.classList.remove("on"); }
+    });
+    var ch = document.getElementById("charScreen");
+    if (ch) { ch.style.display = "block"; ch.classList.add("on"); }
+    if (typeof vxRenderEntityGrid === "function") {
+      vxRenderEntityGrid("charGrid", VX.chars);
+      vxRenderEntityGrid("bgGrid", VX.bgs);
+    }
+  }
+};
+
+/* === END PART 3.1 === */
 /* === END PART 3 === */
 </script>
 </body>
