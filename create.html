@@ -1389,6 +1389,178 @@ window.vxShowCharactersScreen = function () {
 };
 
 /* === END PART 3.1 === */
+  /* === CREATE PART 3.1.1 · story change reset · trash clear photo · story-id bind === */
+(function () {
+  var css = document.createElement("style");
+  css.id = "vx-p311-css";
+  css.textContent = [
+    ".char-preview{position:relative;}",
+    ".char-trash{",
+    "position:absolute;top:8px;left:8px;z-index:3;",
+    "width:30px;height:30px;border-radius:10px;border:none;",
+    "background:rgba(0,0,0,.55);color:#fff;font-size:14px;",
+    "display:none;align-items:center;justify-content:center;cursor:pointer;",
+    "}",
+    ".char-card.has-photo .char-trash{display:flex;}",
+    ".char-card.has-photo .char-trash:active{transform:scale(.94);}"
+  ].join("");
+  if (!document.getElementById("vx-p311-css")) document.head.appendChild(css);
+})();
+
+window.vxStoryId = function (text) {
+  var t = String(text || "").trim().slice(0, 400);
+  var h = 0;
+  for (var i = 0; i < t.length; i++) h = ((h << 5) - h + t.charCodeAt(i)) | 0;
+  return "s_" + String(h);
+};
+
+window.vxCurrentStoryId = function () {
+  var st = "";
+  try { st = (window.VX && VX.story) || localStorage.getItem("VX_STORY") || ""; } catch (e) {}
+  return vxStoryId(st);
+};
+
+window.vxClearEntityPhotos = function (list) {
+  if (!list || !list.length) return;
+  list.forEach(function (ent) {
+    if (!ent) return;
+    ent.url = "";
+    ent.locked = false;
+  });
+};
+
+window.vxResetCharsForNewStory = function () {
+  var sid = vxCurrentStoryId();
+  var prev = "";
+  try { prev = localStorage.getItem("VX_STORY_ID") || ""; } catch (e) {}
+  if (prev && prev === sid) return false; /* same story — keep */
+  try {
+    localStorage.setItem("VX_STORY_ID", sid);
+  } catch (e2) {}
+  /* new / changed story → wipe card photos */
+  if (window.VX) {
+    if (typeof vxGuessCharsFromStory === "function") VX.chars = vxGuessCharsFromStory();
+    else VX.chars = [];
+    if (typeof vxGuessBgs === "function") VX.bgs = vxGuessBgs();
+    else VX.bgs = [];
+    vxClearEntityPhotos(VX.chars);
+    vxClearEntityPhotos(VX.bgs);
+  }
+  try {
+    localStorage.setItem("VX_CHARS", JSON.stringify((VX && VX.chars) || []));
+    localStorage.setItem("VX_BGS", JSON.stringify((VX && VX.bgs) || []));
+  } catch (e3) {}
+  return true;
+};
+
+window.vxClearOnePhoto = function (list, idx, gridId) {
+  if (!list || !list[idx]) return;
+  list[idx].url = "";
+  list[idx].locked = false;
+  try {
+    localStorage.setItem("VX_CHARS", JSON.stringify((VX && VX.chars) || []));
+    localStorage.setItem("VX_BGS", JSON.stringify((VX && VX.bgs) || []));
+  } catch (e) {}
+  if (typeof vxRenderEntityGrid === "function") vxRenderEntityGrid(gridId, list);
+};
+
+/* wrap render — trash button + has-photo class */
+(function () {
+  var prevRender = window.vxRenderEntityGrid;
+  if (typeof prevRender !== "function") return;
+  window.vxRenderEntityGrid = function (gridId, list) {
+    prevRender(gridId, list);
+    var grid = document.getElementById(gridId);
+    if (!grid || !list) return;
+    var cards = grid.querySelectorAll(".char-card");
+    for (var i = 0; i < cards.length; i++) {
+      (function (card, idx) {
+        var ent = list[idx];
+        if (!ent) return;
+        if (ent.url) card.classList.add("has-photo");
+        else card.classList.remove("has-photo");
+        var prev = card.querySelector(".char-preview");
+        if (!prev) return;
+        var tr = prev.querySelector(".char-trash");
+        if (!tr) {
+          tr = document.createElement("button");
+          tr.type = "button";
+          tr.className = "char-trash";
+          tr.title = "Photo हटाओ";
+          tr.textContent = "🗑";
+          prev.appendChild(tr);
+        }
+        tr.onclick = function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (ent.locked) {
+            if (!confirm("Lock है · फिर भी photo हटाएँ?")) return;
+          }
+          vxClearOnePhoto(list, idx, gridId);
+        };
+      })(cards[i], i);
+    }
+  };
+})();
+
+/* when characters screen opens — sync story id */
+(function () {
+  var prevShow = window.vxShowCharactersScreen;
+  window.vxShowCharactersScreen = function () {
+    try { vxResetCharsForNewStory(); } catch (e) {}
+    if (typeof prevShow === "function") prevShow();
+    else {
+      VX.step = "chars";
+      var ch = document.getElementById("charScreen");
+      if (ch) { ch.style.display = "block"; ch.classList.add("on"); }
+      if (typeof vxRenderEntityGrid === "function") {
+        vxRenderEntityGrid("charGrid", VX.chars || []);
+        vxRenderEntityGrid("bgGrid", VX.bgs || []);
+      }
+    }
+  };
+})();
+
+/* after story is saved — mark new story id (call-safe) */
+window.vxOnStoryReady = function () {
+  try {
+    var sid = vxCurrentStoryId();
+    var prev = localStorage.getItem("VX_STORY_ID") || "";
+    if (prev !== sid) {
+      localStorage.setItem("VX_STORY_ID", sid);
+      if (window.VX) {
+        VX.chars = (typeof vxGuessCharsFromStory === "function") ? vxGuessCharsFromStory() : [];
+        VX.bgs = (typeof vxGuessBgs === "function") ? vxGuessBgs() : [];
+      }
+      localStorage.setItem("VX_CHARS", JSON.stringify((VX && VX.chars) || []));
+      localStorage.setItem("VX_BGS", JSON.stringify((VX && VX.bgs) || []));
+    }
+  } catch (e) {}
+};
+
+/* hook common story save points if they set VX.story */
+(function () {
+  if (!window.VX) window.VX = {};
+  var _story = VX.story;
+  try {
+    Object.defineProperty(VX, "story", {
+      get: function () { return _story; },
+      set: function (v) {
+        var old = _story;
+        _story = v;
+        try { localStorage.setItem("VX_STORY", v || ""); } catch (e) {}
+        if (String(old || "") !== String(v || "")) {
+          try { vxOnStoryReady(); } catch (e2) {}
+        }
+      },
+      configurable: true
+    });
+  } catch (e3) {
+    /* older browsers — manual: call vxOnStoryReady() after story gen */
+  }
+})();
+
+/* === END PART 3.1.1 === */
 /* === END PART 3 === */
 </script>
 </body>
