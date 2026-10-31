@@ -1,252 +1,478 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>API Center · Velorix AI</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Velorix AI — API Center</title>
 <style>
-:root{--bg:#07060c;--card:rgba(255,255,255,.07);--border:rgba(167,139,250,.22);--p:#c084fc;--p2:#7c3aed;--muted:#a1a1aa;--glow:rgba(124,58,237,.35)}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:#fff;min-height:100vh;
-background-image:radial-gradient(ellipse 85% 50% at 15% -15%,rgba(124,58,237,.32),transparent),radial-gradient(ellipse 50% 35% at 100% 0%,rgba(236,72,153,.1),transparent);
-padding:16px;padding-bottom:48px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.back{width:44px;height:44px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;font-size:18px;cursor:pointer}
-.logo{font-weight:700;font-size:17px;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sub{text-align:center;font-size:12px;color:var(--muted);margin:-8px 0 18px;line-height:1.4}
-.panel{display:none}.panel.on{display:block}
-.card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;cursor:pointer;
-box-shadow:0 8px 28px rgba(0,0,0,.3);backdrop-filter:blur(14px);transition:transform .15s,border-color .15s}
-.card:active{transform:scale(.98)}
-.card:hover{border-color:rgba(192,132,252,.45)}
-.ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;
-background:linear-gradient(135deg,rgba(192,132,252,.25),rgba(124,58,237,.2));border:1px solid rgba(167,139,250,.25)}
-.card h3{font-size:15px;font-weight:700;margin-bottom:3px}
-.card p{font-size:11px;color:var(--muted);line-height:1.35}
-.badge{margin-left:auto;font-size:10px;font-weight:700;padding:5px 10px;border-radius:999px;background:rgba(124,58,237,.3);color:#e9d5ff;white-space:nowrap}
-.badge.gold{background:rgba(251,191,36,.2);color:#fbbf24}
-.badge.soon{background:rgba(255,255,255,.08);color:#71717a}
-.arrow{color:var(--muted);font-size:16px;margin-left:6px}
-.box{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:12px}
-.slot{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;margin-bottom:10px}
-.slot label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600}
-.slot input{width:100%;padding:12px;border-radius:11px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);color:#fff;font-size:13px;margin-bottom:8px;outline:none}
-.slot input:focus{border-color:var(--p)}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-.btn{padding:12px 18px;border-radius:999px;border:none;font-weight:600;font-size:13px;cursor:pointer}
-.btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 6px 20px var(--glow)}
-.btn-g{background:rgba(255,255,255,.1);color:#fff}
-.btn-add{width:100%;padding:13px;border-radius:14px;border:1px dashed rgba(167,139,250,.4);background:transparent;color:var(--p);font-weight:600;font-size:13px;margin:8px 0;cursor:pointer}
-.ok{color:#86efac;font-size:12px;margin-top:8px;min-height:18px}
-.head{font-size:15px;font-weight:700;margin-bottom:6px}
-.hint{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.4}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07060f;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.1);
+  --t:#f4f2ff;--muted:#9b97b8;--p:#8b5cf6;--p2:#a78bfa;--ok:#34d399;--danger:#f87171;
+  --rad:18px;--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--t);font-family:var(--font)}
+body{
+  background:
+    radial-gradient(900px 500px at 10% -10%,rgba(139,92,246,.22),transparent 55%),
+    radial-gradient(700px 400px at 100% 0%,rgba(59,130,246,.12),transparent 50%),
+    var(--bg);
+  padding:16px 14px 40px;
+}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.back{
+  width:42px;height:42px;border-radius:14px;border:1px solid var(--line);
+  background:var(--card);color:var(--t);font-size:18px;cursor:pointer;
+  display:grid;place-items:center;flex-shrink:0;
+}
+h1{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;flex:1;text-align:center;padding-right:42px}
+.sub{text-align:center;font-size:.78rem;color:var(--muted);margin:-8px 0 18px}
+.card{
+  background:linear-gradient(165deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border:1px solid var(--line);border-radius:var(--rad);padding:16px;margin-bottom:14px;
+  box-shadow:0 12px 40px rgba(0,0,0,.25);
+}
+.card h2{font-size:1rem;font-weight:750;margin-bottom:4px}
+.card .hint{font-size:.75rem;color:var(--muted);margin-bottom:14px;line-height:1.4}
+.cat-grid{display:flex;flex-direction:column;gap:10px}
+.cat{
+  display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;
+  background:rgba(0,0,0,.25);border:1px solid var(--line);cursor:pointer;
+  transition:.15s;
+}
+.cat:active{transform:scale(.99);border-color:rgba(139,92,246,.45)}
+.cat-ico{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  font-size:1.25rem;background:rgba(139,92,246,.18);flex-shrink:0;
+}
+.cat-body{flex:1;min-width:0}
+.cat-body b{display:block;font-size:.92rem}
+.cat-body span{font-size:.72rem;color:var(--muted)}
+.badge{
+  font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:999px;
+  background:rgba(139,92,246,.25);color:var(--p2);flex-shrink:0;
+}
+.badge.soon{background:rgba(255,255,255,.08);color:var(--muted)}
+.badge.prem{background:rgba(251,191,36,.18);color:#fbbf24}
+.panel{display:none}
+.panel.on{display:block}
+.slot{
+  background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:14px;
+  padding:12px;margin-bottom:10px;position:relative;
+}
+.slot-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.slot-title{font-size:.8rem;font-weight:700;color:var(--muted)}
+.del{
+  width:34px;height:34px;border-radius:10px;border:1px solid rgba(248,113,113,.35);
+  background:rgba(248,113,113,.12);color:var(--danger);cursor:pointer;font-size:14px;
+}
+label{display:block;font-size:.72rem;color:var(--muted);margin:8px 0 4px}
+input{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:rgba(0,0,0,.35);color:var(--t);font-size:.9rem;outline:none;
+}
+input:focus{border-color:rgba(139,92,246,.55)}
+.row-btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{
+  flex:1;min-width:120px;padding:13px 16px;border-radius:999px;border:none;
+  font-weight:750;font-size:.9rem;cursor:pointer;
+}
+.btn-p{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff}
+.btn-g{background:rgba(255,255,255,.08);color:var(--t);border:1px solid var(--line)}
+.btn-add{
+  width:100%;padding:12px;margin-top:6px;border-radius:14px;
+  border:1px dashed rgba(139,92,246,.45);background:transparent;
+  color:var(--p2);font-weight:700;font-size:.85rem;cursor:pointer;
+}
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);
+  background:#1a1830;border:1px solid rgba(52,211,153,.4);color:var(--ok);
+  padding:12px 18px;border-radius:14px;font-size:.85rem;font-weight:650;
+  transition:.25s;z-index:99;max-width:90%;text-align:center;
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.note{font-size:.72rem;color:var(--muted);margin-top:10px;line-height:1.45}
 </style>
 </head>
 <body>
 
+<!-- ===== PART 1 START — API Center (Story · Image Free · Image Premium) ===== -->
+
 <div class="top">
-  <button class="back" id="topBack" type="button">←</button>
-  <div class="logo">API Center</div>
-  <div style="width:44px"></div>
+  <button class="back" type="button" id="btnBack" aria-label="Back">←</button>
+  <h1>API Center</h1>
 </div>
+<p class="sub">Keys इसी device पर · Save के बाद create / pipeline तुरंत पढ़ेगा</p>
 
-<!-- MENU -->
-<div id="menu" class="panel on">
-  <p class="sub">Keys सिर्फ इस device पर सेव होंगी · तुरंत active</p>
-
-  <div class="card" onclick="openPanel('story')">
-    <div class="ico">📝</div>
-    <div>
-      <h3>Story Writing</h3>
-      <p>कहानी · scenes · edit</p>
+<!-- CATEGORIES -->
+<div class="card panel on" id="panelCats">
+  <div class="cat-grid">
+    <div class="cat" data-go="story">
+      <div class="cat-ico">✏️</div>
+      <div class="cat-body"><b>Story Writing</b><span>कहानी · scenes · edit</span></div>
+      <span class="badge" id="badgeStory">0 keys</span>
     </div>
-    <span class="badge">3 keys</span>
-    <span class="arrow">›</span>
-  </div>
-
-  <div class="card" onclick="openPanel('image')">
-    <div class="ico">🖼</div>
-    <div>
-      <h3>Image Generation</h3>
-      <p>Characters · backgrounds · free</p>
+    <div class="cat" data-go="image">
+      <div class="cat-ico">🖼️</div>
+      <div class="cat-body"><b>Image Generation</b><span>Characters · backgrounds · free</span></div>
+      <span class="badge" id="badgeImg">0 keys</span>
     </div>
-    <span class="badge">6 keys</span>
-    <span class="arrow">›</span>
-  </div>
-
-  <div class="card" onclick="openPanel('premium')">
-    <div class="ico">⭐</div>
-    <div>
-      <h3>Image Premium</h3>
-      <p>Better quality · later</p>
+    <div class="cat" data-go="prem">
+      <div class="cat-ico">⭐</div>
+      <div class="cat-body"><b>Image Premium</b><span>Better quality · later</span></div>
+      <span class="badge prem">Premium</span>
     </div>
-    <span class="badge gold">Premium</span>
-    <span class="arrow">›</span>
-  </div>
-
-  <!-- future: Video / Voice — add card here same way -->
-  <div class="card" style="opacity:.55;pointer-events:none">
-    <div class="ico">🎬</div>
-    <div>
-      <h3>Video / Motion</h3>
-      <p>Image-to-video · जल्द</p>
+    <div class="cat" data-go="video" style="opacity:.75">
+      <div class="cat-ico">🎬</div>
+      <div class="cat-body"><b>Video / Motion</b><span>Image-to-video · PART 2</span></div>
+      <span class="badge soon">Soon</span>
     </div>
-    <span class="badge soon">Soon</span>
-  </div>
-
-  <div class="card" style="opacity:.55;pointer-events:none">
-    <div class="ico">🎙</div>
-    <div>
-      <h3>Voice / Music</h3>
-      <p>TTS · BGM · जल्द</p>
+    <div class="cat" data-go="voice" style="opacity:.75">
+      <div class="cat-ico">🎙️</div>
+      <div class="cat-body"><b>Voice / Music</b><span>TTS · BGM · PART 2</span></div>
+      <span class="badge soon">Soon</span>
     </div>
-    <span class="badge soon">Soon</span>
+    <div class="cat" data-go="cap" style="opacity:.75">
+      <div class="cat-ico">💬</div>
+      <div class="cat-body"><b>Captions</b><span>Subtitles · PART 2</span></div>
+      <span class="badge soon">Soon</span>
+    </div>
   </div>
+  <p class="note">Video / Voice / Captions PART 2 में active होंगे · structure यहीं से जुड़ेगा।</p>
 </div>
 
 <!-- STORY -->
-<div id="story" class="panel">
-  <div class="box">
-    <div class="head">Story Writing</div>
-    <p class="hint">Groq · Gemini · OpenRouter — कहानी और scenes</p>
-    <div class="slot">
-      <label>Groq</label>
-      <input id="k_groq" type="password" placeholder="gsk_...">
-    </div>
-    <div class="slot">
-      <label>Gemini (Google AI Studio)</label>
-      <input id="k_gemini" type="password" placeholder="API key">
-    </div>
-    <div class="slot">
-      <label>OpenRouter</label>
-      <input id="k_or" type="password" placeholder="sk-or-...">
-    </div>
-    <div class="row">
-      <button class="btn btn-g" type="button" onclick="openPanel('menu')">← Categories</button>
-      <button class="btn btn-p" type="button" onclick="saveStory()">Save Story Keys</button>
-    </div>
-    <div class="ok" id="okStory"></div>
+<div class="card panel" id="panelStory">
+  <h2>Story Writing</h2>
+  <p class="hint">Groq · Gemini · OpenRouter — कहानी और scenes</p>
+  <div id="storySlots"></div>
+  <button class="btn-add" type="button" id="addStory">+ Add Story Key</button>
+  <div class="row-btns">
+    <button class="btn btn-g" type="button" data-back>← Categories</button>
+    <button class="btn btn-p" type="button" id="saveStory">Save Story Keys</button>
   </div>
 </div>
 
 <!-- IMAGE FREE -->
-<div id="image" class="panel">
-  <div class="box">
-    <div class="head">Image Generation · Free</div>
-    <p class="hint">6 normal keys — characters / backgrounds</p>
-    <div id="imgSlots"></div>
-    <button class="btn-add" type="button" onclick="addSlot(false)">+ Add Image Key</button>
-    <div class="row">
-      <button class="btn btn-g" type="button" onclick="openPanel('menu')">← Categories</button>
-      <button class="btn btn-p" type="button" onclick="saveImg()">Save Image Keys</button>
-    </div>
-    <div class="ok" id="okImg"></div>
+<div class="card panel" id="panelImage">
+  <h2>Image Generation · Free</h2>
+  <p class="hint">Characters / backgrounds — Name में provider लिखो (Replicate, fal, Together)</p>
+  <div id="imgSlots"></div>
+  <button class="btn-add" type="button" id="addImg">+ Add Image Key</button>
+  <div class="row-btns">
+    <button class="btn btn-g" type="button" data-back>← Categories</button>
+    <button class="btn btn-p" type="button" id="saveImg">Save Image Keys</button>
+  </div>
+  <p class="note">Save = <b>VX_IMG_FREE</b> + mirror · create.html वही पढ़ता है।</p>
+</div>
+
+<!-- IMAGE PREMIUM -->
+<div class="card panel" id="panelPrem">
+  <h2>Image Premium</h2>
+  <p class="hint">Higher quality — slots तैयार · create later premium path</p>
+  <div id="premSlots"></div>
+  <button class="btn-add" type="button" id="addPrem">+ Add Premium Key</button>
+  <div class="row-btns">
+    <button class="btn btn-g" type="button" data-back>← Categories</button>
+    <button class="btn btn-p" type="button" id="savePrem">Save Premium Keys</button>
   </div>
 </div>
 
-<!-- PREMIUM -->
-<div id="premium" class="panel">
-  <div class="box">
-    <div class="head">Image Premium</div>
-    <p class="hint">बाद में higher quality — slots अभी से तैयार</p>
-    <div id="premSlots"></div>
-    <button class="btn-add" type="button" onclick="addSlot(true)">+ Add Premium Key</button>
-    <div class="row">
-      <button class="btn btn-g" type="button" onclick="openPanel('menu')">← Categories</button>
-      <button class="btn btn-p" type="button" onclick="savePrem()">Save Premium Keys</button>
-    </div>
-    <div class="ok" id="okPrem"></div>
-  </div>
-</div>
+<div class="toast" id="toast">Saved</div>
 
 <script>
-var current="menu";
+(function () {
+  "use strict";
 
-function openPanel(id){
-  current=id;
-  ["menu","story","image","premium"].forEach(function(x){
-    var el=document.getElementById(x);
-    if(el) el.classList.toggle("on", x===id);
+  /* ========== SHARED CONTRACT (create.html पढ़े) ==========
+     Story:  VX_GROQ, VX_GEMINI, VX_OR, VX_STORY_KEYS (array)
+     Image:  VX_IMG_FREE = [{ name, key, provider }, ...]
+             VX_IMAGE_KEYS = same (mirror)
+     Prem:   VX_IMG_PREM = [{ name, key, provider }, ...]
+  ========================================================= */
+
+  function detectProvider(name, key) {
+    var n = String(name || "").toLowerCase();
+    var k = String(key || "");
+    if (k.indexOf("r8_") === 0 || n.indexOf("repl") >= 0) return "replicate";
+    if (n.indexOf("fal") >= 0 || k.indexOf("fal_") === 0) return "fal";
+    if (n.indexOf("together") >= 0 || n.indexOf("tgp") >= 0 || k.indexOf("tgp_") === 0) return "together";
+    if (n.indexOf("groq") >= 0) return "groq";
+    if (n.indexOf("gemini") >= 0 || n.indexOf("google") >= 0) return "gemini";
+    if (n.indexOf("openrouter") >= 0 || n.indexOf("open router") >= 0) return "openrouter";
+    return "unknown";
+  }
+
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("on");
+    setTimeout(function () { t.classList.remove("on"); }, 2200);
+  }
+
+  function show(id) {
+    ["panelCats", "panelStory", "panelImage", "panelPrem"].forEach(function (p) {
+      document.getElementById(p).classList.toggle("on", p === id);
+    });
+  }
+
+  function loadJSON(key, fallback) {
+    try {
+      var r = localStorage.getItem(key);
+      if (!r) return fallback;
+      var j = JSON.parse(r);
+      return j != null ? j : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  /* ----- slot UI ----- */
+  function slotHTML(title, nameVal, keyVal) {
+    return (
+      '<div class="slot">' +
+        '<div class="slot-head">' +
+          '<span class="slot-title">' + title + "</span>" +
+          '<button type="button" class="del" title="Delete">🗑</button>' +
+        "</div>" +
+        "<label>Name / Provider</label>" +
+        '<input class="nm" type="text" value="' + esc(nameVal) + '" placeholder="e.g. Replicate / fal / Together"/>' +
+        "<label>API Key</label>" +
+        '<input class="ky" type="password" value="' + esc(keyVal) + '" placeholder="key" autocomplete="off"/>' +
+      "</div>"
+    );
+  }
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function bindDeletes(root) {
+    root.querySelectorAll(".del").forEach(function (btn) {
+      btn.onclick = function () {
+        var slot = btn.closest(".slot");
+        if (slot) slot.remove();
+      };
+    });
+  }
+
+  /* ----- STORY ----- */
+  var STORY_DEFAULTS = [
+    { name: "Groq", key: "" },
+    { name: "Gemini (Google AI Studio)", key: "" },
+    { name: "OpenRouter", key: "" }
+  ];
+
+  function renderStory() {
+    var box = document.getElementById("storySlots");
+    var saved = loadJSON("VX_STORY_KEYS", null);
+    var groq = localStorage.getItem("VX_GROQ") || "";
+    var gem = localStorage.getItem("VX_GEMINI") || "";
+    var or = localStorage.getItem("VX_OR") || "";
+    var list = Array.isArray(saved) && saved.length
+      ? saved
+      : [
+          { name: "Groq", key: groq },
+          { name: "Gemini (Google AI Studio)", key: gem },
+          { name: "OpenRouter", key: or }
+        ];
+    if (!list.length) list = STORY_DEFAULTS.slice();
+    box.innerHTML = list
+      .map(function (it, i) {
+        return slotHTML("Story " + (i + 1), it.name || "", it.key || "");
+      })
+      .join("");
+    bindDeletes(box);
+    updateBadges();
+  }
+
+  function saveStory() {
+    var slots = document.querySelectorAll("#storySlots .slot");
+    var arr = [];
+    slots.forEach(function (s) {
+      var name = (s.querySelector(".nm") || {}).value || "";
+      var key = (s.querySelector(".ky") || {}).value || "";
+      key = key.trim();
+      if (!key) return;
+      var prov = detectProvider(name, key);
+      arr.push({ name: name.trim() || prov, key: key, provider: prov });
+    });
+    localStorage.setItem("VX_STORY_KEYS", JSON.stringify(arr));
+    /* classic keys create पढ़ता है */
+    localStorage.setItem("VX_GROQ", "");
+    localStorage.setItem("VX_GEMINI", "");
+    localStorage.setItem("VX_OR", "");
+    arr.forEach(function (it) {
+      if (it.provider === "groq") localStorage.setItem("VX_GROQ", it.key);
+      if (it.provider === "gemini") localStorage.setItem("VX_GEMINI", it.key);
+      if (it.provider === "openrouter") localStorage.setItem("VX_OR", it.key);
+    });
+    /* name fallback if detect missed */
+    arr.forEach(function (it) {
+      var n = (it.name || "").toLowerCase();
+      if (!localStorage.getItem("VX_GROQ") && n.indexOf("groq") >= 0)
+        localStorage.setItem("VX_GROQ", it.key);
+      if (!localStorage.getItem("VX_GEMINI") && (n.indexOf("gemini") >= 0 || n.indexOf("google") >= 0))
+        localStorage.setItem("VX_GEMINI", it.key);
+      if (!localStorage.getItem("VX_OR") && n.indexOf("open") >= 0)
+        localStorage.setItem("VX_OR", it.key);
+    });
+    toast("Story keys saved · " + arr.length);
+    updateBadges();
+  }
+
+  /* ----- IMAGE FREE ----- */
+  var IMG_DEFAULTS = [
+    { name: "Replicate", key: "" },
+    { name: "Replicate 2", key: "" },
+    { name: "fal.ai", key: "" },
+    { name: "fal.ai 2", key: "" },
+    { name: "Together AI", key: "" },
+    { name: "Together AI 2", key: "" }
+  ];
+
+  function renderImg() {
+    var box = document.getElementById("imgSlots");
+    var list = loadJSON("VX_IMG_FREE", null);
+    if (!Array.isArray(list) || !list.length) list = IMG_DEFAULTS.slice();
+    box.innerHTML = list
+      .map(function (it, i) {
+        return slotHTML("Image " + (i + 1), it.name || "", it.key || "");
+      })
+      .join("");
+    bindDeletes(box);
+    updateBadges();
+  }
+
+  function saveImg() {
+    var slots = document.querySelectorAll("#imgSlots .slot");
+    var arr = [];
+    slots.forEach(function (s) {
+      var name = ((s.querySelector(".nm") || {}).value || "").trim();
+      var key = ((s.querySelector(".ky") || {}).value || "").trim();
+      if (!key) return;
+      var prov = detectProvider(name, key);
+      arr.push({ name: name || ("Image " + (arr.length + 1)), key: key, provider: prov });
+    });
+    var raw = JSON.stringify(arr);
+    localStorage.setItem("VX_IMG_FREE", raw);
+    localStorage.setItem("VX_IMAGE_KEYS", raw); /* mirror — create PART 4 */
+    localStorage.setItem("velorix_image_keys", raw);
+    toast("Image keys saved · " + arr.length + " · create जुड़ चुका");
+    updateBadges();
+  }
+
+  /* ----- PREMIUM ----- */
+  function renderPrem() {
+    var box = document.getElementById("premSlots");
+    var list = loadJSON("VX_IMG_PREM", null);
+    if (!Array.isArray(list) || !list.length) {
+      list = [{ name: "", key: "" }];
+    }
+    box.innerHTML = list
+      .map(function (it, i) {
+        return slotHTML("Premium " + (i + 1), it.name || "", it.key || "");
+      })
+      .join("");
+    bindDeletes(box);
+  }
+
+  function savePrem() {
+    var slots = document.querySelectorAll("#premSlots .slot");
+    var arr = [];
+    slots.forEach(function (s) {
+      var name = ((s.querySelector(".nm") || {}).value || "").trim();
+      var key = ((s.querySelector(".ky") || {}).value || "").trim();
+      if (!key) return;
+      arr.push({
+        name: name || ("Premium " + (arr.length + 1)),
+        key: key,
+        provider: detectProvider(name, key)
+      });
+    });
+    localStorage.setItem("VX_IMG_PREM", JSON.stringify(arr));
+    toast("Premium keys saved · " + arr.length);
+  }
+
+  function updateBadges() {
+    var st = loadJSON("VX_STORY_KEYS", []);
+    var n = 0;
+    if (Array.isArray(st)) n = st.filter(function (x) { return x && x.key; }).length;
+    if (!n) {
+      if (localStorage.getItem("VX_GROQ")) n++;
+      if (localStorage.getItem("VX_GEMINI")) n++;
+      if (localStorage.getItem("VX_OR")) n++;
+    }
+    document.getElementById("badgeStory").textContent = n + " keys";
+    var im = loadJSON("VX_IMG_FREE", []);
+    var ni = Array.isArray(im) ? im.filter(function (x) { return x && x.key; }).length : 0;
+    document.getElementById("badgeImg").textContent = ni + " keys";
+  }
+
+  /* ----- nav ----- */
+  document.querySelectorAll(".cat").forEach(function (c) {
+    c.onclick = function () {
+      var g = c.getAttribute("data-go");
+      if (g === "story") {
+        renderStory();
+        show("panelStory");
+      } else if (g === "image") {
+        renderImg();
+        show("panelImage");
+      } else if (g === "prem") {
+        renderPrem();
+        show("panelPrem");
+      } else {
+        toast("PART 2 में आएगा");
+      }
+    };
   });
-  if(id==="story") loadStory();
-  if(id==="image") renderSlots("imgSlots", ensureFree(), "Image");
-  if(id==="premium") renderSlots("premSlots", getArr("VX_IMG_PREM"), "Premium");
-}
-
-document.getElementById("topBack").onclick=function(){
-  if(current==="menu") location.href="home.html";
-  else openPanel("menu");
-};
-
-function loadStory(){
-  document.getElementById("k_groq").value=localStorage.getItem("VX_GROQ")||"";
-  document.getElementById("k_gemini").value=localStorage.getItem("VX_GEMINI")||"";
-  document.getElementById("k_or").value=localStorage.getItem("VX_OR")||"";
-}
-function saveStory(){
-  localStorage.setItem("VX_GROQ", document.getElementById("k_groq").value.trim());
-  localStorage.setItem("VX_GEMINI", document.getElementById("k_gemini").value.trim());
-  localStorage.setItem("VX_OR", document.getElementById("k_or").value.trim());
-  document.getElementById("okStory").textContent="✓ Story keys saved — तुरंत active";
-}
-
-function getArr(key){
-  try{ return JSON.parse(localStorage.getItem(key)||"[]"); }catch(e){ return []; }
-}
-function ensureFree(){
-  var a=getArr("VX_IMG_FREE");
-  while(a.length<6) a.push({name:"",key:""});
-  return a;
-}
-function renderSlots(boxId, arr, prefix){
-  var box=document.getElementById(boxId);
-  box.innerHTML="";
-  if(!arr.length) arr=[{name:"",key:""}];
-  arr.forEach(function(item,i){
-    var d=document.createElement("div");
-    d.className="slot";
-    d.innerHTML=
-      "<label>"+prefix+" "+(i+1)+" — Name</label>"+
-      "<input data-i=\""+i+"\" data-f=\"name\" placeholder=\"Provider name\">"+
-      "<label>API Key</label>"+
-      "<input data-i=\""+i+"\" data-f=\"key\" type=\"password\" placeholder=\"key\">";
-    d.querySelector('[data-f="name"]').value=item.name||"";
-    d.querySelector('[data-f="key"]').value=item.key||"";
-    box.appendChild(d);
+  document.querySelectorAll("[data-back]").forEach(function (b) {
+    b.onclick = function () {
+      updateBadges();
+      show("panelCats");
+    };
   });
-}
-function readSlots(boxId){
-  var box=document.getElementById(boxId);
-  var map={};
-  box.querySelectorAll("input").forEach(function(inp){
-    var i=+inp.getAttribute("data-i");
-    var f=inp.getAttribute("data-f");
-    if(!map[i]) map[i]={name:"",key:""};
-    map[i][f]=inp.value.trim();
-  });
-  return Object.keys(map).sort(function(a,b){return a-b;}).map(function(k){return map[k];});
-}
-function addSlot(prem){
-  var key=prem?"VX_IMG_PREM":"VX_IMG_FREE";
-  var arr=getArr(key);
-  arr.push({name:"",key:""});
-  localStorage.setItem(key, JSON.stringify(arr));
-  if(prem) renderSlots("premSlots", arr, "Premium");
-  else renderSlots("imgSlots", arr, "Image");
-}
-function saveImg(){
-  var arr=readSlots("imgSlots");
-  localStorage.setItem("VX_IMG_FREE", JSON.stringify(arr));
-  var n=arr.filter(function(x){return x.key;}).length;
-  document.getElementById("okImg").textContent="✓ Image keys saved ("+n+" active)";
-}
-function savePrem(){
-  var arr=readSlots("premSlots");
-  localStorage.setItem("VX_IMG_PREM", JSON.stringify(arr));
-  document.getElementById("okPrem").textContent="✓ Premium keys saved";
-}
+  document.getElementById("btnBack").onclick = function () {
+    if (document.getElementById("panelCats").classList.contains("on")) {
+      if (history.length > 1) history.back();
+      else location.href = "index.html";
+    } else {
+      updateBadges();
+      show("panelCats");
+    }
+  };
 
-/* future categories: add panel div + card in menu + id in openPanel list */
+  document.getElementById("addStory").onclick = function () {
+    var box = document.getElementById("storySlots");
+    var n = box.querySelectorAll(".slot").length + 1;
+    box.insertAdjacentHTML("beforeend", slotHTML("Story " + n, "", ""));
+    bindDeletes(box);
+  };
+  document.getElementById("addImg").onclick = function () {
+    var box = document.getElementById("imgSlots");
+    var n = box.querySelectorAll(".slot").length + 1;
+    box.insertAdjacentHTML("beforeend", slotHTML("Image " + n, "", ""));
+    bindDeletes(box);
+  };
+  document.getElementById("addPrem").onclick = function () {
+    var box = document.getElementById("premSlots");
+    var n = box.querySelectorAll(".slot").length + 1;
+    box.insertAdjacentHTML("beforeend", slotHTML("Premium " + n, "", ""));
+    bindDeletes(box);
+  };
+
+  document.getElementById("saveStory").onclick = saveStory;
+  document.getElementById("saveImg").onclick = saveImg;
+  document.getElementById("savePrem").onclick = savePrem;
+
+  updateBadges();
+})();
 </script>
+
+<!-- ===== PART 1 END — API Center ===== -->
+<!-- अगला: PART 2 = Video / Voice / Captions panels + hooks -->
 </body>
-        </html>
+    </html>
