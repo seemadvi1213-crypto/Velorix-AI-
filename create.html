@@ -1809,13 +1809,29 @@ window.vxOnStoryReady = function () {
       }
       var slot = order[i];
       if (onProg) onProg(20 + i * 10, (slot.provider || slot.name) + "…");
-      var job =
-        slot.provider === "together" ? vxImgGenTogether(slot, prompt) :
-        slot.provider === "fal" ? vxImgGenFal(slot, prompt) :
-        slot.provider === "replicate" ? vxImgGenReplicate(slot, prompt) :
-        Promise.reject(new Error("unknown provider"));
-      return job.catch(function () { return trySlot(i + 1); });
-    }
+      var prov = slot.provider || "unknown";
+if (prov === "unknown") {
+  var kn = String(slot.key || "");
+  var nm = String(slot.name || "").toLowerCase();
+  if (kn.indexOf("r8_") === 0 || nm.indexOf("repl") >= 0) prov = "replicate";
+  else if (nm.indexOf("fal") >= 0 || kn.indexOf("fal_") >= 0) prov = "fal";
+  else if (nm.indexOf("together") >= 0 || kn.indexOf("tgp_") === 0) prov = "together";
+}
+function runProv(p) {
+  if (p === "together") return vxImgGenTogether(slot, prompt);
+  if (p === "fal") return vxImgGenFal(slot, prompt);
+  if (p === "replicate") return vxImgGenReplicate(slot, prompt);
+  return Promise.reject(new Error("unknown"));
+}
+/* unknown → तीनों try */
+var job = (prov !== "unknown")
+  ? runProv(prov)
+  : runProv("together").catch(function () {
+      return runProv("fal");
+    }).catch(function () {
+      return runProv("replicate");
+    });
+return job.catch(function () { return trySlot(i + 1); });
 
     if (!order.length) {
       if (onProg) onProg(50, "Free image…");
