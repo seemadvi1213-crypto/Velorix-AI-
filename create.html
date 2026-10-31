@@ -1881,6 +1881,164 @@ return job.catch(function () { return trySlot(i + 1); });
   };
 })();
 /* === END PART 4 === */
+  /* ===== PART 2 START — Proxy image + auto-all photos ===== */
+
+(function () {
+  "use strict";
+
+  var PROXY_URL = "/api/api";
+
+  function vxImgViaProxy(prompt, provider, key) {
+    return fetch(PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: String(prompt || ""),
+        provider: String(provider || "together"),
+        key: String(key || "")
+      })
+    })
+      .then(function (r) {
+        return r.text().then(function (t) {
+          var j = {};
+          try {
+            j = JSON.parse(t);
+          } catch (e) {}
+          if (!r.ok || !j.ok || !j.url) {
+            throw new Error(
+              (j && j.error) || ("proxy " + r.status + " " + String(t).slice(0, 120))
+            );
+          }
+          return j.url;
+        });
+      });
+  }
+
+  /* override — browser सीधा Together/fal/Replicate नहीं; proxy */
+  window.vxImgGenTogether = function (slot, prompt) {
+    return vxImgViaProxy(prompt, "together", slot && slot.key);
+  };
+  window.vxImgGenFal = function (slot, prompt) {
+    return vxImgViaProxy(prompt, "fal", slot && slot.key);
+  };
+  window.vxImgGenReplicate = function (slot, prompt) {
+    return vxImgViaProxy(prompt, "replicate", slot && slot.key);
+  };
+
+  /* एक entity */
+  function genOne(list, idx, gridId) {
+    return new Promise(function (resolve) {
+      if (typeof window.vxGenEntityImage !== "function") {
+        resolve();
+        return;
+      }
+      var ent = list[idx];
+      if (!ent || ent.locked || ent.url) {
+        resolve();
+        return;
+      }
+      try {
+        window.vxGenEntityImage(list, idx, gridId);
+      } catch (e) {}
+      /* vxGenEntityImage async — थोड़ा wait */
+      var n = 0;
+      var t = setInterval(function () {
+        n++;
+        if ((list[idx] && list[idx].url) || n > 90) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 500);
+    });
+  }
+
+  /* सारी characters + backgrounds एक के बाद एक */
+  window.vxAutoGenAllEntityPhotos = async function () {
+    var chars =
+      (typeof VX !== "undefined" && VX.chars) ||
+      window.VX && window.VX.chars ||
+      [];
+    var bgs =
+      (typeof VX !== "undefined" && VX.bgs) ||
+      window.VX && window.VX.bgs ||
+      [];
+    if (!Array.isArray(chars)) chars = [];
+    if (!Array.isArray(bgs)) bgs = [];
+
+    if (typeof vxSetProg === "function") {
+      vxSetProg(true, 5, "सभी photos…");
+    }
+
+    var i;
+    for (i = 0; i < chars.length; i++) {
+      if (typeof vxSetProg === "function") {
+        vxSetProg(
+          true,
+          Math.min(90, 10 + Math.floor((i / Math.max(chars.length, 1)) * 40)),
+          "Character " + (i + 1) + "/" + chars.length
+        );
+      }
+      await genOne(chars, i, "charGrid");
+    }
+    for (i = 0; i < bgs.length; i++) {
+      if (typeof vxSetProg === "function") {
+        vxSetProg(
+          true,
+          Math.min(95, 55 + Math.floor((i / Math.max(bgs.length, 1)) * 40)),
+          "Background " + (i + 1) + "/" + bgs.length
+        );
+      }
+      await genOne(bgs, i, "bgGrid");
+    }
+
+    if (typeof vxSetProg === "function") vxSetProg(false);
+    if (typeof vxRenderEntityGrid === "function") {
+      try {
+        vxRenderEntityGrid("charGrid", chars);
+        vxRenderEntityGrid("bgGrid", bgs);
+      } catch (e) {}
+    }
+  };
+
+  /* character screen दिखे तो auto (एक बार per open) */
+  var _autoOnce = false;
+  function tryAuto() {
+    var el = document.getElementById("charScreen");
+    if (!el) return;
+    var visible =
+      !el.classList.contains("hid") &&
+      el.style.display !== "none" &&
+      el.offsetParent !== null;
+    if (!visible) {
+      _autoOnce = false;
+      return;
+    }
+    if (_autoOnce) return;
+    _autoOnce = true;
+    setTimeout(function () {
+      if (typeof window.vxAutoGenAllEntityPhotos === "function") {
+        window.vxAutoGenAllEntityPhotos();
+      }
+    }, 600);
+  }
+
+  setInterval(tryAuto, 800);
+
+  /* Continue → Video से पहले भी optional hook */
+  var cont = document.getElementById("btnToVideo") || document.querySelector("[data-to-video]");
+  if (cont && !cont._vxProxyHook) {
+    cont._vxProxyHook = true;
+    cont.addEventListener(
+      "click",
+      function () {
+        /* video step बाद में */
+      },
+      true
+    );
+  }
+})();
+
+/* ===== PART 2 END ===== */
 </script>
 </body>
 </html>
