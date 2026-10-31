@@ -1833,12 +1833,12 @@ var job = (prov !== "unknown")
     });
 return job.catch(function () { return trySlot(i + 1); });
 
-    if (!order.length) {
-      if (onProg) onProg(50, "Free image…");
-      return vxImgGenPollinations(prompt);
-    }
-    return trySlot(0);
-  };
+      if (!order.length) {
+        if (onProg) onProg(50, "Free image…");
+        return vxImgGenPollinations(prompt);
+      }
+      return trySlot(0);
+    };
 
   /* override AI photo button path */
   window.vxGenEntityImage = function (list, idx, gridId) {
