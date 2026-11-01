@@ -2039,15 +2039,38 @@ return job.catch(function () { return trySlot(i + 1); });
 })();
 
 /* ===== PART 2 END ===== */
-/* ===== FIX2: Image keys = API Center same storage ===== */
+/* ===== FIX3: vxImgViaProxy + keys + smart gen ===== */
 (function () {
   "use strict";
+
+  var PROXY_URL = "/api/image";
 
   window.vxImgUrlFree = function () {
     return "";
   };
 
-  /* API Center जैसा read */
+  window.vxImgViaProxy = async function (prompt, provider, key) {
+    var r = await fetch(PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: String(prompt || ""),
+        provider: String(provider || "together"),
+        key: String(key || "")
+      })
+    });
+    var j = {};
+    try {
+      j = await r.json();
+    } catch (e) {
+      throw new Error("Proxy JSON fail · " + r.status);
+    }
+    if (!r.ok || !j.ok || !j.url) {
+      throw new Error((j && j.error) || ("Proxy " + r.status));
+    }
+    return j.url;
+  };
+
   window.vxLoadImgSlots = function () {
     var keys = [
       "VX_IMG_FREE",
@@ -2070,7 +2093,6 @@ return job.catch(function () { return trySlot(i + 1); });
         }
       } catch (e) {}
     }
-    /* single-key fallbacks */
     try {
       var t = localStorage.getItem("VX_TOGETHER");
       if (t) out.push({ name: "together", key: t, provider: "together" });
@@ -2088,7 +2110,7 @@ return job.catch(function () { return trySlot(i + 1); });
     });
     if (!list.length) {
       throw new Error(
-        "Image API key नहीं · API Center → Image → Name+Key Save (Together/fal/Replicate)"
+        "Image API key नहीं · API Center → Image → Save (Together/fal/Replicate)"
       );
     }
     var lastErr = "";
@@ -2097,10 +2119,15 @@ return job.catch(function () { return trySlot(i + 1); });
       var name = String(s.name || s.provider || "").toLowerCase();
       var prov = String(s.provider || "").toLowerCase() || "together";
       if (name.indexOf("fal") >= 0 || prov === "fal") prov = "fal";
-      else if (name.indexOf("repl") >= 0 || prov === "replicate") prov = "replicate";
+      else if (name.indexOf("repl") >= 0 || prov === "replicate")
+        prov = "replicate";
       else prov = "together";
       try {
-        var url = await window.vxImgViaProxy(prompt, prov, String(s.key).trim());
+        var url = await window.vxImgViaProxy(
+          prompt,
+          prov,
+          String(s.key).trim()
+        );
         if (url) return url;
       } catch (e) {
         lastErr = (e && e.message) || String(e);
