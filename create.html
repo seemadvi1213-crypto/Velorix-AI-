@@ -2039,71 +2039,76 @@ return job.catch(function () { return trySlot(i + 1); });
 })();
 
 /* ===== PART 2 END ===== */
-  /* ===== FIX: no Pollinations · fail → Gallery ===== */
+/* ===== FIX2: Image keys = API Center same storage ===== */
 (function () {
   "use strict";
 
   window.vxImgUrlFree = function () {
-    return ""; /* Pollinations बंद */
+    return "";
   };
 
-  var _oldSmart = window.vxGenerateImageSmart;
-  window.vxGenerateImageSmart = async function (prompt, w, h) {
-    var slots =
-      (typeof window.vxLoadImgSlots === "function" && window.vxLoadImgSlots()) ||
-      [];
-    var list = Array.isArray(slots) ? slots.filter(function (s) { return s && s.key; }) : [];
-
-    if (!list.length) {
-      throw new Error("Image API key नहीं · API Center में Together/fal/Replicate Save करो");
+  /* API Center जैसा read */
+  window.vxLoadImgSlots = function () {
+    var keys = [
+      "VX_IMG_FREE",
+      "VX_IMAGE_KEYS",
+      "VX_IMG_KEYS",
+      "velorix_image_keys",
+      "VX_API_IMAGE_KEYS",
+      "VX_IMG_PREM"
+    ];
+    var out = [];
+    for (var i = 0; i < keys.length; i++) {
+      try {
+        var raw = localStorage.getItem(keys[i]);
+        if (!raw) continue;
+        var j = JSON.parse(raw);
+        if (Array.isArray(j)) {
+          for (var k = 0; k < j.length; k++) {
+            if (j[k] && j[k].key) out.push(j[k]);
+          }
+        }
+      } catch (e) {}
     }
+    /* single-key fallbacks */
+    try {
+      var t = localStorage.getItem("VX_TOGETHER");
+      if (t) out.push({ name: "together", key: t, provider: "together" });
+      var f = localStorage.getItem("VX_FAL");
+      if (f) out.push({ name: "fal", key: f, provider: "fal" });
+      var r = localStorage.getItem("VX_REPLICATE");
+      if (r) out.push({ name: "replicate", key: r, provider: "replicate" });
+    } catch (e2) {}
+    return out;
+  };
 
+  window.vxGenerateImageSmart = async function (prompt) {
+    var list = window.vxLoadImgSlots().filter(function (s) {
+      return s && String(s.key || "").trim();
+    });
+    if (!list.length) {
+      throw new Error(
+        "Image API key नहीं · API Center → Image → Name+Key Save (Together/fal/Replicate)"
+      );
+    }
     var lastErr = "";
     for (var i = 0; i < list.length; i++) {
       var s = list[i];
       var name = String(s.name || s.provider || "").toLowerCase();
-      var prov = "together";
-      if (name.indexOf("fal") >= 0) prov = "fal";
-      else if (name.indexOf("repl") >= 0) prov = "replicate";
-      else if (name.indexOf("together") >= 0 || name.indexOf("tgp") >= 0) prov = "together";
-
+      var prov = String(s.provider || "").toLowerCase() || "together";
+      if (name.indexOf("fal") >= 0 || prov === "fal") prov = "fal";
+      else if (name.indexOf("repl") >= 0 || prov === "replicate") prov = "replicate";
+      else prov = "together";
       try {
-        if (typeof window.vxImgViaProxy === "function") {
-          var url = await window.vxImgViaProxy(prompt, prov, s.key);
-          if (url) return url;
-        }
+        var url = await window.vxImgViaProxy(prompt, prov, String(s.key).trim());
+        if (url) return url;
       } catch (e) {
         lastErr = (e && e.message) || String(e);
       }
     }
-    throw new Error(lastErr || "Proxy fail · Gallery से photo चुनो");
+    throw new Error(lastErr || "Proxy fail · Gallery से चुनो");
   };
-
-  var _oldGen = window.vxGenEntityImage;
-  if (typeof _oldGen === "function") {
-    window.vxGenEntityImage = async function (list, idx, gridId) {
-      try {
-        return await _oldGen(list, idx, gridId);
-      } catch (e) {
-        var msg = (e && e.message) || "AI fail";
-        alert(msg + "\n\nGallery से photo चुनो।");
-        var ent = list && list[idx];
-        if (ent) {
-          var btn = document.querySelector(
-            '[data-gallery-idx="' + idx + '"], [data-idx="' + idx + '"]'
-          );
-          /* user Gallery दबाए */
-        }
-        if (typeof window.vxRenderEntityGrid === "function") {
-          try {
-            window.vxRenderEntityGrid(gridId, list);
-          } catch (err) {}
-        }
-      }
-    };
-  }
 })();
-</script>
+  </script>
 </body>
 </html>
-  
