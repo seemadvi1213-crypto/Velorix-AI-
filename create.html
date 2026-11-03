@@ -2136,6 +2136,128 @@ return job.catch(function () { return trySlot(i + 1); });
     throw new Error(lastErr || "Proxy fail · Gallery से चुनो");
   };
 })();
+  
+/* ===== VELORIX PHOTO — Public Pollinations + Mobile Gallery ===== */
+const VX_GAL_KEY = "vx_gallery_v1";
+
+function loadGal() {
+  try { return JSON.parse(localStorage.getItem(VX_GAL_KEY) || "[]"); }
+  catch (e) { return []; }
+}
+function saveGal(list) {
+  try { localStorage.setItem(VX_GAL_KEY, JSON.stringify(list.slice(0, 40))); } catch (e) {}
+}
+
+/* Public image — no API key */
+function pollinationsUrl(prompt, w, h) {
+  const p = encodeURIComponent(String(prompt || "cinematic character").slice(0, 300));
+  const seed = Math.floor(Math.random() * 999999);
+  return "https://image.pollinations.ai/prompt/" + p +
+    "?width=" + (w || 768) +
+    "&height=" + (h || 768) +
+    "&nologo=true&enhance=true&seed=" + seed;
+}
+
+function waitImg(url, ms) {
+  return new Promise(function (resolve, reject) {
+    const img = new Image();
+    let done = false;
+    const t = setTimeout(function () {
+      if (!done) { done = true; reject(new Error("timeout")); }
+    }, ms || 90000);
+    img.onload = function () {
+      if (done) return;
+      done = true;
+      clearTimeout(t);
+      resolve(url);
+    };
+    img.onerror = function () {
+      if (done) return;
+      done = true;
+      clearTimeout(t);
+      reject(new Error("load fail"));
+    };
+    img.crossOrigin = "anonymous";
+    img.src = url;
+  });
+}
+
+async function genPublicPhoto(prompt) {
+  const url = pollinationsUrl(prompt, 768, 768);
+  await waitImg(url, 90000);
+  return url;
+}
+
+/* Mobile / file → Gallery save */
+function pickPhotoFile() {
+  return new Promise(function (resolve) {
+    const inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "image/*";
+    inp.style.display = "none";
+    document.body.appendChild(inp);
+    inp.onchange = function () {
+      const f = inp.files && inp.files[0];
+      document.body.removeChild(inp);
+      if (!f) return resolve(null);
+      const r = new FileReader();
+      r.onload = function () {
+        const data = r.result;
+        const list = loadGal();
+        list.unshift({
+          id: "g_" + Date.now(),
+          url: data,
+          name: f.name || "photo",
+          t: Date.now()
+        });
+        saveGal(list);
+        resolve(data);
+      };
+      r.onerror = function () { resolve(null); };
+      r.readAsDataURL(f);
+    };
+    inp.click();
+  });
+}
+
+/* Call from Character / Background AI button */
+async function onAiPhoto(promptText, setPreviewUrl) {
+  try {
+    if (window.setProg) setProg(20, "Public AI…");
+    const url = await genPublicPhoto(promptText || "cinematic portrait");
+    if (window.setProg) setProg(100, "OK");
+    if (setPreviewUrl) setPreviewUrl(url);
+    const list = loadGal();
+    list.unshift({ id: "ai_" + Date.now(), url: url, name: "AI", t: Date.now() });
+    saveGal(list);
+    alert("Photo आ गई ✅");
+    return url;
+  } catch (e) {
+    if (window.hideProg) hideProg();
+    alert("Public AI slow/fail। Gallery से photo चुनो।\n" + (e.message || ""));
+    return null;
+  }
+}
+
+/* Call from Gallery button */
+async function onGalleryPhoto(setPreviewUrl) {
+  const data = await pickPhotoFile();
+  if (!data) return null;
+  if (setPreviewUrl) setPreviewUrl(data);
+  alert("Gallery में save ✅");
+  return data;
+}
+
+/* Optional: show saved gallery thumbs */
+function renderGalStrip(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const list = loadGal();
+  el.innerHTML = list.slice(0, 12).map(function (g) {
+    return '<img src="' + g.url + '" style="width:64px;height:64px;object-fit:cover;border-radius:10px;margin:4px" />';
+  }).join("") || "<span style='opacity:.6'>अभी खाली — AI या Gallery से भरो</span>";
+}
+</script>
   </script>
 </body>
 </html>
