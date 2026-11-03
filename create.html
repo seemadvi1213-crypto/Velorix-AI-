@@ -2114,22 +2114,23 @@ window.vxGenerateImageSmart = async function (promptOrEnt, onProg) {
     if (typeof onProg === "function") onProg(p, m);
   }
 
+  prog(15, "Public AI…");
+  var q = encodeURIComponent(prompt);
+  var seed = Math.floor(Math.random() * 999999);
+  var url =
+    "https://image.pollinations.ai/prompt/" +
+    q +
+    "?width=768&height=768&nologo=true&seed=" +
+    seed;
+
   try {
-    prog(20, "Public AI…");
-    var q = encodeURIComponent(prompt);
-    var seed = Math.floor(Math.random() * 999999);
-    var url =
-      "https://image.pollinations.ai/prompt/" +
-      q +
-      "?width=768&height=768&nologo=true&enhance=true&seed=" +
-      seed;
     await new Promise(function (resolve, reject) {
       var img = new Image();
       var done = false;
       var t = setTimeout(function () {
         if (!done) {
           done = true;
-          reject(new Error("timeout"));
+          reject(new Error("timeout 90s"));
         }
       }, 90000);
       img.onload = function () {
@@ -2144,43 +2145,18 @@ window.vxGenerateImageSmart = async function (promptOrEnt, onProg) {
         clearTimeout(t);
         reject(new Error("load fail"));
       };
-      img.crossOrigin = "anonymous";
+      /* crossOrigin मत लगाओ — कई बार गलत fail */
       img.src = url;
     });
     prog(100, "OK");
     return url;
-  } catch (e1) {
-    var lastErr = (e1 && e1.message) || "public fail";
-    var list = (window.vxLoadImgSlots ? window.vxLoadImgSlots() : []).filter(
-      function (s) {
-        return s && String(s.key || "").trim();
-      }
+  } catch (e) {
+    throw new Error(
+      "Public slow/fail · Gallery से photo चुनो · " +
+        ((e && e.message) || "")
     );
-    for (var i = 0; i < list.length; i++) {
-      var s = list[i];
-      var name = String(s.name || s.provider || "").toLowerCase();
-      var prov = "together";
-      if (name.indexOf("fal") >= 0) prov = "fal";
-      else if (name.indexOf("repl") >= 0) prov = "replicate";
-      try {
-        prog(40 + i * 15, prov + "…");
-        if (window.vxImgViaProxy) {
-          var u2 = await window.vxImgViaProxy(
-            prompt,
-            prov,
-            String(s.key).trim()
-          );
-          if (u2) return u2;
-        }
-      } catch (e) {
-        lastErr = (e && e.message) || String(e);
-      }
-    }
-    throw new Error(lastErr + " · Gallery से photo चुनो");
   }
 };
-  
-  
 /* ===== VELORIX PHOTO — Public Pollinations + Mobile Gallery ===== */
 const VX_GAL_KEY = "vx_gallery_v1";
 
