@@ -2103,39 +2103,83 @@ return job.catch(function () { return trySlot(i + 1); });
     } catch (e2) {}
     return out;
   };
+window.vxGenerateImageSmart = async function (promptOrEnt, onProg) {
+  var prompt = promptOrEnt;
+  if (promptOrEnt && typeof promptOrEnt === "object") {
+    prompt = promptOrEnt.prompt || promptOrEnt.name || "cinematic character";
+  }
+  prompt = String(prompt || "cinematic character").slice(0, 400);
 
-  window.vxGenerateImageSmart = async function (prompt) {
-    var list = window.vxLoadImgSlots().filter(function (s) {
-      return s && String(s.key || "").trim();
+  function prog(p, m) {
+    if (typeof onProg === "function") onProg(p, m);
+  }
+
+  try {
+    prog(20, "Public AI…");
+    var q = encodeURIComponent(prompt);
+    var seed = Math.floor(Math.random() * 999999);
+    var url =
+      "https://image.pollinations.ai/prompt/" +
+      q +
+      "?width=768&height=768&nologo=true&enhance=true&seed=" +
+      seed;
+    await new Promise(function (resolve, reject) {
+      var img = new Image();
+      var done = false;
+      var t = setTimeout(function () {
+        if (!done) {
+          done = true;
+          reject(new Error("timeout"));
+        }
+      }, 90000);
+      img.onload = function () {
+        if (done) return;
+        done = true;
+        clearTimeout(t);
+        resolve();
+      };
+      img.onerror = function () {
+        if (done) return;
+        done = true;
+        clearTimeout(t);
+        reject(new Error("load fail"));
+      };
+      img.crossOrigin = "anonymous";
+      img.src = url;
     });
-    if (!list.length) {
-      throw new Error(
-        "Image API key नहीं · API Center → Image → Save (Together/fal/Replicate)"
-      );
-    }
-    var lastErr = "";
+    prog(100, "OK");
+    return url;
+  } catch (e1) {
+    var lastErr = (e1 && e1.message) || "public fail";
+    var list = (window.vxLoadImgSlots ? window.vxLoadImgSlots() : []).filter(
+      function (s) {
+        return s && String(s.key || "").trim();
+      }
+    );
     for (var i = 0; i < list.length; i++) {
       var s = list[i];
       var name = String(s.name || s.provider || "").toLowerCase();
-      var prov = String(s.provider || "").toLowerCase() || "together";
-      if (name.indexOf("fal") >= 0 || prov === "fal") prov = "fal";
-      else if (name.indexOf("repl") >= 0 || prov === "replicate")
-        prov = "replicate";
-      else prov = "together";
+      var prov = "together";
+      if (name.indexOf("fal") >= 0) prov = "fal";
+      else if (name.indexOf("repl") >= 0) prov = "replicate";
       try {
-        var url = await window.vxImgViaProxy(
-          prompt,
-          prov,
-          String(s.key).trim()
-        );
-        if (url) return url;
+        prog(40 + i * 15, prov + "…");
+        if (window.vxImgViaProxy) {
+          var u2 = await window.vxImgViaProxy(
+            prompt,
+            prov,
+            String(s.key).trim()
+          );
+          if (u2) return u2;
+        }
       } catch (e) {
         lastErr = (e && e.message) || String(e);
       }
     }
-    throw new Error(lastErr || "Proxy fail · Gallery से चुनो");
-  };
-})();
+    throw new Error(lastErr + " · Gallery से photo चुनो");
+  }
+};
+  
   
 /* ===== VELORIX PHOTO — Public Pollinations + Mobile Gallery ===== */
 const VX_GAL_KEY = "vx_gallery_v1";
