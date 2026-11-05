@@ -1841,39 +1841,19 @@ return job.catch(function () { return trySlot(i + 1); });
     return trySlot(0);
   };
 
-  /* override AI photo button path */
-  window.vxGenEntityImage = function (list, idx, gridId) {
-    var ent = list[idx];
-    if (!ent) return;
-    if (ent.locked) { alert("Lock है · पहले Unlock"); return; }
-    if (typeof vxSetProg === "function") vxSetProg(true, 10, "Photo · " + (ent.name || ""));
-    vxGenerateImageSmart(ent, function (pct, msg) {
-      if (typeof vxSetProg === "function") vxSetProg(true, pct, msg || "Photo…");
-    }).then(function (url) {
-      ent.url = url;
-      if (typeof vxGallerySave === "function") {
-        vxGallerySave({
-          id: "g_" + Date.now(),
-          url: url,
-          name: ent.name,
-          type: ent.type || "char",
-          best: true,
-          ts: Date.now(),
-          storyBit: String(VX.story || "").slice(0, 80)
-        });
-      }
-      try {
-        localStorage.setItem("VX_CHARS", JSON.stringify(VX.chars || []));
-        localStorage.setItem("VX_BGS", JSON.stringify(VX.bgs || []));
-      } catch (e) {}
-      if (typeof vxSetProg === "function") vxSetProg(false);
-      if (typeof vxRenderEntityGrid === "function") vxRenderEntityGrid(gridId, list);
-    }).catch(function (err) {
-      if (typeof vxSetProg === "function") vxSetProg(false);
-      alert("Photo नहीं बनी: " + (err && err.message ? err.message : "retry"));
-    });
-  };
-
+/* override AI photo button path — Public बंद · सिर्फ Gallery */
+window.vxGenEntityImage = function (list, idx, gridId) {
+  var ent = list[idx];
+  if (!ent) return;
+  if (ent.locked) {
+    alert("Lock है · पहले Unlock");
+    return;
+  }
+  VX._pickTarget = { list: list, idx: idx, gridId: gridId };
+  var inp = document.getElementById("imgFilePick");
+  if (inp) inp.click();
+  else alert("Gallery से photo चुनो");
+};
   /* optional: expose count for owner debug */
   window.vxImageKeysStatus = function () {
     var s = vxLoadImageKeySlots();
