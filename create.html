@@ -1843,14 +1843,8 @@ return job.catch(function () { return trySlot(i + 1); });
 
 /* override AI photo button path — Public बंद · सिर्फ Gallery */
 window.vxAutoGenAllEntityPhotos = async function () {
-  /* Gallery-only: auto Public/picker बंद · Cancel पर 90% अटकेगा नहीं */
   if (typeof vxSetProg === "function") vxSetProg(false);
   return;
-  }
-  VX._pickTarget = { list: list, idx: idx, gridId: gridId };
-  var inp = document.getElementById("imgFilePick");
-  if (inp) inp.click();
-  else alert("Gallery से photo चुनो");
 };
   /* optional: expose count for owner debug */
   window.vxImageKeysStatus = function () {
