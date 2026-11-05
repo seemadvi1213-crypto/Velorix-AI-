@@ -1993,10 +1993,8 @@ window.vxAutoGenAllEntityPhotos = async function () {
     }
     if (_autoOnce) return;
     _autoOnce = true;
-    setTimeout(function () {
-      if (typeof window.vxAutoGenAllEntityPhotos === "function") {
-        window.vxAutoGenAllEntityPhotos();
-      }
+    /* auto photos बंद — Gallery manual */
+    if (typeof vxSetProg === "function") vxSetProg(false);
     }, 600);
   }
 
