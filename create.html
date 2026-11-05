@@ -610,19 +610,42 @@ function vxRenderScenes(pack) {
     if (sc) sc.scrollTop = sc.scrollHeight;
   } catch (e) {}
 }
-
 async function vxGoScenes() {
   if (!VX.story) { alert("पहले story"); return; }
   vxSetProg(true, 6, "Scenes…");
   try {
-    var lock = "CRITICAL: Same characters in EVERY scene — same face, skin, age, hair, clothes color and style, body type. Never change outfit or face. Mention locked look in every photo_prompt and video_prompt.";
-    var raw = await vxCallAI(
-      "Split into 4-6 scenes for 1-min video. Language " + vxLangName() + ". " + lock +
-      ' JSON only: [{"text":"action/dialogue","photo_prompt":"still, locked character","video_prompt":"motion/dialogue, locked character"}]',
-      VX.story
-    );
-    var pack = vxParseScenePack(raw);
-    if (!pack.length) pack = [{ n: 1, text: VX.story.slice(0, 200), photo: "", video: "" }];
+    var pack = [];
+    try {
+      var lock = "CRITICAL: Same characters every scene.";
+      var raw = await vxCallAI(
+        "Split into 4-6 scenes for 1-min video. Language " + vxLangName() + ". " + lock +
+        ' JSON only: [{"text":"...","photo_prompt":"...","video_prompt":"..."}]',
+        VX.story
+      );
+      pack = vxParseScenePack(raw);
+    } catch (apiErr) {
+      pack = [];
+    }
+    /* API fail → story से local scenes */
+    if (!pack.length) {
+      var parts = String(VX.story)
+        .split(/(?<=[।.!?])\s+|\n+/)
+        .map(function (s) { return s.trim(); })
+        .filter(function (s) { return s.length > 12; });
+      if (parts.length < 2) {
+        var mid = Math.floor(VX.story.length / 2);
+        var br = VX.story.lastIndexOf("।", mid);
+        if (br < 40) br = mid;
+        parts = [VX.story.slice(0, br + 1).trim(), VX.story.slice(br + 1).trim()].filter(Boolean);
+      }
+      while (parts.length > 6) {
+        var a = parts.pop();
+        parts[parts.length - 1] += " " + a;
+      }
+      pack = parts.map(function (t, i) {
+        return { n: i + 1, text: t, photo: "", video: "" };
+      });
+    }
     VX.scenePack = pack;
     VX.scenes = pack.map(function (p) { return p.text; });
     try {
@@ -631,9 +654,12 @@ async function vxGoScenes() {
       localStorage.setItem("VX_CREATE_STEP", "scenes_done");
     } catch (e) {}
     vxRenderScenes(pack);
-  } catch (e) { alert(String(e.message || e)); }
-  finally { vxSetProg(false); }
-}
+  } catch (e) {
+    alert(String(e.message || e));
+  } finally {
+    vxSetProg(false);
+  }
+  }
 
 function vxShowSizeScreen() {
   VX.step = "size";
