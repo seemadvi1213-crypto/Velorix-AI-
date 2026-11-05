@@ -1995,9 +1995,7 @@ window.vxAutoGenAllEntityPhotos = async function () {
     _autoOnce = true;
     /* auto photos बंद — Gallery manual */
     if (typeof vxSetProg === "function") vxSetProg(false);
-    }, 600);
-  }
-
+}
   setInterval(tryAuto, 800);
 
   /* Continue → Video से पहले भी optional hook */
