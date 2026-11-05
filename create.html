@@ -393,9 +393,9 @@ async function vxCallOR(system, user) {
   var k = vxKeys().or;
   if (!k) throw new Error("OpenRouter key नहीं");
   var models = [
-  "meta-llama/llama-3.3-70b-instruct:free",
+  "meta-llama/llama-3.2-3b-instruct:free",
   "google/gemma-2-9b-it:free",
-  "meta-llama/llama-3.2-3b-instruct:free"
+  "qwen/qwen-2-7b-instruct:free"
 ];
   var last = "OR fail";
   for (var i = 0; i < models.length; i++) {
@@ -419,7 +419,7 @@ async function vxCallOR(system, user) {
 async function vxCallGemini(system, user) {
   var k = vxKeys().gemini;
   if (!k) throw new Error("Gemini key नहीं");
-  var models = ["gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
+  var models = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.0-flash-lite"];
   var last = "Gemini fail";
   for (var i = 0; i < models.length; i++) {
     try {
@@ -442,12 +442,23 @@ async function vxCallGemini(system, user) {
   }
   throw new Error(last);
 }
+function vxLocalStory(topic) {
+  var t = String(topic || "").replace(/^Topic:\s*/i, "").trim() || "एक गरीब किसान";
+  return (
+    t + "। सुबह गाँव पर धूप निकलती है और वह खेत की ओर चल पड़ता है। " +
+    "हाथ खुरदरे हैं पर मन में उम्मीद है। घर पर परिवार इंतज़ार करता है। " +
+    "दिन भर मेहनत के बाद थकान है, फिर भी हिम्मत नहीं टूटती। " +
+    "आखिर मेहनत रंग लाती है — फसल अच्छी होती है और सबके चेहरे पर मुस्कान आ जाती है। हैप्पी एंडिंग।"
+  );
+}
+
 async function vxCallAI(system, user) {
   var errs = [];
-  try { return await vxCallGroq(system, user); } catch (e) { errs.push(e.message); }
-  try { return await vxCallOR(system, user); } catch (e) { errs.push(e.message); }
   try { return await vxCallGemini(system, user); } catch (e) { errs.push(e.message); }
-  throw new Error(errs.join(" | "));
+  try { return await vxCallOR(system, user); } catch (e) { errs.push(e.message); }
+  try { return await vxCallGroq(system, user); } catch (e) { errs.push(e.message); }
+  /* सब fail → local story ताकि Create अटके नहीं */
+  return vxLocalStory(user);
 }
 
 function vxHideInput() {
