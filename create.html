@@ -392,7 +392,11 @@ async function vxCallGroq(system, user) {
 async function vxCallOR(system, user) {
   var k = vxKeys().or;
   if (!k) throw new Error("OpenRouter key नहीं");
-  var models = ["openrouter/free", "meta-llama/llama-3.3-70b-instruct:free"];
+  var models = [
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "google/gemma-2-9b-it:free",
+  "meta-llama/llama-3.2-3b-instruct:free"
+];
   var last = "OR fail";
   for (var i = 0; i < models.length; i++) {
     try {
