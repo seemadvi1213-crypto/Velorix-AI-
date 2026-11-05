@@ -419,7 +419,7 @@ async function vxCallOR(system, user) {
 async function vxCallGemini(system, user) {
   var k = vxKeys().gemini;
   if (!k) throw new Error("Gemini key नहीं");
-  var models = ["gemini-2.5-flash", "gemini-3.8-flash", "gemini-flash-latest"];
+  var models = ["gemini-2.0-flash", "gemini-flash-latest", "gemini-1.5-flash"];
   var last = "Gemini fail";
   for (var i = 0; i < models.length; i++) {
     try {
