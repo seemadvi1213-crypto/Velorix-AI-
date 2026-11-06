@@ -402,7 +402,12 @@ async function vxCallOR(system, user) {
     try {
       var res = await vxFetchJson("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + k },
+    headers: {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer " + k,
+  "HTTP-Referer": "https://velorix-ai-web.vercel.app",
+  "X-Title": "Velorix AI"
+},
         body: JSON.stringify({
           model: models[i], temperature: 0.7, max_tokens: 1400,
           messages: [{ role: "system", content: system }, { role: "user", content: user }]
