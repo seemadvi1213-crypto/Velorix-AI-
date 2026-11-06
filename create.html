@@ -459,13 +459,14 @@ function vxLocalStory(topic) {
 
 async function vxCallAI(system, user) {
   var errs = [];
-  try { return await vxCallGemini(system, user); } catch (e) { errs.push(e.message); }
-  try { return await vxCallOR(system, user); } catch (e) { errs.push(e.message); }
-  try { return await vxCallGroq(system, user); } catch (e) { errs.push(e.message); }
-  /* सब fail → local story ताकि Create अटके नहीं */
-  return vxLocalStory(user);
-}
-
+  try { return await vxCallGemini(system, user); } catch (e) { errs.push("Gemini: " + e.message); }
+  try { return await vxCallOR(system, user); } catch (e) { errs.push("OR: " + e.message); }
+  try { return await vxCallGroq(system, user); } catch (e) { errs.push("Groq: " + e.message); }
+  var msg = errs.join(" | ");
+  var err = document.getElementById("errMsg");
+  if (err) err.textContent = msg.slice(0, 400);
+  throw new Error(msg);
+  }
 function vxHideInput() {
   var ic = document.getElementById("inputCard");
   if (ic) ic.style.display = "none";
