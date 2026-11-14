@@ -457,17 +457,23 @@ function vxLocalStory(topic) {
     "आखिर मेहनत रंग लाती है — फसल अच्छी होती है और सबके चेहरे पर मुस्कान आ जाती है। हैप्पी एंडिंग।"
   );
 }
-
 async function vxCallAI(system, user) {
+  var k = vxKeys();
   var errs = [];
-  try { return await vxCallGemini(system, user); } catch (e) { errs.push("Gemini: " + e.message); }
-  try { return await vxCallOR(system, user); } catch (e) { errs.push("OR: " + e.message); }
-  try { return await vxCallGroq(system, user); } catch (e) { errs.push("Groq: " + e.message); }
-  var msg = errs.join(" | ");
+  if (k.gemini) {
+    try { return await vxCallGemini(system, user); } catch (e) { errs.push("Gemini: " + e.message); }
+  }
+  if (k.or) {
+    try { return await vxCallOR(system, user); } catch (e) { errs.push("OR: " + e.message); }
+  }
+  if (k.groq) {
+    try { return await vxCallGroq(system, user); } catch (e) { errs.push("Groq: " + e.message); }
+  }
+  var msg = errs.length ? errs.join(" | ") : "API key · api.html में Story keys डालो";
   var err = document.getElementById("errMsg");
   if (err) err.textContent = msg.slice(0, 400);
   throw new Error(msg);
-  }
+    }
 function vxHideInput() {
   var ic = document.getElementById("inputCard");
   if (ic) ic.style.display = "none";
