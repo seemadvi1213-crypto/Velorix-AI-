@@ -552,7 +552,48 @@ function closePanel() {
   screen.classList.remove("on");
   screen.style.display = "none";
 }
-
+function loadGallery() {
+  try { return JSON.parse(localStorage.getItem("VX_GALLERY") || "[]"); } catch (e) { return []; }
+}
+function saveGallery(arr) {
+  try { localStorage.setItem("VX_GALLERY", JSON.stringify(arr)); } catch (e) {}
+}
+function buildGalleryPanel() {
+  var g = loadGallery();
+  var html = '<div class="panel-card"><h4>My Gallery</h4><p>फ़ोटो यहाँ सेव · Create में Characters पर Gallery से चुनोगे।</p>';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">';
+  for (var i = 0; i < Math.max(6, g.length); i++) {
+    if (g[i] && g[i].url) {
+      html += '<div style="aspect-ratio:1;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12);position:relative">';
+      html += '<img src="' + g[i].url + '" style="width:100%;height:100%;object-fit:cover"/>';
+      html += '<button type="button" onclick="galRemove(' + i + ')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.65);border:none;color:#fff;border-radius:8px;padding:2px 6px;font-size:11px">×</button></div>';
+    } else {
+      html += '<label style="aspect-ratio:1;border-radius:12px;border:1px dashed rgba(167,139,250,.45);display:flex;align-items:center;justify-content:center;color:#a78bfa;font-size:28px;cursor:pointer">+';
+      html += '<input type="file" accept="image/*" style="display:none" onchange="galAdd(event)"/></label>';
+    }
+  }
+  html += '</div><p style="margin-top:10px;font-size:12px;opacity:.7">कम से कम 5 स्लॉट · और + से बढ़ाओ</p></div>';
+  return html;
+}
+function galAdd(ev) {
+  var f = ev.target && ev.target.files && ev.target.files[0];
+  if (!f) return;
+  var r = new FileReader();
+  r.onload = function () {
+    var g = loadGallery();
+    g.unshift({ id: "g_" + Date.now(), url: r.result, name: f.name || "photo", ts: Date.now(), source: "upload" });
+    if (g.length > 40) g = g.slice(0, 40);
+    saveGallery(g);
+    openPanel("gallery");
+  };
+  r.readAsDataURL(f);
+}
+function galRemove(i) {
+  var g = loadGallery();
+  g.splice(i, 1);
+  saveGallery(g);
+  openPanel("gallery");
+  }
 function buildLangPanel() {
   var cur = getLang();
   var langs = [
