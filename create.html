@@ -346,7 +346,7 @@ function vxSetProg(on, pct, msg) {
   if (p) p.textContent = VX._progVal + "%";
   if (t) t.textContent = msg || "…";
   VX._progTimer = setInterval(function () {
-    if (VX._progVal >= 90) return;
+    if (VX._progVal >= 85 ) return;
     VX._progVal += 1;
     if (bar) bar.style.width = VX._progVal + "%";
     if (p) p.textContent = VX._progVal + "%";
@@ -354,7 +354,7 @@ function vxSetProg(on, pct, msg) {
 }
 
 async function vxFetchJson(url, opt, ms) {
-  ms = ms || 40000;
+  ms = ms || 18000;
   var ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
   var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, ms);
   try {
@@ -380,7 +380,7 @@ async function vxCallGroq(system, user) {
           model: models[i], temperature: 0.7, max_tokens: 1400,
           messages: [{ role: "system", content: system }, { role: "user", content: user }]
         })
-      }, 35000);
+      }, 18000);
       if (!res.r.ok) { last = (res.j.error && res.j.error.message) || ("Groq " + res.r.status); continue; }
       var t = res.j.choices && res.j.choices[0] && res.j.choices[0].message && res.j.choices[0].message.content;
       if (t && !vxIsBadStory(t)) return t.trim();
