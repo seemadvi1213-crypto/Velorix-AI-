@@ -539,7 +539,7 @@ function openPanel(id) {
     t: "Velorix",
     h: '<div class="panel-card"><h4>Section</h4><p>यह option structure में है। Detail UI अगले design pass में।</p></div>'
   };
-
+if (id === "gallery") item.h = buildGalleryPanel();
   title.textContent = item.t;
   body.innerHTML = item.h;
   screen.classList.add("on");
