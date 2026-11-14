@@ -116,21 +116,26 @@ var VX = {
 };
 document.getElementById("langPill").textContent = VX.lang.toUpperCase();
 /* boot: home से prompt · पुरानी story auto-open नहीं */
-  try {
+    try {
+    /* site खोलने पर mid-flow पर मत जाओ */
+    try {
+      localStorage.removeItem("VX_CREATE_STEP");
+    } catch (e2) {}
+
     var q = new URLSearchParams(location.search).get("q");
     var p = q || localStorage.getItem("VX_PROMPT") || "";
     if (q) {
-      /* Home से नया विषय = पुरानी story/scenes हटाओ */
+      /* Home से नया विषय - पुरानी story/scenes हटाओ */
       try {
         localStorage.removeItem("VX_STORY");
         localStorage.removeItem("VX_SCENES");
         localStorage.removeItem("VX_SCENE_PACK");
-        localStorage.removeItem("VX_CREATE_STEP");
       } catch (e1) {}
       VX.story = "";
       VX.scenes = [];
       VX.scenePack = [];
     }
+      
     if (p && document.getElementById("topicInput")) {
       document.getElementById("topicInput").value = p;
     }
