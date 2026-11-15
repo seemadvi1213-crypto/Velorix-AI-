@@ -439,7 +439,13 @@ function doLogout() {
   } catch (e) {}
   window.location.href = "index.html";
 }
-
+function vxSaveStorageKeys() {
+  try {
+    localStorage.setItem("VX_STORE_ID", (document.getElementById("vxStoreId") || {}).value || "");
+    localStorage.setItem("VX_STORE_KEY", (document.getElementById("vxStoreKey") || {}).value || "");
+    alert("Storage keys saved");
+  } catch (e) { alert("Save fail"); }
+  }
 /* Panels — no sticky "जल्द" alerts; real screens with slots */
 function openPanel(id) {
   var title = document.getElementById("panelTitle");
@@ -456,10 +462,8 @@ function openPanel(id) {
       t: "Invite Friends",
       h: '<div class="panel-card"><h4>Invite</h4><p>Share link + rewards बाद में। अभी slot ready।</p><div class="slot-row"><div class="slot">Invite code</div><div class="slot">Reward hours</div></div></div>'
     },
-    storage: {
-      t: "Storage",
-      h: '<div class="panel-card"><h4>Cloud Storage</h4><p>Gallery + assets URLs यहाँ से manage। R2 / Supabase keys Owner API में।</p><div class="slot-row"><div class="slot">Gallery slot</div><div class="slot">Assets slot</div><div class="slot">Temp slot</div></div></div>'
-    },
+    
+      
     backup: {
       t: "Backup",
       h: '<div class="panel-card"><h4>Backup</h4><p>Export / restore hooks। Auto backup later।</p><div class="slot-row"><div class="slot">Last backup</div><div class="slot">Restore</div></div></div>'
