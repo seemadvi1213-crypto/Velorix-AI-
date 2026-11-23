@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Velorix AI — Video</title>
+  <style>
+    :root{
+      --bg:#07060c;--card:rgba(24,20,40,.92);--border:rgba(167,139,250,.22);
+      --p:#7c3aed;--p2:#a78bfa;--p3:#c4b5fd;--t:#f4f0ff;--mut:rgba(244,240,255,.55);
+      --ok:#34d399;--danger:#f87171;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+      background:var(--bg);color:var(--t);min-height:100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.35),transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent 50%);
+    }
+    .top{
+      position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;
+      padding:12px 14px;background:rgba(7,6,12,.88);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .top a.back{
+      width:38px;height:38px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(255,255,255,.05);color:var(--t);font-size:16px;
+      display:flex;align-items:center;justify-content:center;text-decoration:none;
+    }
+    .top h1{flex:1;text-align:center;font-size:16px;font-weight:700;
+      background:linear-gradient(90deg,#fff,var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .pill{
+      font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);color:var(--p2);background:rgba(124,58,237,.15)
+    }
+    .wrap{padding:14px 14px 140px;max-width:480px;margin:0 auto}
+    .hint{font-size:12px;color:var(--mut);line-height:1.5;margin-bottom:12px}
+    .stage{
+      position:relative;width:100%;aspect-ratio:9/16;max-height:58vh;
+      margin:0 auto 14px;border-radius:20px;overflow:hidden;
+      border:1px solid var(--border);background:#0a0814;
+      box-shadow:0 20px 50px rgba(0,0,0,.45);
+    }
+    .stage canvas{width:100%;height:100%;display:block}
+    .stage .overlay{
+      position:absolute;left:0;right:0;bottom:0;padding:12px 14px;
+      background:linear-gradient(transparent,rgba(0,0,0,.75));
+      font-size:12px;line-height:1.4;color:#efe8ff;pointer-events:none;
+    }
+    .prog-box{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;
+      padding:12px 14px;margin-bottom:12px;
+    }
+    .prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:8px}
+    .prog-label b{color:var(--p3)}
+    .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+    .bar i{display:block;height:100%;width:0%;border-radius:999px;
+      background:linear-gradient(90deg,var(--p),#ec4899);transition:width .25s}
+    .row{display:flex;gap:10px;margin-top:10px}
+    .btn{
+      flex:1;min-height:48px;border:none;border-radius:14px;font-weight:700;font-size:14px;
+      cursor:pointer;padding:12px;
+    }
+    .btn-main{
+      background:linear-gradient(135deg,var(--p),#9333ea);color:#fff;
+      box-shadow:0 10px 28px rgba(124,58,237,.35);
+    }
+    .btn-main:disabled,.btn-ok:disabled,.btn-next:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+    .btn-ghost{background:rgba(255,255,255,.06);color:var(--t);border:1px solid var(--border)}
+    .btn-ok{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+    .btn-next{
+      width:100%;margin-top:12px;min-height:52px;border:none;border-radius:16px;
+      font-weight:800;font-size:15px;cursor:pointer;color:#fff;
+      background:linear-gradient(135deg,#4f46e5,#7c3aed 55%,#db2777);
+      box-shadow:0 12px 32px rgba(124,58,237,.4);
+    }
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .meta .c{
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      border-radius:12px;padding:10px;font-size:11px;color:var(--mut);
+    }
+    .meta .c b{display:block;color:var(--p3);font-size:13px;margin-bottom:2px}
+    .toast{
+      position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);
+      background:rgba(20,16,36,.95);border:1px solid var(--border);color:#fff;
+      padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;
+      transition:.25s;z-index:100;max-width:90%;text-align:center;
+    }
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+    .err{color:var(--danger);font-size:12px;margin-top:8px;min-height:16px}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="create.html" title="Back">←</a>
+    <h1>Velorix · Video</h1>
+    <span class="pill" id="durPill">30–40s</span>
+  </div>
+  <div class="wrap">
+    <p class="hint">
+      Smart cutout (studio only) · full-scene Ken Burns · bottom-aligned · breathe + parallax · cross-fade।
+      Voice अगली लेयर।
+    </p>
+    <div class="stage">
+      <canvas id="cv" width="720" height="1280"></canvas>
+      <div class="overlay" id="cap">Scenes तैयार दबाओ</div>
+    </div>
+    <div class="prog-box">
+      <div class="prog-label"><span id="progText">Ready</span><b id="progPct">0%</b></div>
+      <div class="bar"><i id="progBar"></i></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="btnPrep" type="button">Scenes तैयार</button>
+        <button class="btn btn-main" id="btnPlay" type="button" disabled>▶ Preview</button>
+      </div>
+      <div class="row">
+        <button class="btn btn-ok" id="btnRec" type="button" disabled style="width:100%">↓ MP4 Download</button>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+    <div class="meta">
+      <div class="c"><b id="mScenes">0</b>Scenes</div>
+      <div class="c"><b id="mChars">0</b>Characters</div>
+      <div class="c"><b id="mDur">~30s</b>Target</div>
+      <div class="c"><b id="mStyle">MIX</b>Style</div>
+    </div>
+    <button class="btn-next" id="btnNext" type="button" disabled>Continue → अगला</button>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var SCENE_SEC = 6;
+  var FADE = 0.45;
+  var cv = document.getElementById("cv");
+  var ctx = cv.getContext("2d", { alpha: false, desynchronized: true });
+  var state = {
+    scenes: [], chars: [], bgs: [], frames: [],
+    playing: false, recording: false, raf: 0, t0: 0, ready: false,
+    particles: []
+  };
+  var cutCache = {};
+
+  function toast(m) {
+    var el = document.getElementById("toast");
+    el.textContent = m;
+    el.classList.add("on");
+    setTimeout(function () { el.classList.remove("on"); }, 2400);
+  }
+  function setProg(pct, msg) {
+    pct = Math.max(0, Math.min(100, pct | 0));
+    document.getElementById("progBar").style.width = pct + "%";
+    document.getElementById("progPct").textContent = pct + "%";
+    if (msg) document.getElementById("progText").textContent = msg;
+  }
+  function err(m) { document.getElementById("err").textContent = m || ""; }
+  function loadJSON(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key) || "null");
+      return v == null ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+
+  /* ——— Owner Gallery walk ——— */
+  function ownerFlat(kind) {
+    var data = loadJSON("VX_OWNER_GALLERY", null);
+    if (!data || typeof data !== "object") return [];
+    var seen = {}, out = [];
+    function addOne(it) {
+      if (!it) return;
+      var url = it.url || it.src || it.image || "";
+      if (!url || seen[url]) return;
+      seen[url] = 1;
+      out.push({ name: it.name || it.id || "item", url: url, locked: true });
+    }
+    function walk(node, depth) {
+      if (!node || depth > 7) return;
+      if (Array.isArray(node)) { node.forEach(addOne); return; }
+      if (typeof node === "object") Object.keys(node).forEach(function (k) { walk(node[k], depth + 1); });
+    }
+    var root = kind === "char"
+      ? (data.chars || data.char || data.characters)
+      : (data.bgs || data.bg || data.backgrounds);
+    if (root) walk(root, 0);
+    if (!out.length) walk(data, 0);
+    return out;
+  }
+
+  function withUrl(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.filter(function (x) { return x && (x.url || x.src || x.image); })
+      .map(function (x) {
+        return { name: x.name || x.id || "item", url: x.url || x.src || x.image, locked: x.locked !== false };
+      });
+  }
+
+  function loadImages() {
+    var lockedChars = withUrl(loadJSON("VX_CHARS", []));
+    var lockedBgs = withUrl(loadJSON("VX_BGS", []));
+    var onlyC = lockedChars.filter(function (c) { return c.locked; });
+    var onlyB = lockedBgs.filter(function (b) { return b.locked; });
+    state.chars = onlyC.length ? onlyC : lockedChars;
+    state.bgs = onlyB.length ? onlyB : lockedBgs;
+
+    if (!state.chars.length) {
+      state.chars = ownerFlat("char").slice(0, 12);
+      if (state.chars.length) try { localStorage.setItem("VX_CHARS", JSON.stringify(state.chars)); } catch (e) {}
+    }
+    if (!state.bgs.length) {
+      state.bgs = ownerFlat("bg").slice(0, 12);
+      if (state.bgs.length) try { localStorage.setItem("VX_BGS", JSON.stringify(state.bgs)); } catch (e) {}
+    }
+
+    /* अगर सिर्फ chars हैं — कुछ full-scene photos को BG मानो (name/url heuristic नहीं, index split) */
+    if (!state.bgs.length && state.chars.length >= 2) {
+      var half = Math.ceil(state.chars.length / 2);
+      state.bgs = state.chars.slice(half);
+      state.chars = state.chars.slice(0, half);
+    }
+
+    var pack = loadJSON("VX_SCENE_PACK", []);
+    var scenes = loadJSON("VX_SCENES", []);
+    var story = localStorage.getItem("VX_STORY") || "";
+    var list = [];
+    if (pack && pack.length) {
+      pack.forEach(function (p, i) {
+        list.push({ i: i + 1, text: String(p.text || p.scene || p || "").trim(), sec: SCENE_SEC });
+      });
+    } else if (scenes && scenes.length) {
+      scenes.forEach(function (s, i) {
+        list.push({ i: i + 1, text: String(s).trim(), sec: SCENE_SEC });
+      });
+    } else if (story) {
+      var parts = story.split(/(?<=[।.!?])\s+/).filter(function (x) { return x.trim().length > 8; });
+      if (parts.length < 2) parts = [story.slice(0, 180), story.slice(180, 360) || story.slice(0, 120)];
+      parts.slice(0, 6).forEach(function (t, i) {
+        list.push({ i: i + 1, text: t.trim(), sec: SCENE_SEC });
+      });
+    }
+    if (!list.length) {
+      list = [
+        { i: 1, text: "शुरुआत", sec: SCENE_SEC },
+        { i: 2, text: "मोड़", sec: SCENE_SEC },
+        { i: 3, text: "अंत", sec: SCENE_SEC }
+      ];
+    }
+    if (list.length > 6) list = list.slice(0, 6);
+    while (list.length * SCENE_SEC > 40 && list.length > 4) list.pop();
+    state.scenes = list;
+
+    var style = localStorage.getItem("VX_STYLE") || "mix";
+    var nC = state.chars.length;
+    document.getElementById("mScenes").textContent = String(list.length);
+    document.getElementById("mChars").textContent = String(nC);
+    document.getElementById("mDur").textContent = "~" + (list.length * SCENE_SEC) + "s";
+    document.getElementById("mStyle").textContent = String(style).toUpperCase();
+    document.getElementById("durPill").textContent = (list.length * SCENE_SEC) + "s";
+    if (!nC) err("Characters 0 · Create पर photo Lock करो / Owner Gallery भरें");
+    else err("");
+  }
+
+  function loadImg(url) {
+    return new Promise(function (resolve) {
+      if (!url) { resolve(null); return; }
+      var im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = function () { resolve(im); };
+      im.onerror = function () {
+        var im2 = new Image();
+        im2.onload = function () { resolve(im2); };
+        im2.onerror = function () { resolve(null); };
+        im2.src = url;
+      };
+      im.src = url;
+    });
+  }
+
+  function pickChar(si) {
+    if (!state.chars.length) return null;
+    return state.chars[si % state.chars.length];
+  }
+  function pickBg(si) {
+    if (!state.bgs.length) return null;
+    return state.bgs[si % state.bgs.length];
+  }
+
+  /* Strong studio / solid-gray detector — only pure light flat edges */
+  function isStudioPhoto(img) {
+    try {
+      var s = 64;
+      var c = document.createElement("canvas");
+      c.width = s; c.height = s;
+      var x = c.getContext("2d");
+      x.drawImage(img, 0, 0, s, s);
+      var d = x.getImageData(0, 0, s, s).data;
+      var light = 0, total = 0;
+      function px(px, py) {
+        var i = (py * s + px) * 4;
+        var r = d[i], g = d[i + 1], b = d[i + 2];
+        var avg = (r + g + b) / 3;
+        var spread = Math.max(r, g, b) - Math.min(r, g, b);
+        total++;
+        if (avg > 185 && spread < 32) light++;
+      }
+      for (var i = 0; i < s; i++) {
+        px(i, 0); px(i, 1); px(i, 2);
+        px(i, s - 1); px(i, s - 2); px(i, s - 3);
+        px(0, i); px(1, i); px(s - 1, i); px(s - 2, i);
+      }
+      for (var y = 0; y < 8; y++) for (var x0 = 0; x0 < 8; x0++) {
+        px(x0, y); px(s - 1 - x0, y); px(x0, s - 1 - y); px(s - 1 - x0, s - 1 - y);
+      }
+      return total > 0 && (light / total) > 0.45;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /* Flood-fill from edges — strict so clothes (even light kurta) safe.
+     Quality reject: if center becomes too transparent → return original (full-scene mode). */
+  function cutStudio(img) {
+    var key = (img.src || "") + "|ff3";
+    if (cutCache[key]) return cutCache[key];
+    try {
+      var maxW = 720;
+      var iw = img.naturalWidth || img.width;
+      var ih = img.naturalHeight || img.height;
+      var scale = Math.min(1, maxW / iw);
+      var w = Math.round(iw * scale);
+      var h = Math.round(ih * scale);
+      var c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      var x = c.getContext("2d");
+      x.drawImage(img, 0, 0, w, h);
+      var id = x.getImageData(0, 0, w, h);
+      var d = id.data;
+      var n = w * h;
+      var seen = new Uint8Array(n);
+      var stack = [];
+
+      function idx(px, py) { return py * w + px; }
+      function similar(i, jr, jg, jb) {
+        var r = d[i], g = d[i + 1], b = d[i + 2];
+        var dr = r - jr, dg = g - jg, db = b - jb;
+        /* tighter: only near-identical studio gray */
+        return (dr * dr + dg * dg + db * db) < 1400;
+      }
+      function pushSeed(px, py) {
+        if (px < 0 || py < 0 || px >= w || py >= h) return;
+        var p = idx(px, py);
+        if (seen[p]) return;
+        seen[p] = 1;
+        stack.push(p);
+      }
+
+      /* seeds: full border + a few inward pixels on edges */
+      for (var xx = 0; xx < w; xx++) {
+        pushSeed(xx, 0); pushSeed(xx, 1);
+        pushSeed(xx, h - 1); pushSeed(xx, h - 2);
+      }
+      for (var yy = 0; yy < h; yy++) {
+        pushSeed(0, yy); pushSeed(1, yy);
+        pushSeed(w - 1, yy); pushSeed(w - 2, yy);
+      }
+
+      while (stack.length) {
+        var p = stack.pop();
+        var i4 = p * 4;
+        var jr = d[i4], jg = d[i4 + 1], jb = d[i4 + 2];
+        var avg = (jr + jg + jb) / 3;
+        var spread = Math.max(jr, jg, jb) - Math.min(jr, jg, jb);
+        /* only very light + flat pixels (true studio) */
+        if (avg < 170 || spread > 42) continue;
+        d[i4 + 3] = 0;
+        var px = p % w, py = (p / w) | 0;
+        var nbs = [idx(px - 1, py), idx(px + 1, py), idx(px, py - 1), idx(px, py + 1)];
+        for (var k = 0; k < 4; k++) {
+          var q = nbs[k];
+          if (q < 0 || q >= n || seen[q]) continue;
+          if (similar(q * 4, jr, jg, jb)) {
+            seen[q] = 1;
+            stack.push(q);
+          }
+        }
+      }
+
+      /* quality gate: center region must stay mostly opaque */
+      var cx0 = (w * 0.28) | 0, cx1 = (w * 0.72) | 0;
+      var cy0 = (h * 0.18) | 0, cy1 = (h * 0.82) | 0;
+      var opaque = 0, samples = 0;
+      for (var yy = cy0; yy < cy1; yy += 3) {
+        for (var xx = cx0; xx < cx1; xx += 3) {
+          samples++;
+          if (d[(yy * w + xx) * 4 + 3] > 120) opaque++;
+        }
+      }
+      if (samples > 20 && (opaque / samples) < 0.58) {
+        /* cut ate clothes / subject → reject, use original full image */
+        cutCache[key] = img;
+        return img;
+      }
+
+      /* soft feather only on cut boundary */
+      var d2 = new Uint8ClampedArray(d);
+      for (var p = 0; p < n; p++) {
+        if (d[p * 4 + 3] === 0) continue;
+        var px = p % w, py = (p / w) | 0;
+        var near = 0;
+        for (var dy = -2; dy <= 2; dy++) {
+          for (var dx = -2; dx <= 2; dx++) {
+            if (dx * dx + dy * dy > 5) continue;
+            var qx = px + dx, qy = py + dy;
+            if (qx < 0 || qy < 0 || qx >= w || qy >= h) continue;
+            if (d[idx(qx, qy) * 4 + 3] === 0) near++;
+          }
+        }
+        if (near >= 2) d2[p * 4 + 3] = Math.min(d[p * 4 + 3], 110 + (near > 4 ? 0 : 40));
+      }
+      for (var i = 0; i < d.length; i++) d[i] = d2[i];
+
+      x.putImageData(id, 0, 0);
+      cutCache[key] = c;
+      return c;
+    } catch (e) {
+      return img;
+    }
+  }
+
+  function coverDraw(ctx2, img, dx, dy, dw, dh, zoom, panX, panY) {
+    if (!img) return;
+    var iw = img.naturalWidth || img.width;
+    var ih = img.naturalHeight || img.height;
+    if (!iw || !ih) return;
+    var scale = Math.max(dw / iw, dh / ih) * (zoom || 1);
+    var sw = dw / scale, sh = dh / scale;
+    var sx = (iw - sw) / 2 + (panX || 0) * iw * 0.06;
+    var sy = (ih - sh) / 2 + (panY || 0) * ih * 0.05;
+    sx = Math.max(0, Math.min(Math.max(0, iw - sw), sx));
+    sy = Math.max(0, Math.min(Math.max(0, ih - sh), sy));
+    ctx2.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  function seedParticles() {
+    state.particles = [];
+    for (var i = 0; i < 28; i++) {
+      state.particles.push({
+        x: Math.random(),
+        y: Math.random(),
+        r: 0.6 + Math.random() * 1.8,
+        sp: 0.03 + Math.random() * 0.08,
+        a: 0.15 + Math.random() * 0.35
+      });
+    }
+  }
+
+  function drawParticles(ctx2, w, h, t) {
+    ctx2.save();
+    state.particles.forEach(function (p) {
+      var yy = (p.y + t * p.sp * 0.04) % 1;
+      var xx = p.x + Math.sin(t * 0.7 + p.y * 8) * 0.02;
+      ctx2.fillStyle = "rgba(255,245,220," + p.a + ")";
+      ctx2.beginPath();
+      ctx2.arc(xx * w, yy * h, p.r, 0, Math.PI * 2);
+      ctx2.fill();
+    });
+    ctx2.restore();
+  }
+
+  function drawOneScene(frame, localT, dur, alpha) {
+    var w = cv.width, h = cv.height;
+    var p = dur ? Math.min(1, Math.max(0, localT / dur)) : 0;
+    var breathe = Math.sin(localT * 1.9) * 9;
+    var pulse = 1 + Math.sin(localT * 1.35) * 0.018;
+    var tilt = Math.sin(localT * 0.85) * 0.018;
+    var sway = Math.sin(localT * 0.55) * 11;
+
+    ctx.save();
+    if (alpha < 1) ctx.globalAlpha = alpha;
+
+    /* FULL-SCENE mode: character photo already has environment → pure Ken Burns, no cutout */
+    if (frame.isFull && frame.charImg) {
+      var fZoom = 1.07 + p * 0.14;
+      var fPanX = -0.42 + p * 0.84 + Math.sin(localT * 0.3) * 0.04;
+      var fPanY = (frame.si % 2 === 0 ? -0.22 : 0.18) * p + Math.sin(localT * 0.45) * 0.03;
+      coverDraw(ctx, frame.charImg, 0, 0, w, h, fZoom, fPanX, fPanY);
+    } else {
+      /* CUTOUT mode: separate BG + character */
+      var bgZoom = 1.05 + p * 0.09;
+      var bgPanX = -0.38 + p * 0.76;
+      var bgPanY = (frame.si % 2 === 0 ? -0.2 : 0.2) * p;
+
+      if (frame.bgImg) {
+        coverDraw(ctx, frame.bgImg, 0, 0, w, h, bgZoom, bgPanX, bgPanY);
+      } else {
+        var g = ctx.createLinearGradient(0, 0, w, h);
+        g.addColorStop(0, "#1a1240");
+        g.addColorStop(0.5, "#120c28");
+        g.addColorStop(1, "#0a0814");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      if (frame.charCut || frame.charImg) {
+        var img = frame.charCut || frame.charImg;
+        /* Bottom-aligned mid/full body: feet near canvas bottom (professional look) */
+        var chh = h * 0.84 * pulse;
+        var cw = w * 0.94 * pulse;
+        var cx = (w - cw) / 2 + sway;
+        var cy = h - chh - h * 0.035 + breathe; /* ~3.5% margin from bottom */
+
+        ctx.save();
+        ctx.translate(w / 2, cy + chh * 0.58);
+        ctx.rotate(tilt);
+        ctx.translate(-w / 2, -(cy + chh * 0.58));
+
+        /* deeper ground contact shadow */
+        var sx0 = w / 2 + sway * 0.3;
+        var sy0 = cy + chh * 0.96;
+        var grd = ctx.createRadialGradient(sx0, sy0, 1, sx0, sy0, cw * 0.32);
+        grd.addColorStop(0, "rgba(0,0,0,0.55)");
+        grd.addColorStop(0.4, "rgba(0,0,0,0.28)");
+        grd.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.ellipse(sx0, sy0, cw * 0.29, 22, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        coverDraw(ctx, img, cx, cy, cw, chh, 1.03, 0, 0.02);
+        ctx.restore();
+      }
+    }
+
+    drawParticles(ctx, w, h, localT + frame.si);
+
+    /* vignette */
+    var vg = ctx.createRadialGradient(w / 2, h * 0.4, h * 0.1, w / 2, h * 0.48, h * 0.82);
+    vg.addColorStop(0, "rgba(0,0,0,0)");
+    vg.addColorStop(1, "rgba(0,0,0,0.52)");
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.restore();
+  }
+
+  function drawSceneFrame(frame, localT, dur) {
+    ctx.fillStyle = "#0a0814";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    drawOneScene(frame, localT, dur, 1);
+  }
+
+  /* Cross-fade aware draw for timeline */
+  function drawAtTime(globalT) {
+    var frames = state.frames;
+    if (!frames.length) return null;
+    var acc = 0;
+    var idx = 0;
+    for (var i = 0; i < frames.length; i++) {
+      var sec = frames[i].sec || SCENE_SEC;
+      if (globalT < acc + sec) { idx = i; break; }
+      acc += sec;
+      idx = i;
+    }
+    var cur = frames[idx];
+    var local = globalT - acc;
+    if (local < 0) local = 0;
+    var dur = cur.sec || SCENE_SEC;
+
+    ctx.fillStyle = "#0a0814";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    /* fade in from previous */
+    if (local < FADE && idx > 0) {
+      var prev = frames[idx - 1];
+      var a = local / FADE;
+      drawOneScene(prev, (prev.sec || SCENE_SEC) - FADE + local, prev.sec || SCENE_SEC, 1 - a);
+      drawOneScene(cur, local, dur, a);
+    } else if (local > dur - FADE && idx < frames.length - 1) {
+      var next = frames[idx + 1];
+      var a2 = (local - (dur - FADE)) / FADE;
+      drawOneScene(cur, local, dur, 1 - a2);
+      drawOneScene(next, a2 * FADE, next.sec || SCENE_SEC, a2);
+    } else {
+      drawOneScene(cur, local, dur, 1);
+    }
+    return { frame: cur, local: local, dur: dur, idx: idx };
+  }
+
+  async function prepare() {
+    err("");
+    loadImages();
+    if (!state.scenes.length) {
+      err("Story / scenes नहीं · पहले Create पूरा करो");
+      return;
+    }
+    document.getElementById("btnPrep").disabled = true;
+    document.getElementById("btnPlay").disabled = true;
+    document.getElementById("btnRec").disabled = true;
+    document.getElementById("btnNext").disabled = true;
+    setProg(2, "Images load…");
+    state.frames = [];
+    seedParticles();
+    var total = state.scenes.length;
+    for (var i = 0; i < total; i++) {
+      var sc = state.scenes[i];
+      var ch = pickChar(i);
+      var bg = pickBg(i);
+      setProg(5 + Math.round((i / total) * 75), "Scene " + (i + 1) + "/" + total);
+      var charImg = ch ? await loadImg(ch.url) : null;
+      var bgImg = bg ? await loadImg(bg.url) : null;
+      var studio = charImg ? isStudioPhoto(charImg) : false;
+      var charCut = null;
+      var isFull = true; /* default: treat as full-scene if unsure */
+
+      if (charImg && studio) {
+        charCut = cutStudio(charImg);
+        /* if quality gate rejected the cut, charCut === original → keep full */
+        isFull = (charCut === charImg);
+      } else if (charImg) {
+        /* not studio → full environmental photo, use as complete scene */
+        isFull = true;
+        charCut = null;
+      }
+
+      /* BG also studio? try alternate pure env */
+      if (!isFull && bgImg && isStudioPhoto(bgImg) && state.bgs.length > 1) {
+        var alt = pickBg(i + 1);
+        if (alt && alt.url !== (bg && bg.url)) {
+          var altImg = await loadImg(alt.url);
+          if (altImg && !isStudioPhoto(altImg)) bgImg = altImg;
+        }
+      }
+
+      state.frames.push({
+        si: sc.i,
+        text: sc.text,
+        sec: sc.sec || SCENE_SEC,
+        charImg: charImg,
+        charCut: isFull ? null : charCut,
+        bgImg: isFull ? null : bgImg,
+        isFull: isFull,
+        charStudio: studio && !isFull
+      });
+      document.getElementById("cap").textContent = "Scene " + (i + 1) + "/" + total;
+      drawSceneFrame(state.frames[i], 0.5, state.frames[i].sec);
+    }
+    state.ready = true;
+    setProg(100, "Ready · " + total + " scenes");
+    document.getElementById("btnPrep").disabled = false;
+    document.getElementById("btnPlay").disabled = false;
+    document.getElementById("btnRec").disabled = false;
+    document.getElementById("btnNext").disabled = false;
+    toast("Scenes तैयार · Preview / MP4 / Continue");
+  }
+
+  function totalDur() {
+    var t = 0;
+    state.frames.forEach(function (f) { t += f.sec || SCENE_SEC; });
+    return t || 1;
+  }
+
+  function playTick(now) {
+    if (!state.playing) return;
+    if (!state.t0) state.t0 = now;
+    var globalT = (now - state.t0) / 1000;
+    var total = totalDur();
+    if (globalT >= total) {
+      state.playing = false;
+      setProg(100, "Preview खत्म");
+      document.getElementById("cap").textContent = "Preview खत्म";
+      return;
+    }
+    var at = drawAtTime(globalT);
+    if (at) {
+      document.getElementById("cap").textContent = "Scene " + at.frame.si;
+      setProg(Math.round((globalT / total) * 100), "Scene " + at.frame.si + " · " + globalT.toFixed(1) + "s");
+    }
+    state.raf = requestAnimationFrame(playTick);
+  }
+
+  document.getElementById("btnPrep").onclick = function () { prepare(); };
+  document.getElementById("btnPlay").onclick = function () {
+    if (!state.frames.length) { toast("पहले Scenes तैयार"); return; }
+    if (state.playing) {
+      state.playing = false;
+      cancelAnimationFrame(state.raf);
+      return;
+    }
+    state.playing = true;
+    state.t0 = 0;
+    state.raf = requestAnimationFrame(playTick);
+  };
+
+  document.getElementById("btnRec").onclick = async function () {
+    if (!state.frames.length) { toast("पहले Scenes तैयार"); return; }
+    if (state.recording) return;
+    state.recording = true;
+    state.playing = false;
+    cancelAnimationFrame(state.raf);
+    document.getElementById("btnRec").disabled = true;
+    setProg(0, "MP4 record…");
+
+    var stream = cv.captureStream(30);
+    var chunks = [];
+    var mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+      ? "video/webm;codecs=vp9"
+      : (MediaRecorder.isTypeSupported("video/webm") ? "video/webm" : "");
+    var rec;
+    try {
+      rec = mime ? new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 })
+                 : new MediaRecorder(stream);
+    } catch (e) {
+      state.recording = false;
+      document.getElementById("btnRec").disabled = false;
+      err("Record fail: " + e.message);
+      return;
+    }
+    rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = function () {
+      state.recording = false;
+      document.getElementById("btnRec").disabled = false;
+      var blob = new Blob(chunks, { type: rec.mimeType || "video/webm" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "velorix-video-" + Date.now() + ".webm";
+      a.click();
+      setProg(100, "Download ready");
+      toast("Video download · " + Math.round(blob.size / 1024) + " KB");
+    };
+    rec.start(200);
+
+    var total = totalDur();
+    var t0 = performance.now();
+    function step(now) {
+      var globalT = (now - t0) / 1000;
+      if (globalT >= total) {
+        rec.stop();
+        document.getElementById("cap").textContent = "Record खत्म";
+        return;
+      }
+      var at = drawAtTime(globalT);
+      if (at) {
+        document.getElementById("cap").textContent = "Recording · Scene " + at.frame.si;
+        setProg(Math.round((globalT / total) * 100), "MP4 · Scene " + at.frame.si);
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  };
+
+  document.getElementById("btnNext").onclick = function () {
+    if (!state.ready) { toast("पहले Scenes तैयार करो"); return; }
+    try {
+      localStorage.setItem("VX_VIDEO_READY", "1");
+      localStorage.setItem("VX_VIDEO_SCENES", String(state.frames.length));
+    } catch (e) {}
+    window.location.href = "home.html";
+  };
+
+  loadImages();
+  seedParticles();
+  document.getElementById("cap").textContent = "Scenes तैयार दबाओ";
+})();
+</script>
+</body>
+</html>
