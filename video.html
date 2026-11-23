@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Velorix AI — Video</title>
+  <style>
+    :root{
+      --bg:#07060c;--card:rgba(24,20,40,.92);--border:rgba(167,139,250,.22);
+      --p:#7c3aed;--p2:#a78bfa;--p3:#c4b5fd;--t:#f4f0ff;--mut:rgba(244,240,255,.55);
+      --ok:#34d399;--danger:#f87171;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+      background:var(--bg);color:var(--t);min-height:100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.35),transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent 50%);
+    }
+    .top{
+      position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;
+      padding:12px 14px;background:rgba(7,6,12,.88);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .top button,.top a.back{
+      width:38px;height:38px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(255,255,255,.05);color:var(--t);font-size:16px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;text-decoration:none;
+    }
+    .top h1{flex:1;text-align:center;font-size:16px;font-weight:700;
+      background:linear-gradient(90deg,#fff,var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .pill{
+      font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);color:var(--p2);background:rgba(124,58,237,.15)
+    }
+    .wrap{padding:14px 14px 120px;max-width:480px;margin:0 auto}
+    .hint{font-size:12px;color:var(--mut);line-height:1.5;margin-bottom:12px}
+    .stage{
+      position:relative;width:100%;aspect-ratio:9/16;max-height:62vh;
+      margin:0 auto 14px;border-radius:20px;overflow:hidden;
+      border:1px solid var(--border);background:#0a0814;
+      box-shadow:0 20px 50px rgba(0,0,0,.45);
+    }
+    .stage canvas{width:100%;height:100%;display:block;object-fit:contain}
+    .stage .overlay{
+      position:absolute;left:0;right:0;bottom:0;padding:12px 14px;
+      background:linear-gradient(transparent,rgba(0,0,0,.75));
+      font-size:12px;line-height:1.4;color:#efe8ff;pointer-events:none;
+    }
+    .prog-box{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;
+      padding:12px 14px;margin-bottom:12px;
+    }
+    .prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:8px}
+    .prog-label b{color:var(--p3)}
+    .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+    .bar i{display:block;height:100%;width:0%;border-radius:999px;
+      background:linear-gradient(90deg,var(--p),#ec4899);transition:width .25s}
+    .row{display:flex;gap:10px;margin-top:10px}
+    .btn{
+      flex:1;min-height:48px;border:none;border-radius:14px;font-weight:700;font-size:14px;
+      cursor:pointer;padding:12px;
+    }
+    .btn-main{
+      background:linear-gradient(135deg,var(--p),#9333ea);color:#fff;
+      box-shadow:0 10px 28px rgba(124,58,237,.35);
+    }
+    .btn-main:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+    .btn-ghost{
+      background:rgba(255,255,255,.06);color:var(--t);border:1px solid var(--border);
+    }
+    .btn-ok{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+    .meta{
+      display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;
+    }
+    .meta .c{
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      border-radius:12px;padding:10px;font-size:11px;color:var(--mut);
+    }
+    .meta .c b{display:block;color:var(--p3);font-size:13px;margin-bottom:2px}
+    .toast{
+      position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);
+      background:rgba(20,16,36,.95);border:1px solid var(--border);color:#fff;
+      padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;
+      transition:.25s;z-index:100;max-width:90%;text-align:center;
+    }
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+    .err{color:var(--danger);font-size:12px;margin-top:8px;min-height:16px}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="create.html" title="Back">←</a>
+    <h1>Velorix · Video</h1>
+    <span class="pill" id="durPill">30–40s</span>
+  </div>
+  <div class="wrap">
+    <p class="hint">
+      Locked characters + backgrounds · scene motion (Ken Burns) · browser पर MP4।
+      Voice / गाना अगली लेयर।
+    </p>
+    <div class="stage">
+      <canvas id="cv" width="720" height="1280"></canvas>
+      <div class="overlay" id="cap">तैयार हो रहा…</div>
+    </div>
+    <div class="prog-box">
+      <div class="prog-label"><span id="progText">Idle</span><b id="progPct">0%</b></div>
+      <div class="bar"><i id="progBar"></i></div>
+      <div class="row">
+        <button type="button" class="btn btn-ghost" id="btnPrep">Scenes तैयार</button>
+        <button type="button" class="btn btn-main" id="btnPlay" disabled>▶ Preview</button>
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-ok" id="btnRec" disabled>⬇ MP4 Download</button>
+      </div>
+      <p class="err" id="err"></p>
+    </div>
+    <div class="meta">
+      <div class="c"><b id="mScenes">0</b>Scenes</div>
+      <div class="c"><b id="mChars">0</b>Characters</div>
+      <div class="c"><b id="mDur">~35s</b>Target</div>
+      <div class="c"><b id="mStyle">3D</b>Style</div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var TARGET_SEC = 36;
+  var SCENE_SEC = 6;
+  var FPS = 30;
+
+  var cv = document.getElementById("cv");
+  var ctx = cv.getContext("2d");
+  var state = {
+    scenes: [],
+    chars: [],
+    bgs: [],
+    frames: [],
+    playing: false,
+    recording: false,
+    raf: 0,
+    t0: 0
+  };
+
+  function toast(m) {
+    var el = document.getElementById("toast");
+    el.textContent = m;
+    el.classList.add("on");
+    setTimeout(function () { el.classList.remove("on"); }, 2400);
+  }
+  function setProg(pct, msg) {
+    pct = Math.max(0, Math.min(100, pct | 0));
+    document.getElementById("progBar").style.width = pct + "%";
+    document.getElementById("progPct").textContent = pct + "%";
+    if (msg) document.getElementById("progText").textContent = msg;
+  }
+  function err(m) {
+    document.getElementById("err").textContent = m || "";
+  }
+  function loadJSON(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key) || "null");
+      return v == null ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+  function ownerFlat(kind) {
+    /* Owner Gallery shape:
+       { chars: { "2d": { cat: [ {url,name} ] }, "3d": {...} }, bgs: { ... } } */
+    var data = loadJSON("VX_OWNER_GALLERY", null);
+    if (!data || typeof data !== "object") return [];
+    var seen = {};
+    var out = [];
+    function addOne(it) {
+      if (!it) return;
+      var url = it.url || it.src || it.image || "";
+      if (!url || seen[url]) return;
+      seen[url] = 1;
+      out.push({
+        name: it.name || it.id || it.title || "item",
+        url: url,
+        locked: true
+      });
+    }
+    function walk(node, depth) {
+      if (!node || depth > 6) return;
+      if (Array.isArray(node)) {
+        node.forEach(addOne);
+        return;
+      }
+      if (typeof node === "object") {
+        Object.keys(node).forEach(function (k) { walk(node[k], depth + 1); });
+      }
+    }
+    var root = kind === "char"
+      ? (data.chars || data.char || data.characters || null)
+      : (data.bgs || data.bg || data.backgrounds || null);
+    if (root) walk(root, 0);
+    if (!out.length) walk(data, 0); /* last resort whole tree */
+    return out;
+  }
+
+  function withUrl(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.filter(function (x) {
+      return x && (x.url || x.src || x.image);
+    }).map(function (x) {
+      return {
+        name: x.name || x.id || "item",
+        url: x.url || x.src || x.image,
+        locked: x.locked !== false
+      };
+    });
+  }
+
+  function loadImages() {
+    /* 1) Create flow locks — highest priority */
+    var lockedChars = withUrl(loadJSON("VX_CHARS", []));
+    var lockedBgs = withUrl(loadJSON("VX_BGS", []));
+    /* prefer locked:true if any */
+    var onlyLockedC = lockedChars.filter(function (c) { return c.locked; });
+    var onlyLockedB = lockedBgs.filter(function (b) { return b.locked; });
+    state.chars = onlyLockedC.length ? onlyLockedC : lockedChars;
+    state.bgs = onlyLockedB.length ? onlyLockedB : lockedBgs;
+
+    /* 2) अगर URL नहीं → Owner Gallery (वही photos जो तुमने डालीं) */
+    if (!state.chars.length) {
+      state.chars = ownerFlat("char").slice(0, 10);
+      if (state.chars.length) {
+        try { localStorage.setItem("VX_CHARS", JSON.stringify(state.chars)); } catch (e) {}
+      }
+    }
+    if (!state.bgs.length) {
+      state.bgs = ownerFlat("bg").slice(0, 10);
+      if (state.bgs.length) {
+        try { localStorage.setItem("VX_BGS", JSON.stringify(state.bgs)); } catch (e) {}
+      }
+    }
+
+    var pack = loadJSON("VX_SCENE_PACK", []);
+    var scenes = loadJSON("VX_SCENES", []);
+    var story = localStorage.getItem("VX_STORY") || "";
+    var list = [];
+    if (pack && pack.length) {
+      pack.forEach(function (p, i) {
+        list.push({
+          i: i + 1,
+          text: String(p.text || p.scene || p || "").trim(),
+          sec: SCENE_SEC
+        });
+      });
+    } else if (scenes && scenes.length) {
+      scenes.forEach(function (s, i) {
+        list.push({ i: i + 1, text: String(s).trim(), sec: SCENE_SEC });
+      });
+    } else if (story) {
+      var parts = story.split(/(?<=[।.!?])\s+/).filter(function (x) { return x.trim().length > 8; });
+      if (parts.length < 2) parts = [story.slice(0, 180), story.slice(180, 360) || story.slice(0, 120)];
+      parts.slice(0, 6).forEach(function (t, i) {
+        list.push({ i: i + 1, text: t.trim(), sec: SCENE_SEC });
+      });
+    }
+    if (!list.length) {
+      list = [
+        { i: 1, text: "शुरुआत · मुख्य पात्र", sec: SCENE_SEC },
+        { i: 2, text: "बीच का मोड़", sec: SCENE_SEC },
+        { i: 3, text: "अंत · भाव", sec: SCENE_SEC }
+      ];
+    }
+    if (list.length > 6) list = list.slice(0, 6);
+    while (list.length * SCENE_SEC > 40 && list.length > 4) list.pop();
+    state.scenes = list;
+
+    var style = localStorage.getItem("VX_STYLE") || "3d";
+    var charCount = state.chars.filter(function (c) { return c && c.url; }).length;
+    document.getElementById("mScenes").textContent = String(list.length);
+    document.getElementById("mChars").textContent = String(charCount);
+    document.getElementById("mDur").textContent = "~" + (list.length * SCENE_SEC) + "s";
+    document.getElementById("mStyle").textContent = String(style).toUpperCase();
+    document.getElementById("durPill").textContent = (list.length * SCENE_SEC) + "s";
+    if (!charCount) {
+      var gal = loadJSON("VX_OWNER_GALLERY", null);
+      var hasGal = !!(gal && typeof gal === "object");
+      err(
+        "Characters 0 · " +
+        (hasGal
+          ? "Gallery मिली पर URL नहीं · Owner Gallery में photo खोलो / Create पर Lock दबाओ"
+          : "Owner Gallery खाली · पहले gallery में photos डालो, फिर Create → Lock")
+      );
+    } else {
+      err("");
+    }
+  }
+
+  function loadImg(url) {
+    return new Promise(function (resolve) {
+      if (!url) { resolve(null); return; }
+      var im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = function () { resolve(im); };
+      im.onerror = function () {
+        /* retry without cors flag (may taint) */
+        var im2 = new Image();
+        im2.onload = function () { resolve(im2); };
+        im2.onerror = function () { resolve(null); };
+        im2.src = url;
+      };
+      im.src = url;
+    });
+  }
+
+  function pickChar(si) {
+    var withUrl = state.chars.filter(function (c) { return c && c.url; });
+    if (!withUrl.length) return null;
+    return withUrl[si % withUrl.length];
+  }
+  function pickBg(si) {
+    var withUrl = state.bgs.filter(function (b) { return b && b.url; });
+    if (!withUrl.length) return null;
+    return withUrl[si % withUrl.length];
+  }
+
+  var _imgCache = {};
+
+  function coverDraw(ctx2, img, dx, dy, dw, dh, zoom, panX, panY) {
+    if (!img) return;
+    var iw = img.naturalWidth || img.width;
+    var ih = img.naturalHeight || img.height;
+    if (!iw || !ih) return;
+    var scale = Math.max(dw / iw, dh / ih) * (zoom || 1);
+    var sw = dw / scale, sh = dh / scale;
+    var sx = (iw - sw) / 2 + (panX || 0) * iw * 0.05;
+    var sy = (ih - sh) / 2 + (panY || 0) * ih * 0.04;
+    sx = Math.max(0, Math.min(iw - sw, sx));
+    sy = Math.max(0, Math.min(ih - sh, sy));
+    ctx2.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  /* corners light = studio cutout photo */
+  function isStudioPhoto(img) {
+    try {
+      var c = document.createElement("canvas");
+      var s = 48;
+      c.width = s; c.height = s;
+      var x = c.getContext("2d");
+      x.drawImage(img, 0, 0, s, s);
+      var d = x.getImageData(0, 0, s, s).data;
+      var light = 0, n = 0;
+      function sample(px, py) {
+        var i = (py * s + px) * 4;
+        var r = d[i], g = d[i + 1], b = d[i + 2];
+        n++;
+        if ((r + g + b) / 3 > 200) light++;
+      }
+      for (var i = 0; i < 8; i++) {
+        sample(i, 0); sample(i, 1);
+        sample(s - 1 - i, 0); sample(s - 1 - i, 1);
+        sample(i, s - 1); sample(s - 1 - i, s - 1);
+        sample(0, i); sample(s - 1, i);
+      }
+      return n > 0 && light / n > 0.45;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /* remove near-white studio bg → soft cutout */
+  function cutStudio(img) {
+    var key = img.src || img._vxKey || "";
+    if (_imgCache[key]) return _imgCache[key];
+    try {
+      var w = Math.min(img.naturalWidth || img.width, 720);
+      var h = Math.min(img.naturalHeight || img.height, 1280);
+      var ratio = Math.min(w / (img.naturalWidth || img.width), h / (img.naturalHeight || img.height));
+      w = Math.round((img.naturalWidth || img.width) * ratio);
+      h = Math.round((img.naturalHeight || img.height) * ratio);
+      var c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      var x = c.getContext("2d");
+      x.drawImage(img, 0, 0, w, h);
+      var id = x.getImageData(0, 0, w, h);
+      var d = id.data;
+      for (var i = 0; i < d.length; i += 4) {
+        var r = d[i], g = d[i + 1], b = d[i + 2];
+        var avg = (r + g + b) / 3;
+        var maxc = Math.max(r, g, b);
+        var minc = Math.min(r, g, b);
+        /* flat light gray / white studio */
+        if (avg > 215 && maxc - minc < 28) {
+          d[i + 3] = 0;
+        } else if (avg > 195 && maxc - minc < 22) {
+          d[i + 3] = Math.min(d[i + 3], 90);
+        }
+      }
+      x.putImageData(id, 0, 0);
+      _imgCache[key] = c;
+      return c;
+    } catch (e) {
+      return img;
+    }
+  }
+
+  function drawSceneFrame(frame, localT, dur) {
+    var w = cv.width, h = cv.height;
+    var p = dur ? Math.min(1, Math.max(0, localT / dur)) : 0;
+    var zoom = 1.05 + p * 0.12;
+    var panX = -0.4 + p * 0.85;
+    var panY = (frame.si % 2 === 0 ? -0.22 : 0.22) * p;
+    var breathe = Math.sin(localT * 2.1) * 7;
+    var pulse = 1 + Math.sin(localT * 1.5) * 0.015;
+
+    ctx.fillStyle = "#0a0814";
+    ctx.fillRect(0, 0, w, h);
+
+    var charStudio = frame.charImg ? !!frame.charStudio : false;
+    var charFull = frame.charImg && !charStudio; /* already a full scene still */
+
+    /* Case A: character is full cinematic still → use as main frame */
+    if (charFull) {
+      coverDraw(ctx, frame.charImg, 0, 0, w, h, 1.06 + p * 0.1, panX * 0.6, panY * 0.6);
+    } else if (frame.bgImg) {
+      coverDraw(ctx, frame.bgImg, 0, 0, w, h, zoom, panX, panY);
+    } else if (frame.charImg) {
+      coverDraw(ctx, frame.charImg, 0, 0, w, h, 1.06 + p * 0.1, panX * 0.5, panY * 0.5);
+    } else {
+      var g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, "#1a1040");
+      g.addColorStop(1, "#0d0818");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    /* Case B: studio cutout on top of BG — white box हटाओ */
+    if (frame.charImg && frame.bgImg && charStudio) {
+      var cut = frame.charCut || frame.charImg;
+      var cw = w * 0.92 * pulse;
+      var chh = h * 0.78 * pulse;
+      var cx = (w - cw) / 2;
+      var cy = h * 0.14 + breathe;
+      ctx.save();
+      /* soft ground contact */
+      ctx.fillStyle = "rgba(0,0,0,0.28)";
+      ctx.beginPath();
+      ctx.ellipse(w / 2, cy + chh * 0.93, cw * 0.22, 16, 0, 0, Math.PI * 2);
+      ctx.fill();
+      coverDraw(ctx, cut, cx, cy, cw, chh, 1.02, 0, 0);
+      ctx.restore();
+    }
+
+    /* light vignette */
+    var vg = ctx.createRadialGradient(w / 2, h * 0.45, h * 0.18, w / 2, h * 0.5, h * 0.78);
+    vg.addColorStop(0, "rgba(0,0,0,0)");
+    vg.addColorStop(1, "rgba(0,0,0,0.42)");
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  async function prepare() {
+    err("");
+    loadImages();
+    if (!state.scenes.length) {
+      err("Story / scenes नहीं मिले · पहले Create पूरा करो");
+      return;
+    }
+    document.getElementById("btnPrep").disabled = true;
+    document.getElementById("btnPlay").disabled = true;
+    document.getElementById("btnRec").disabled = true;
+    setProg(2, "Images load…");
+    state.frames = [];
+    var total = state.scenes.length;
+    for (var i = 0; i < total; i++) {
+      var sc = state.scenes[i];
+      var ch = pickChar(i);
+      var bg = pickBg(i);
+      setProg(5 + Math.round((i / total) * 70), "Scene " + (i + 1) + "/" + total);
+      var charImg = ch ? await loadImg(ch.url) : null;
+      var bgImg = bg ? await loadImg(bg.url) : null;
+      var studio = charImg ? isStudioPhoto(charImg) : false;
+      var charCut = null;
+      if (charImg && studio) {
+        if (charImg.src) charImg._vxKey = charImg.src;
+        charCut = cutStudio(charImg);
+      }
+      state.frames.push({
+        si: sc.i,
+        text: sc.text,
+        sec: sc.sec || SCENE_SEC,
+        charImg: charImg,
+        bgImg: bgImg,
+        charStudio: studio,
+        charCut: charCut,
+        charName: ch && ch.name,
+        bgName: bg && bg.name
+      });
+      document.getElementById("cap").textContent = "Scene " + (i + 1) + "/" + total;
+      drawSceneFrame(state.frames[i], 0, state.frames[i].sec);
+    }
+    setProg(100, "Ready · " + total + " scenes");
+    document.getElementById("btnPrep").disabled = false;
+    document.getElementById("btnPlay").disabled = false;
+    document.getElementById("btnRec").disabled = false;
+    toast("Scenes तैयार · Preview या MP4");
+  }
+
+  function totalDuration() {
+    return state.frames.reduce(function (a, f) { return a + (f.sec || SCENE_SEC); }, 0);
+  }
+
+  function frameAt(globalT) {
+    var t = 0;
+    for (var i = 0; i < state.frames.length; i++) {
+      var d = state.frames[i].sec || SCENE_SEC;
+      if (globalT < t + d) {
+        return { frame: state.frames[i], local: globalT - t, dur: d, index: i };
+      }
+      t += d;
+    }
+    var last = state.frames[state.frames.length - 1];
+    return { frame: last, local: last.sec || SCENE_SEC, dur: last.sec || SCENE_SEC, index: state.frames.length - 1 };
+  }
+
+  function tick(now) {
+    if (!state.playing && !state.recording) return;
+    if (!state.t0) state.t0 = now;
+    var globalT = (now - state.t0) / 1000;
+    var total = totalDuration();
+    if (globalT >= total) {
+      if (state.recording) return; /* recorder stops separately */
+      state.playing = false;
+      setProg(100, "Preview खत्म");
+      return;
+    }
+    var at = frameAt(globalT);
+    drawSceneFrame(at.frame, at.local, at.dur);
+    document.getElementById("cap").textContent = "Scene " + at.frame.si;
+    setProg(Math.round((globalT / total) * 100), "Scene " + at.frame.si + " · " + globalT.toFixed(1) + "s");
+    state.raf = requestAnimationFrame(tick);
+  }
+
+  function playPreview() {
+    if (!state.frames.length) { err("पहले Scenes तैयार दबाओ"); return; }
+    cancelAnimationFrame(state.raf);
+    state.playing = true;
+    state.recording = false;
+    state.t0 = 0;
+    setProg(0, "Preview…");
+    state.raf = requestAnimationFrame(tick);
+  }
+
+  function pickMime() {
+    var types = [
+      "video/mp4;codecs=avc1.42E01E",
+      "video/mp4",
+      "video/webm;codecs=vp9",
+      "video/webm;codecs=vp8",
+      "video/webm"
+    ];
+    for (var i = 0; i < types.length; i++) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(types[i])) {
+        return types[i];
+      }
+    }
+    return "";
+  }
+
+  async function recordMp4() {
+    if (!state.frames.length) { err("पहले Scenes तैयार"); return; }
+    if (!window.MediaRecorder) {
+      err("इस browser में MediaRecorder नहीं · Chrome/Firefox try करो");
+      return;
+    }
+    err("");
+    cancelAnimationFrame(state.raf);
+    state.playing = false;
+    state.recording = true;
+    state.t0 = 0;
+
+    var mime = pickMime();
+    var stream = cv.captureStream(FPS);
+    var chunks = [];
+    var rec;
+    try {
+      rec = mime ? new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 })
+                 : new MediaRecorder(stream, { videoBitsPerSecond: 6000000 });
+    } catch (e) {
+      try { rec = new MediaRecorder(stream); }
+      catch (e2) {
+        err("Record start fail: " + e2.message);
+        state.recording = false;
+        return;
+      }
+    }
+
+    document.getElementById("btnRec").disabled = true;
+    document.getElementById("btnPlay").disabled = true;
+    document.getElementById("btnPrep").disabled = true;
+
+    rec.ondataavailable = function (ev) {
+      if (ev.data && ev.data.size) chunks.push(ev.data);
+    };
+
+    var done = new Promise(function (resolve) {
+      rec.onstop = function () { resolve(); };
+      rec.onerror = function () { resolve(); };
+    });
+
+    try {
+      rec.start(1000); /* 1s chunks — progressive */
+    } catch (e) {
+      err("rec.start: " + e.message);
+      state.recording = false;
+      return;
+    }
+
+    var total = totalDuration();
+    var start = performance.now();
+    function recTick(now) {
+      if (!state.recording) return;
+      var globalT = (now - start) / 1000;
+      if (globalT >= total) {
+        state.recording = false;
+        try { if (rec.state !== "inactive") rec.stop(); } catch (e) {}
+        return;
+      }
+      var at = frameAt(globalT);
+      drawSceneFrame(at.frame, at.local, at.dur);
+      document.getElementById("cap").textContent = "Recording · Scene " + at.frame.si;
+      setProg(Math.round((globalT / total) * 100), "MP4 · Scene " + at.frame.si);
+      state.raf = requestAnimationFrame(recTick);
+    }
+    state.raf = requestAnimationFrame(recTick);
+
+    await done;
+    cancelAnimationFrame(state.raf);
+
+    var blobType = (rec.mimeType || mime || "video/webm").split(";")[0];
+    var blob = new Blob(chunks, { type: blobType });
+    var ext = blobType.indexOf("mp4") >= 0 ? "mp4" : "webm";
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "velorix-video-" + Date.now() + "." + ext;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+
+    setProg(100, "Download · " + ext.toUpperCase());
+    toast("वीडियो download · " + ext.toUpperCase() + " (" + Math.round(blob.size / 1024) + " KB)");
+    document.getElementById("btnRec").disabled = false;
+    document.getElementById("btnPlay").disabled = false;
+    document.getElementById("btnPrep").disabled = false;
+    state.recording = false;
+  }
+
+  document.getElementById("btnPrep").onclick = function () { prepare(); };
+  document.getElementById("btnPlay").onclick = function () { playPreview(); };
+  document.getElementById("btnRec").onclick = function () { recordMp4(); };
+
+  /* boot */
+  loadImages();
+  setProg(0, "Scenes तैयार दबाओ");
+  ctx.fillStyle = "#0a0814";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = "#a78bfa";
+  ctx.font = "600 32px sans-serif";
+  ctx.fillText("Velorix Video", 200, 600);
+  ctx.fillStyle = "#888";
+  ctx.font = "24px sans-serif";
+  ctx.fillText("Scenes तैयार → Preview → MP4", 140, 660);
+})();
+</script>
+</body>
+</html>
