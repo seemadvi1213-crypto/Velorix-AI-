@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Velorix AI — Video</title>
+  <style>
+    :root{
+      --bg:#07060c;--card:rgba(24,20,40,.92);--border:rgba(167,139,250,.22);
+      --p:#7c3aed;--p2:#a78bfa;--p3:#c4b5fd;--t:#f4f0ff;--mut:rgba(244,240,255,.55);
+      --ok:#34d399;--danger:#f87171;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+      background:var(--bg);color:var(--t);min-height:100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.35),transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent 50%);
+    }
+    .top{
+      position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;
+      padding:12px 14px;background:rgba(7,6,12,.88);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .top a.back{
+      width:38px;height:38px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(255,255,255,.05);color:var(--t);font-size:16px;
+      display:flex;align-items:center;justify-content:center;text-decoration:none;
+    }
+    .top h1{flex:1;text-align:center;font-size:16px;font-weight:700;
+      background:linear-gradient(90deg,#fff,var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .pill{
+      font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);color:var(--p2);background:rgba(124,58,237,.15)
+    }
+    .wrap{padding:14px 14px 140px;max-width:480px;margin:0 auto}
+    .hint{font-size:12px;color:var(--mut);line-height:1.5;margin-bottom:12px}
+    .stage{
+      position:relative;width:100%;aspect-ratio:9/16;max-height:58vh;
+      margin:0 auto 14px;border-radius:20px;overflow:hidden;
+      border:1px solid var(--border);background:#0a0814;
+      box-shadow:0 20px 50px rgba(0,0,0,.45);
+    }
+    .stage canvas{width:100%;height:100%;display:block}
+    .stage .overlay{
+      position:absolute;left:0;right:0;bottom:0;padding:12px 14px;
+      background:linear-gradient(transparent,rgba(0,0,0,.75));
+      font-size:12px;line-height:1.4;color:#efe8ff;pointer-events:none;
+    }
+    .prog-box{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;
+      padding:12px 14px;margin-bottom:12px;
+    }
+    .prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-bottom:8px}
+    .prog-label b{color:var(--p3)}
+    .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+    .bar i{display:block;height:100%;width:0%;border-radius:999px;
+      background:linear-gradient(90deg,var(--p),#ec4899);transition:width .25s}
+    .row{display:flex;gap:10px;margin-top:10px}
+    .btn{
+      flex:1;min-height:48px;border:none;border-radius:14px;font-weight:700;font-size:14px;
+      cursor:pointer;padding:12px;
+    }
+    .btn-main{
+      background:linear-gradient(135deg,var(--p),#9333ea);color:#fff;
+      box-shadow:0 10px 28px rgba(124,58,237,.35);
+    }
+    .btn-main:disabled,.btn-ok:disabled,.btn-next:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+    .btn-ghost{background:rgba(255,255,255,.06);color:var(--t);border:1px solid var(--border)}
+    .btn-ok{background:linear-gradient(135deg,#059669,#10b981);color:#fff}
+    .btn-next{
+      width:100%;margin-top:12px;min-height:52px;border:none;border-radius:16px;
+      font-weight:800;font-size:15px;cursor:pointer;color:#fff;
+      background:linear-gradient(135deg,#4f46e5,#7c3aed 55%,#db2777);
+      box-shadow:0 12px 32px rgba(124,58,237,.4);
+    }
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .meta .c{
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      border-radius:12px;padding:10px;font-size:11px;color:var(--mut);
+    }
+    .meta .c b{display:block;color:var(--p3);font-size:13px;margin-bottom:2px}
+    .toast{
+      position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);
+      background:rgba(20,16,36,.95);border:1px solid var(--border);color:#fff;
+      padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;
+      transition:.25s;z-index:100;max-width:90%;text-align:center;
+    }
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+    .err{color:var(--danger);font-size:12px;margin-top:8px;min-height:16px}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="create.html" title="Back">←</a>
+    <h1>Velorix · Video</h1>
+    <span class="pill" id="durPill">30–40s</span>
+  </div>
+  <div class="wrap">
+    <div class="hint" id="diag" style="display:none;font-size:11px;word-break:break-word"></div>
+    <div class="stage">
+      <canvas id="cv" width="720" height="1280"></canvas>
+      <div class="overlay" id="cap">Scenes तैयार दबाओ</div>
+    </div>
+    <div class="prog-box">
+      <div class="prog-label"><span id="progText">Ready</span><b id="progPct">0%</b></div>
+      <div class="bar"><i id="progBar"></i></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="btnPrep" type="button">Scenes तैयार</button>
+        <button class="btn btn-main" id="btnPlay" type="button" disabled>▶ Preview</button>
+      </div>
+      <div class="row">
+        <button class="btn btn-ok" id="btnRec" type="button" disabled>↓ Video Download</button>
+        <button class="btn btn-ghost" id="btnSub" type="button" style="flex:0 0 84px">CC ✓</button>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+    <div class="meta">
+      <div class="c"><b id="mScenes">0</b>Scenes</div>
+      <div class="c"><b id="mChars">0</b>Characters</div>
+      <div class="c"><b id="mDur">~30s</b>Target</div>
+      <div class="c"><b id="mStyle">MIX</b>Style</div>
+    </div>
+    <button class="btn-next" id="btnNext" type="button" disabled>Continue → अगला</button>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var SCENE_SEC = 6;
+  var WPS = 2.4;        /* बोलने की रफ़्तार: शब्द प्रति सेकंड */
+  var MAX_SEC = 30;     /* वीडियो 30 सेकंड से ऊपर नहीं */
+  var FADE = 0.7;
+  var cv = document.getElementById("cv");
+  var ctx = cv.getContext("2d", { alpha: false, desynchronized: true });
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  var state = {
+    scenes: [], chars: [], bgs: [], frames: [],
+    subs: true, playing: false, recording: false, raf: 0, t0: 0, ready: false,
+    particles: []
+  };
+  var cutCache = {};
+  var skyCv = null;
+  function idbGet(key) {
+    return new Promise(function (res) {
+      try {
+        var rq = indexedDB.open("velorix", 1);
+        rq.onupgradeneeded = function () { rq.result.createObjectStore("kv"); };
+        rq.onsuccess = function () {
+          try {
+            var g = rq.result.transaction("kv", "readonly").objectStore("kv").get(key);
+            g.onsuccess = function () { res(g.result || null); };
+            g.onerror = function () { res(null); };
+          } catch (e) { res(null); }
+        };
+        rq.onerror = function () { res(null); };
+      } catch (e) { res(null); }
+    });
+  }
+  function setCap(t) {
+    var el = document.getElementById("cap");
+    el.textContent = t || "";
+    el.style.display = t ? "block" : "none";
+  }
+
+  function toast(m) {
+    var el = document.getElementById("toast");
+    el.textContent = m;
+    el.classList.add("on");
+    setTimeout(function () { el.classList.remove("on"); }, 2400);
+  }
+  function setProg(pct, msg) {
+    pct = Math.max(0, Math.min(100, pct | 0));
+    document.getElementById("progBar").style.width = pct + "%";
+    document.getElementById("progPct").textContent = pct + "%";
+    if (msg) document.getElementById("progText").textContent = msg;
+  }
+  function err(m) { document.getElementById("err").textContent = m || ""; }
+  function loadJSON(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key) || "null");
+      return v == null ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+
+  /* ——— Owner Gallery walk ——— */
+  function ownerFlat(kind) {
+    var data = loadJSON("VX_OWNER_GALLERY", null);
+    if (!data || typeof data !== "object") return [];
+    var seen = {}, out = [];
+    function addOne(it) {
+      if (!it) return;
+      var url = it.url || it.src || it.image || "";
+      if (!url || seen[url]) return;
+      seen[url] = 1;
+      out.push({ name: it.name || it.id || "item", url: url, locked: true });
+    }
+    function walk(node, depth) {
+      if (!node || depth > 7) return;
+      if (Array.isArray(node)) { node.forEach(addOne); return; }
+      if (typeof node === "object") Object.keys(node).forEach(function (k) { walk(node[k], depth + 1); });
+    }
+    var root = kind === "char"
+      ? (data.chars || data.char || data.characters)
+      : (data.bgs || data.bg || data.backgrounds);
+    if (root) walk(root, 0);
+    if (!out.length) walk(data, 0);
+    return out;
+  }
+
+  function withUrl(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.filter(function (x) { return x && (x.url || x.src || x.image); })
+      .map(function (x) {
+        return { name: x.name || x.id || "item", url: x.url || x.src || x.image, locked: x.locked !== false };
+      });
+  }
+
+  function loadImages() {
+    var H = state.handoff;
+    var lockedChars = withUrl(H && H.chars && H.chars.length ? H.chars : loadJSON("VX_CHARS", []));
+    var lockedBgs = withUrl(H && H.bgs && H.bgs.length ? H.bgs : loadJSON("VX_BGS", []));
+    var onlyC = lockedChars.filter(function (c) { return c.locked; });
+    var onlyB = lockedBgs.filter(function (b) { return b.locked; });
+    state.chars = lockedChars;
+    state.bgs = lockedBgs;
+
+    if (!state.chars.length) {
+      state.chars = ownerFlat("char").slice(0, 12);
+      if (state.chars.length) try { localStorage.setItem("VX_CHARS", JSON.stringify(state.chars)); } catch (e) {}
+    }
+    if (!state.bgs.length) {
+      state.bgs = ownerFlat("bg").slice(0, 12);
+      if (state.bgs.length) try { localStorage.setItem("VX_BGS", JSON.stringify(state.bgs)); } catch (e) {}
+    }
+
+    /* अगर सिर्फ chars हैं — कुछ full-scene photos को BG मानो (name/url heuristic नहीं, index split) */
+    if (!state.bgs.length && state.chars.length >= 2) {
+      var half = Math.ceil(state.chars.length / 2);
+      state.bgs = state.chars.slice(half);
+      state.chars = state.chars.slice(0, half);
+    }
+
+    var pack = (H && H.pack && H.pack.length) ? H.pack : loadJSON("VX_SCENE_PACK", []);
+    var scenes = (H && H.scenes && H.scenes.length) ? H.scenes : loadJSON("VX_SCENES", []);
+    var story = ((H && H.story) ? H.story : (localStorage.getItem("VX_STORY") || "")).replace(/[*#_`]/g, "").trim();
+    var packTexts = [];
+    if (pack && pack.length) pack.forEach(function (p) { packTexts.push(String(p.text || p.scene || p || "")); });
+    else if (scenes && scenes.length) scenes.forEach(function (s) { packTexts.push(String(s)); });
+    var packJoined = packTexts.join(" ");
+    /* stale check: new story's opening words must appear in the scene pack, otherwise pack is old */
+    var head = story.replace(/\s+/g, " ").slice(0, 10);
+    var packStale = story && packTexts.length && head && packJoined.replace(/[*#_`]/g, "").replace(/\s+/g, " ").indexOf(head) < 0;
+    var useStory = story && (!packTexts.length || packStale);
+    var srcName = useStory ? "VX_STORY" : (pack && pack.length ? "VX_SCENE_PACK" : (scenes && scenes.length ? "VX_SCENES" : "none"));
+
+    var list = [];
+    function wc(t) { return String(t || "").trim().split(/\s+/).filter(Boolean).length; }
+    function est(t) { return Math.max(2.5, wc(t) / WPS + 0.4); }
+    var texts = [];
+    if (useStory) {
+      var paras = story.split(/\n+/).map(function (x) { return x.trim(); }).filter(function (x) { return x.length > 3; });
+      if (paras.length >= 2) {
+        texts = paras.slice();
+        while (texts.length > 6) {
+          var bi = 0, bv = 1e9;
+          for (var mi = 0; mi < texts.length - 1; mi++) {
+            var vv = wc(texts[mi]) + wc(texts[mi + 1]);
+            if (vv < bv) { bv = vv; bi = mi; }
+          }
+          texts.splice(bi, 2, texts[bi] + " " + texts[bi + 1]);
+        }
+      } else {
+        var sents = story.replace(/\n+/g, " ").split(/(?<=[।.!?])\s+/).filter(function (x) { return x.trim().length > 2; });
+        var nScenes = Math.max(1, Math.min(6, Math.round((wc(story) / WPS) / 6)));
+        if (sents.length < nScenes) nScenes = Math.max(1, sents.length);
+        for (var ci = 0; ci < nScenes; ci++) {
+          var from = Math.round(ci * sents.length / nScenes), to = Math.round((ci + 1) * sents.length / nScenes);
+          var part = sents.slice(from, to).join(" ").trim();
+          if (part) texts.push(part);
+        }
+      }
+    } else {
+      texts = packTexts.map(function (t) { return t.trim(); }).filter(Boolean);
+    }
+    texts.slice(0, 6).forEach(function (t, i) { list.push({ i: i + 1, text: t, sec: est(t) }); });
+    if (!list.length) {
+      list = [
+        { i: 1, text: "शुरुआत", sec: SCENE_SEC },
+        { i: 2, text: "मोड़", sec: SCENE_SEC },
+        { i: 3, text: "अंत", sec: SCENE_SEC }
+      ];
+    }
+    if (list.length > 6) list = list.slice(0, 6);
+    var totalSec = 0;
+    list.forEach(function (x) { x.sec = x.sec || SCENE_SEC; totalSec += x.sec; });
+    if (totalSec > MAX_SEC) {
+      var fct = MAX_SEC / totalSec;
+      totalSec = 0;
+      list.forEach(function (x) { x.sec = Math.max(2, x.sec * fct); totalSec += x.sec; });
+    }
+    state.totalSec = totalSec;
+    state.scenes = list;
+
+    if (!state.capInit) {
+      state.capInit = true;
+      var capOn = (H && typeof H.captions === "boolean") ? H.captions : (localStorage.getItem("VX_CAPTIONS") === "1");
+      state.subs = capOn;
+      var bs = document.getElementById("btnSub");
+      if (bs) bs.textContent = capOn ? "CC ✓" : "CC ✗";
+    }
+    var style = localStorage.getItem("VX_STYLE") || "mix";
+    var nC = state.chars.length;
+    document.getElementById("mScenes").textContent = String(list.length);
+    document.getElementById("mChars").textContent = String(nC);
+    document.getElementById("mDur").textContent = "~" + Math.round(totalSec) + "s";
+    document.getElementById("mStyle").textContent = String(style).toUpperCase();
+    document.getElementById("durPill").textContent = Math.round(totalSec) + "s";
+    var dg = document.getElementById("diag");
+    if (dg && /debug=1/.test(location.search)) dg.style.display = "block";
+    if (dg) dg.textContent = "स्रोत: " + srcName + " · कहानी: " + (story ? story.replace(/\s+/g, " ").slice(0, 28) + "…" : "नहीं मिली") +
+      " · chars: " + state.chars.map(function (c) { return c.name; }).join(", ") +
+      " · bgs: " + state.bgs.map(function (b) { return b.name; }).join(", ");
+    if (!nC) err("Characters 0 · Create पर photo Lock करो / Owner Gallery भरें");
+    else err("");
+  }
+
+  function loadImg(url) {
+    return new Promise(function (resolve) {
+      if (!url) { resolve(null); return; }
+      var im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = function () { resolve(im); };
+      im.onerror = function () {
+        var im2 = new Image();
+        im2.onload = function () { resolve(im2); };
+        im2.onerror = function () { resolve(null); };
+        im2.src = url;
+      };
+      im.src = url;
+    });
+  }
+
+  function nrm(t) {
+    return String(t || "").toLowerCase().replace(/ू/g, "ु").replace(/ी/g, "ि").replace(/ँ/g, "ं").replace(/़/g, "");
+  }
+  var SYN = [
+    ["किसान", "रामू", "रामु", "राम", "kisan", "farmer", "ramu"],
+    ["व्यापारी", "दुकानदार", "साहूकार", "महाजन", "सेठ", "लाला", "कर्जदार", "कर्ज़दार", "trader", "shopkeeper", "moneylender"],
+    ["पत्नी", "बीवी", "घरवाली", "पत्नि", "wife"],
+    ["बच्चे", "बच्चा", "बेटी", "बिटिया", "गुड़िया", "बेटा", "लड़की", "लड़का", "child", "girl", "boy", "daughter", "son"],
+    ["माँ", "माता", "मां", "बहू", "mother"],
+    ["डॉक्टर", "वैद्य", "doctor"],
+    ["पुलिस", "थानेदार", "सिपाही", "police"],
+    ["सरपंच", "मुखिया", "अधिकारी", "नेता", "sarpanch", "officer"],
+    ["बाबा", "दादा", "दादी", "बुज़ुर्ग", "बूढ़ा", "बूढ़े", "elder"]
+  ];
+  var SYN_N = SYN.map(function (g) { return g.map(nrm); });
+  function entWords(name) {
+    var out = [], toks = nrm(name).split(/[\/,·\-–()\s]+/);
+    toks.forEach(function (t) {
+      t = t.trim();
+      if (t.length < 2) return;
+      out.push(t);
+      SYN_N.forEach(function (g) { if (g.indexOf(t) >= 0) g.forEach(function (w) { out.push(w); }); });
+    });
+    return out;
+  }
+  /* position of the first mention of this entity in the text (or -1) */
+  function firstMention(ent, text) {
+    var t = nrm(text), best = -1, ws = entWords(ent.name);
+    for (var i = 0; i < ws.length; i++) {
+      var p = t.indexOf(ws[i]);
+      if (p >= 0 && (best < 0 || p < best)) best = p;
+    }
+    return best;
+  }
+  function matchEnt(list, text) {
+    var best = null, bp = 1e9;
+    for (var k = 0; k < list.length; k++) {
+      var p = firstMention(list[k], text);
+      if (p >= 0 && p < bp) { bp = p; best = list[k]; }
+    }
+    return best;
+  }
+  function sceneText(si) { return state.scenes[si] ? state.scenes[si].text : ""; }
+
+  /* main character = first card. A scene shows a secondary character when that character is mentioned;
+     otherwise the main one. Any character that never got a turn is given a scene (never the first). */
+  function planChars() {
+    var n = state.scenes.length, C = state.chars, plan = [];
+    for (var i = 0; i < n; i++) {
+      var t = sceneText(i), pick = 0, explicit = false, bp = 1e9;
+      for (var k = 1; k < C.length; k++) {
+        var p = firstMention(C[k], t);
+        if (p >= 0 && p < bp) { bp = p; pick = k; explicit = true; }
+      }
+      if (!explicit && C.length && firstMention(C[0], t) >= 0) explicit = true;
+      plan.push({ idx: pick, explicit: explicit });
+    }
+    var used = {};
+    plan.forEach(function (p) { used[p.idx] = 1; });
+    for (var kk = 1; kk < C.length; kk++) {
+      if (used[kk] || n < 2) continue;
+      var target = Math.min(n - 1, Math.max(1, Math.round(kk * (n - 1) / C.length + 0.5)));
+      var best = -1, bd = 1e9;
+      for (var s = 1; s < n; s++) {
+        if (!plan[s].explicit && plan[s].idx === 0) {
+          var d = Math.abs(s - target);
+          if (d < bd) { bd = d; best = s; }
+        }
+      }
+      if (best < 0) {
+        for (var s2 = 1; s2 < n; s2++) {
+          if (plan[s2].idx === 0) { best = s2; break; }
+        }
+      }
+      if (best >= 0) { plan[best] = { idx: kk, explicit: false }; used[kk] = 1; }
+    }
+    state.charPlan = plan;
+  }
+  function pickChar(si) {
+    if (!state.chars.length) return null;
+    var p = state.charPlan && state.charPlan[si];
+    return state.chars[p ? p.idx : 0] || state.chars[0];
+  }
+  function pickBg(si) {
+    if (!state.bgs.length) return null;
+    var m = matchEnt(state.bgs, sceneText(si));
+    return m || state.bgs[si % state.bgs.length];
+  }
+
+  /* Studio / solid-gray detector */
+  function isStudioPhoto(img) {
+    try {
+      var s = 64;
+      var c = document.createElement("canvas");
+      c.width = s; c.height = s;
+      var x = c.getContext("2d");
+      x.drawImage(img, 0, 0, s, s);
+      var d = x.getImageData(0, 0, s, s).data;
+      var light = 0, total = 0;
+      function px(px, py) {
+        var i = (py * s + px) * 4;
+        var r = d[i], g = d[i + 1], b = d[i + 2];
+        var avg = (r + g + b) / 3;
+        var spread = Math.max(r, g, b) - Math.min(r, g, b);
+        total++;
+        if (avg > 175 && spread < 40) light++;
+      }
+      for (var i = 0; i < s; i++) {
+        px(i, 0); px(i, 1); px(i, 2);
+        px(i, s - 1); px(i, s - 2); px(i, s - 3);
+        px(0, i); px(1, i); px(s - 1, i); px(s - 2, i);
+      }
+      for (var y = 0; y < 10; y++) for (var x0 = 0; x0 < 10; x0++) {
+        px(x0, y); px(s - 1 - x0, y); px(x0, s - 1 - y); px(s - 1 - x0, s - 1 - y);
+      }
+      return total > 0 && (light / total) > 0.38;
+    } catch (e) {
+      return false;
+    }
+  }
+
+/* Studio backdrop remover — pure function on RGBA data (testable) */
+function studioCutData(d, w, h) {
+  var n = w * h;
+  // 1) backdrop colour = median of border pixels
+  var rs = [], gs = [], bs = [];
+  function addB(px, py) { var i = (py * w + px) * 4; rs.push(d[i]); gs.push(d[i + 1]); bs.push(d[i + 2]); }
+  for (var x = 0; x < w; x += 2) { addB(x, 0); addB(x, h - 1); addB(x, 2); addB(x, h - 3); }
+  for (var y = 0; y < h; y += 2) { addB(0, y); addB(w - 1, y); addB(2, y); addB(w - 3, y); }
+  function med(a) { a.sort(function (p, q) { return p - q; }); return a[a.length >> 1]; }
+  var mr = med(rs), mg = med(gs), mb = med(bs);
+
+  // 2) is this pixel "studio backdrop"? (light, low-colour, close to the border colour)
+  function isBack(i4) {
+    var r = d[i4], g = d[i4 + 1], b = d[i4 + 2];
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+    if (mx - mn > 22) return false;
+    if ((r + g + b) / 3 < 140) return false;
+    var dr = r - mr, dg = g - mg, db = b - mb;
+    return dr * dr + dg * dg + db * db <= 38 * 38;
+  }
+
+  // 3) flood-fill from the whole border, step-limited so it stops at edges
+  var seen = new Uint8Array(n), stack = [], cleared = 0;
+  function seed(px, py) {
+    var p = py * w + px;
+    if (seen[p] || !isBack(p * 4)) return;
+    seen[p] = 1; stack.push(p);
+  }
+  for (var xx = 0; xx < w; xx++) { seed(xx, 0); seed(xx, h - 1); }
+  for (var yy = 0; yy < h; yy++) { seed(0, yy); seed(w - 1, yy); }
+  while (stack.length) {
+    var p = stack.pop(), i4 = p * 4;
+    d[i4 + 3] = 0; cleared++;
+    var px = p % w, py = (p / w) | 0;
+    var cr = d[i4], cg = d[i4 + 1], cb = d[i4 + 2];
+    for (var k = 0; k < 4; k++) {
+      var qx = px + (k === 0 ? -1 : k === 1 ? 1 : 0);
+      var qy = py + (k === 2 ? -1 : k === 3 ? 1 : 0);
+      if (qx < 0 || qy < 0 || qx >= w || qy >= h) continue;
+      var q = qy * w + qx;
+      if (seen[q]) continue;
+      var j4 = q * 4;
+      if (!isBack(j4)) continue;
+      var er = d[j4] - cr, eg = d[j4 + 1] - cg, eb = d[j4 + 2] - cb;
+      if (er * er + eg * eg + eb * eb > 256) continue;
+      seen[q] = 1; stack.push(q);
+    }
+  }
+
+
+  // 3b) floor cleanup: bottom rows only, looser colour, grows only from already-cleared pixels
+  var floorY = (h * 0.84) | 0, st2 = [], seen2 = new Uint8Array(n);
+  for (var fy = floorY; fy < h; fy++) for (var fx = 0; fx < w; fx++) {
+    var fp = fy * w + fx;
+    if (d[fp * 4 + 3] === 0) { seen2[fp] = 1; st2.push(fp); }
+  }
+  while (st2.length) {
+    var p2 = st2.pop(), i2 = p2 * 4;
+    var c2r = d[i2], c2g = d[i2 + 1], c2b = d[i2 + 2];
+    var px2 = p2 % w, py2 = (p2 / w) | 0;
+    for (var k2 = 0; k2 < 4; k2++) {
+      var qx2 = px2 + (k2 === 0 ? -1 : k2 === 1 ? 1 : 0);
+      var qy2 = py2 + (k2 === 2 ? -1 : k2 === 3 ? 1 : 0);
+      if (qx2 < 0 || qy2 < 0 || qx2 >= w || qy2 >= h || qy2 < floorY) continue;
+      var q2 = qy2 * w + qx2;
+      if (seen2[q2]) continue;
+      seen2[q2] = 1;
+      var j2 = q2 * 4;
+      var r_ = d[j2], g_ = d[j2 + 1], b_ = d[j2 + 2];
+      if (Math.max(r_, g_, b_) - Math.min(r_, g_, b_) > 20) continue;
+      if ((r_ + g_ + b_) / 3 < 160) continue;
+      var gr = r_ - mr, gg = g_ - mg, gb = b_ - mb;
+      if (gr * gr + gg * gg + gb * gb > 95 * 95) continue;
+      var sr = r_ - c2r, sg = g_ - c2g, sb = b_ - c2b;
+      if (sr * sr + sg * sg + sb * sb > 30 * 30 && d[j2 + 3] !== 0) {
+        // allow bigger step only against transparent seeds (patch edge)
+        if (d[i2 + 3] !== 0) continue;
+      }
+      d[j2 + 3] = 0; cleared++;
+      st2.push(q2);
+    }
+  }
+
+  // 3c) drop tiny disconnected specks (keep only components >= 1.5% of the biggest)
+  var lab = new Int32Array(n), sizes = [0], comp = 0, big = 0;
+  for (var s0 = 0; s0 < n; s0++) {
+    if (lab[s0] || d[s0 * 4 + 3] === 0) continue;
+    comp++; var cnt = 0, stk = [s0]; lab[s0] = comp;
+    while (stk.length) {
+      var u = stk.pop(); cnt++;
+      var ux = u % w, uy = (u / w) | 0;
+      if (ux > 0 && !lab[u - 1] && d[(u - 1) * 4 + 3] !== 0) { lab[u - 1] = comp; stk.push(u - 1); }
+      if (ux < w - 1 && !lab[u + 1] && d[(u + 1) * 4 + 3] !== 0) { lab[u + 1] = comp; stk.push(u + 1); }
+      if (uy > 0 && !lab[u - w] && d[(u - w) * 4 + 3] !== 0) { lab[u - w] = comp; stk.push(u - w); }
+      if (uy < h - 1 && !lab[u + w] && d[(u + w) * 4 + 3] !== 0) { lab[u + w] = comp; stk.push(u + w); }
+    }
+    sizes.push(cnt); if (cnt > big) big = cnt;
+  }
+  for (var s1 = 0; s1 < n; s1++) {
+    var L = lab[s1];
+    if (L && sizes[L] < big * 0.015) d[s1 * 4 + 3] = 0;
+  }
+
+  // 4) quality gate: torso strip must stay solid, and we must not eat the whole image
+  if (cleared / n > 0.82) return false;
+  var op = 0, sm = 0;
+  for (var y2 = (h * 0.2) | 0; y2 < (h * 0.8) | 0; y2 += 3) {
+    for (var x2 = (w * 0.42) | 0; x2 < (w * 0.58) | 0; x2 += 2) {
+      sm++; if (d[(y2 * w + x2) * 4 + 3] > 140) op++;
+    }
+  }
+  if (sm > 20 && op / sm < 0.85) return false;
+  if (cleared / n < 0.03) return false; // nothing removed → not a real studio shot
+
+  // 5) defringe: soften the 1-2px edge ring so no grey halo remains
+  var ring = [];
+  for (var y3 = 1; y3 < h - 1; y3++) for (var x3 = 1; x3 < w - 1; x3++) {
+    var pp = y3 * w + x3;
+    if (d[pp * 4 + 3] === 0) continue;
+    if (d[(pp - 1) * 4 + 3] === 0 || d[(pp + 1) * 4 + 3] === 0 ||
+        d[(pp - w) * 4 + 3] === 0 || d[(pp + w) * 4 + 3] === 0) ring.push(pp);
+  }
+  for (var r2 = 0; r2 < ring.length; r2++) {
+    var i5 = ring[r2] * 4;
+    var ddr = d[i5] - mr, ddg = d[i5 + 1] - mg, ddb = d[i5 + 2] - mb;
+    var near = ddr * ddr + ddg * ddg + ddb * ddb < 70 * 70;
+    d[i5 + 3] = near ? 70 : 170;
+  }
+  // 6) tight bounding box of the character (rows/cols with >=3 solid pixels)
+  var x0 = w, x1 = -1, y0 = h, y1 = -1;
+  var colC = new Int32Array(w), rowC = new Int32Array(h);
+  for (var by = 0; by < h; by++) for (var bx = 0; bx < w; bx++) {
+    if (d[(by * w + bx) * 4 + 3] > 100) { colC[bx]++; rowC[by]++; }
+  }
+  for (var cx = 0; cx < w; cx++) if (colC[cx] >= 3) { if (cx < x0) x0 = cx; x1 = cx; }
+  for (var cy = 0; cy < h; cy++) if (rowC[cy] >= 3) { if (cy < y0) y0 = cy; y1 = cy; }
+  if (x1 < 0 || y1 < 0) return false;
+  return { x0: x0, y0: y0, x1: x1 + 1, y1: y1 + 1 };
+}
+
+  function cutStudio(img) {
+    var key = (img.src || "") + "|ff6";
+    if (cutCache[key]) return cutCache[key];
+    try {
+      var maxW = 896;
+      var iw = img.naturalWidth || img.width;
+      var ih = img.naturalHeight || img.height;
+      var scale = Math.min(1, maxW / iw);
+      var w = Math.round(iw * scale), h = Math.round(ih * scale);
+      var c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      var x = c.getContext("2d");
+      x.drawImage(img, 0, 0, w, h);
+      var id = x.getImageData(0, 0, w, h);
+      var box = studioCutData(id.data, w, h);
+      if (!box) { cutCache[key] = img; return img; }
+      x.putImageData(id, 0, 0);
+      c.vxBox = box;
+      cutCache[key] = c;
+      return c;
+    } catch (e) {
+      return img;
+    }
+  }
+
+  function coverDraw(ctx2, img, dx, dy, dw, dh, zoom, panX, panY) {
+    if (!img) return;
+    var iw = img.naturalWidth || img.width;
+    var ih = img.naturalHeight || img.height;
+    if (!iw || !ih) return;
+    var scale = Math.max(dw / iw, dh / ih) * (zoom || 1);
+    var sw = dw / scale, sh = dh / scale;
+    var sx = (iw - sw) / 2 + (panX || 0) * iw * 0.06;
+    var sy = (ih - sh) / 2 + (panY || 0) * ih * 0.05;
+    sx = Math.max(0, Math.min(Math.max(0, iw - sw), sx));
+    sy = Math.max(0, Math.min(Math.max(0, ih - sh), sy));
+    ctx2.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  function seedParticles() {
+    state.particles = [];
+    for (var i = 0; i < 28; i++) {
+      state.particles.push({
+        x: Math.random(),
+        y: Math.random(),
+        r: 0.6 + Math.random() * 1.8,
+        sp: 0.03 + Math.random() * 0.08,
+        a: 0.15 + Math.random() * 0.35
+      });
+    }
+  }
+
+  function drawParticles(ctx2, w, h, t) {
+    ctx2.save();
+    state.particles.forEach(function (p) {
+      var yy = (p.y + t * p.sp * 0.04) % 1;
+      var xx = p.x + Math.sin(t * 0.7 + p.y * 8) * 0.02;
+      ctx2.fillStyle = "rgba(255,245,220," + p.a + ")";
+      ctx2.beginPath();
+      ctx2.arc(xx * w, yy * h, p.r, 0, Math.PI * 2);
+      ctx2.fill();
+    });
+    ctx2.restore();
+  }
+
+  /* ---------- layers ---------- */
+  function drawBgLayer(frame, localT, dur, alpha) {
+    var w = cv.width, h = cv.height;
+    var p = dur ? Math.min(1, Math.max(0, localT / dur)) : 0;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    if (frame.isFull && frame.charImg) {
+      coverDraw(ctx, frame.charImg, 0, 0, w, h, 1.0, 0, 0);          /* पूरी photo स्थिर */
+    } else if (frame.bgImg) {
+      /* ज़मीन बिल्कुल स्थिर; सिर्फ़ ऊपर का हिस्सा (आसमान/पेड़/घर) हल्का सरकता है */
+      coverDraw(ctx, frame.bgImg, 0, 0, w, h, 1.08, 0, 0);
+      var skyH = Math.round(h * 0.62);
+      if (!skyCv) skyCv = document.createElement("canvas");
+      if (skyCv.width !== w || skyCv.height !== skyH) { skyCv.width = w; skyCv.height = skyH; }
+      var sx = skyCv.getContext("2d");
+      sx.imageSmoothingEnabled = true;
+      sx.imageSmoothingQuality = "high";
+      sx.globalCompositeOperation = "source-over";
+      sx.clearRect(0, 0, w, skyH);
+      coverDraw(sx, frame.bgImg, 0, 0, w, h, 1.08, -0.5 + p, 0);
+      sx.globalCompositeOperation = "destination-in";
+      var gm = sx.createLinearGradient(0, skyH * 0.5, 0, skyH);
+      gm.addColorStop(0, "rgba(0,0,0,1)");
+      gm.addColorStop(1, "rgba(0,0,0,0)");
+      sx.fillStyle = gm;
+      sx.fillRect(0, 0, w, skyH);
+      sx.globalCompositeOperation = "source-over";
+      ctx.drawImage(skyCv, 0, 0);
+    } else {
+      var g = ctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, "#1a1240");
+      g.addColorStop(0.5, "#120c28");
+      g.addColorStop(1, "#0a0814");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.restore();
+  }
+
+  /* character stands still on the ground: no bobbing, no swaying */
+  function drawCharLayer(frame, alpha) {
+    if (alpha <= 0.003) return;
+    if (frame.isFull || !(frame.charCut || frame.charImg)) return;
+    var w = cv.width, h = cv.height;
+    var img = frame.charCut || frame.charImg;
+    var isFailedCut = (img === frame.charImg);
+    var box = img.vxBox || null;
+    var bw = box ? box.x1 - box.x0 : (img.naturalWidth || img.width);
+    var bh = box ? box.y1 - box.y0 : (img.naturalHeight || img.height);
+    var groundY = Math.round(h * 0.955);
+    var chh = h * 0.80;
+    var cw = chh * bw / bh;
+    if (cw > w * 0.96) { cw = w * 0.96; chh = cw * bh / bw; }
+    var cx = Math.round(w / 2);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(cx, groundY);
+
+    var grd = ctx.createRadialGradient(0, -2, 2, 0, -2, cw * 0.34);
+    grd.addColorStop(0, "rgba(0,0,0,0.5)");
+    grd.addColorStop(0.5, "rgba(0,0,0,0.2)");
+    grd.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.ellipse(0, -2, cw * 0.32, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (isFailedCut) {
+      var tmp = document.createElement("canvas");
+      tmp.width = Math.max(1, Math.round(cw));
+      tmp.height = Math.max(1, Math.round(chh));
+      var tx = tmp.getContext("2d");
+      tx.drawImage(img, 0, 0, tmp.width, tmp.height);
+      var mask = tx.createRadialGradient(tmp.width * 0.5, tmp.height * 0.42, tmp.height * 0.16, tmp.width * 0.5, tmp.height * 0.46, tmp.height * 0.54);
+      mask.addColorStop(0, "rgba(0,0,0,1)");
+      mask.addColorStop(0.65, "rgba(0,0,0,0.9)");
+      mask.addColorStop(1, "rgba(0,0,0,0)");
+      tx.globalCompositeOperation = "destination-in";
+      tx.fillStyle = mask;
+      tx.fillRect(0, 0, tmp.width, tmp.height);
+      ctx.drawImage(tmp, -cw / 2, -chh, cw, chh);
+    } else {
+      ctx.drawImage(img, box.x0, box.y0, bw, bh, -cw / 2, -chh, cw, chh);
+    }
+    ctx.restore();
+  }
+
+  function drawFx(frame, localT) {
+    var w = cv.width, h = cv.height;
+    drawParticles(ctx, w, h, localT + frame.si);
+    var vg = ctx.createRadialGradient(w / 2, h * 0.4, h * 0.1, w / 2, h * 0.48, h * 0.82);
+    vg.addColorStop(0, "rgba(0,0,0,0)");
+    vg.addColorStop(1, "rgba(0,0,0,0.5)");
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  /* modern short-video captions: 2-3 words at a time, active word highlighted, pop-in */
+  function drawSubtitle(frame, tNorm, alpha) {
+    if (!state.subs || !frame.text || alpha <= 0.01) return;
+    var w = cv.width, h = cv.height;
+    var words = String(frame.text).replace(/[*#_`]/g, "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+    if (!words.length) return;
+    var groups = [], g = [], len = 0;
+    words.forEach(function (wd) {
+      if (g.length && (g.length >= 3 || len + wd.length > 17)) { groups.push(g); g = []; len = 0; }
+      g.push(wd); len += wd.length + 1;
+    });
+    if (g.length) groups.push(g);
+    var tw = Math.min(0.999, Math.max(0, tNorm)) * words.length;
+    var wi = Math.floor(tw), acc = 0, gi = 0;
+    for (gi = 0; gi < groups.length; gi++) {
+      if (wi < acc + groups[gi].length) break;
+      acc += groups[gi].length;
+    }
+    if (gi >= groups.length) { gi = groups.length - 1; acc -= groups[gi].length; }
+    var grp = groups[gi], active = Math.max(0, Math.min(grp.length - 1, wi - acc));
+    var s0 = Math.min(1, Math.max(0, (tw - acc) / 0.4));
+    var back = 1 + 2.70158 * Math.pow(s0 - 1, 3) + 1.70158 * Math.pow(s0 - 1, 2);
+    var pop = 0.86 + 0.14 * back;
+
+    var fs = 66, family = "'Noto Sans Devanagari','Mukta','Hind',system-ui,sans-serif";
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.font = "900 " + fs + "px " + family;
+    var gap = fs * 0.28, widths = [], total = 0;
+    grp.forEach(function (wd) { var m = ctx.measureText(wd).width; widths.push(m); total += m; });
+    total += gap * (grp.length - 1);
+    if (total > w * 0.88) {
+      fs = Math.floor(fs * (w * 0.88) / total);
+      ctx.font = "900 " + fs + "px " + family;
+      gap = fs * 0.28; widths = []; total = 0;
+      grp.forEach(function (wd) { var m = ctx.measureText(wd).width; widths.push(m); total += m; });
+      total += gap * (grp.length - 1);
+    }
+    var cy = h * 0.70;
+    ctx.translate(w / 2, cy);
+    ctx.scale(pop, pop);
+    var x = -total / 2;
+    ctx.lineJoin = "round";
+    ctx.shadowColor = "rgba(0,0,0,0.55)";
+    ctx.shadowBlur = 18;
+    ctx.shadowOffsetY = 6;
+    for (var k = 0; k < grp.length; k++) {
+      var isAct = (k === active);
+      ctx.lineWidth = fs * 0.2;
+      ctx.strokeStyle = "rgba(10,6,24,0.92)";
+      ctx.strokeText(grp[k], x, 0);
+      if (isAct) {
+        var gr = ctx.createLinearGradient(0, -fs * 0.5, 0, fs * 0.5);
+        gr.addColorStop(0, "#FFF176");
+        gr.addColorStop(1, "#FF9F1C");
+        ctx.fillStyle = gr;
+      } else {
+        ctx.fillStyle = "#FFFFFF";
+      }
+      ctx.fillText(grp[k], x, 0);
+      x += widths[k] + gap;
+    }
+    ctx.restore();
+  }
+
+  function drawOneScene(frame, localT, dur, alpha) {
+    drawBgLayer(frame, localT, dur, alpha);
+    drawCharLayer(frame, alpha);
+    drawFx(frame, localT);
+    drawSubtitle(frame, dur ? localT / dur : 0, alpha);
+  }
+
+  function drawSceneFrame(frame, localT, dur) {
+    ctx.fillStyle = "#0a0814";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    drawOneScene(frame, localT, dur, 1);
+  }
+
+  /* One clean transition at the END of each scene: next background fades in underneath,
+     the old character fades out first, the new character fades in after — no ghosting, no jump back. */
+  function drawAtTime(globalT) {
+    var frames = state.frames;
+    if (!frames.length) return null;
+    var acc = 0, idx = 0;
+    for (var i = 0; i < frames.length; i++) {
+      var sec = frames[i].sec || SCENE_SEC;
+      if (globalT < acc + sec) { idx = i; break; }
+      acc += sec;
+      idx = i;
+    }
+    var cur = frames[idx];
+    var local = Math.max(0, globalT - acc);
+    var dur = cur.sec || SCENE_SEC;
+    var lead = idx > 0 ? FADE : 0;
+    function pd(f) { return (f.sec || SCENE_SEC) + FADE; }
+
+    ctx.fillStyle = "#0a0814";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    if (local > dur - FADE && idx < frames.length - 1) {
+      var next = frames[idx + 1];
+      var raw = (local - (dur - FADE)) / FADE;
+      var a = raw * raw * (3 - 2 * raw);
+      var tlCur = local + lead, tlNext = local - (dur - FADE);
+      drawBgLayer(next, tlNext, pd(next), 1);
+      drawBgLayer(cur, tlCur, pd(cur), 1 - a);
+      drawCharLayer(cur, Math.max(0, 1 - a * 2));
+      drawCharLayer(next, Math.max(0, a * 2 - 1));
+      drawFx(cur, tlCur);
+      drawSubtitle(cur, local / dur, Math.max(0, 1 - a * 2.4));
+      drawSubtitle(next, 0, Math.max(0, a * 2.4 - 1.4));
+    } else {
+      var tl = local + lead;
+      drawBgLayer(cur, tl, pd(cur), 1);
+      drawCharLayer(cur, 1);
+      drawFx(cur, tl);
+      drawSubtitle(cur, local / dur, 1);
+    }
+    return { frame: cur, local: local, dur: dur, idx: idx };
+  }
+
+  async function prepare() {
+    err("");
+    var hh = await idbGet("VX_HANDOFF");
+    if (hh) state.handoff = hh;
+    loadImages();
+    planChars();
+    if (!state.scenes.length) {
+      err("Story / scenes नहीं · पहले Create पूरा करो");
+      return;
+    }
+    document.getElementById("btnPrep").disabled = true;
+    document.getElementById("btnPlay").disabled = true;
+    document.getElementById("btnRec").disabled = true;
+    document.getElementById("btnNext").disabled = true;
+    setProg(2, "Images load…");
+    state.frames = [];
+    seedParticles();
+    var total = state.scenes.length;
+    for (var i = 0; i < total; i++) {
+      var sc = state.scenes[i];
+      var ch = pickChar(i);
+      var bg = pickBg(i);
+      setProg(5 + Math.round((i / total) * 75), "Scene " + (i + 1) + "/" + total);
+      var charImg = ch ? await loadImg(ch.url) : null;
+      var bgImg = bg ? await loadImg(bg.url) : null;
+      var studio = charImg ? isStudioPhoto(charImg) : false;
+      var charCut = null;
+      var isFull = false;
+
+      if (charImg) {
+        if (studio) {
+          /* Studio photo → always composite on real BG.
+             Even if cut quality fails we still place original char on BG
+             (better than pure gray screen). */
+          charCut = cutStudio(charImg);
+          isFull = false;
+        } else {
+          /* Real environmental photo → full Ken Burns scene */
+          isFull = true;
+          charCut = null;
+        }
+      }
+
+      /* Prefer non-studio BG when compositing */
+      if (!isFull && bgImg && isStudioPhoto(bgImg) && state.bgs.length > 1) {
+        var alt = pickBg(i + 1);
+        if (alt && alt.url !== (bg && bg.url)) {
+          var altImg = await loadImg(alt.url);
+          if (altImg && !isStudioPhoto(altImg)) bgImg = altImg;
+        }
+      }
+
+      state.frames.push({
+        si: sc.i,
+        text: sc.text,
+        sec: sc.sec || SCENE_SEC,
+        charImg: charImg,
+        charCut: isFull ? null : charCut,
+        bgImg: isFull ? null : bgImg,
+        isFull: isFull,
+        charStudio: studio
+      });
+      setCap("Scene " + (i + 1) + "/" + total);
+      drawSceneFrame(state.frames[i], 0.5, state.frames[i].sec);
+    }
+    state.ready = true;
+    setProg(100, "Ready · " + total + " scenes");
+    document.getElementById("btnPrep").disabled = false;
+    document.getElementById("btnPlay").disabled = false;
+    document.getElementById("btnRec").disabled = false;
+    document.getElementById("btnNext").disabled = false;
+    toast("Scenes तैयार · Preview / MP4 / Continue");
+  }
+
+  function totalDur() {
+    var t = 0;
+    state.frames.forEach(function (f) { t += f.sec || SCENE_SEC; });
+    return t || 1;
+  }
+
+  function playTick(now) {
+    if (!state.playing) return;
+    if (!state.t0) state.t0 = now;
+    var globalT = (now - state.t0) / 1000;
+    var total = totalDur();
+    if (globalT >= total) {
+      state.playing = false;
+      setProg(100, "Preview खत्म");
+      setCap("");
+      return;
+    }
+    var at = drawAtTime(globalT);
+    if (at) {
+      setCap("");
+      setProg(Math.round((globalT / total) * 100), "Scene " + at.frame.si + " · " + globalT.toFixed(1) + "s");
+    }
+    state.raf = requestAnimationFrame(playTick);
+  }
+
+  document.getElementById("btnSub").onclick = function () {
+    state.subs = !state.subs;
+    try { localStorage.setItem("VX_CAPTIONS", state.subs ? "1" : "0"); } catch (e) {}
+    this.textContent = state.subs ? "CC ✓" : "CC ✗";
+    if (state.frames.length && !state.playing && !state.recording) drawAtTime(0.5);
+  };
+  window.addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
+  document.getElementById("btnPrep").onclick = function () { prepare(); };
+  document.getElementById("btnPlay").onclick = function () {
+    if (!state.frames.length) { toast("पहले Scenes तैयार"); return; }
+    if (state.playing) {
+      state.playing = false;
+      cancelAnimationFrame(state.raf);
+      return;
+    }
+    state.playing = true;
+    state.t0 = 0;
+    state.raf = requestAnimationFrame(playTick);
+  };
+
+  document.getElementById("btnRec").onclick = async function () {
+    if (!state.frames.length) { toast("पहले Scenes तैयार"); return; }
+    if (state.recording) return;
+    state.recording = true;
+    state.playing = false;
+    cancelAnimationFrame(state.raf);
+    document.getElementById("btnRec").disabled = true;
+    setProg(0, "MP4 record…");
+
+    var stream = cv.captureStream(30);
+    var chunks = [];
+    var mime = "";
+    var cands = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"];
+    for (var ci = 0; ci < cands.length; ci++) {
+      if (MediaRecorder.isTypeSupported(cands[ci])) { mime = cands[ci]; break; }
+    }
+    var rec;
+    try {
+      rec = mime ? new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 })
+                 : new MediaRecorder(stream);
+    } catch (e) {
+      state.recording = false;
+      document.getElementById("btnRec").disabled = false;
+      err("Record fail: " + e.message);
+      return;
+    }
+    rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = function () {
+      state.recording = false;
+      document.getElementById("btnRec").disabled = false;
+      var blob = new Blob(chunks, { type: rec.mimeType || "video/webm" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "velorix-video-" + Date.now() + ((rec.mimeType || "").indexOf("mp4") >= 0 ? ".mp4" : ".webm");
+      a.click();
+      setProg(100, "Download ready");
+      toast("Video download · " + Math.round(blob.size / 1024) + " KB");
+    };
+    rec.start(200);
+
+    var total = totalDur();
+    var t0 = performance.now();
+    function step(now) {
+      var globalT = (now - t0) / 1000;
+      if (globalT >= total) {
+        rec.stop();
+        setCap("");
+        return;
+      }
+      var at = drawAtTime(globalT);
+      if (at) {
+        setCap("");
+        setProg(Math.round((globalT / total) * 100), "MP4 · Scene " + at.frame.si);
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  };
+
+  document.getElementById("btnNext").onclick = function () {
+    if (!state.ready) { toast("पहले Scenes तैयार करो"); return; }
+    try {
+      localStorage.setItem("VX_VIDEO_READY", "1");
+      localStorage.setItem("VX_VIDEO_SCENES", String(state.frames.length));
+    } catch (e) {}
+    window.location.href = "home.html";
+  };
+
+  seedParticles();
+  setCap("Scenes तैयार दबाओ");
+  idbGet("VX_HANDOFF").then(function (h) { if (h) state.handoff = h; loadImages(); });
+})();
+</script>
+</body>
+</html>
