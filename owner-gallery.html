@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Velorix AI — Owner Gallery</title>
+  <style>
+    :root{
+      --bg:#07060c;--card:rgba(24,20,40,.92);--border:rgba(167,139,250,.18);
+      --p:#7c3aed;--p2:#a78bfa;--p3:#c4b5fd;--t:#f4f0ff;--mut:rgba(244,240,255,.55);
+      --ok:#34d399;--danger:#f87171;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+      background:var(--bg);color:var(--t);min-height:100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 10% -10%,rgba(124,58,237,.35),transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%,rgba(236,72,153,.12),transparent 50%);
+    }
+    .top{
+      position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;
+      padding:12px 14px;background:rgba(7,6,12,.88);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .top button{
+      width:38px;height:38px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(255,255,255,.05);color:var(--t);font-size:16px;cursor:pointer;
+    }
+    .top h1{flex:1;text-align:center;font-size:16px;font-weight:700;
+      background:linear-gradient(90deg,#fff,var(--p3));-webkit-background-clip:text;color:transparent}
+    .pill{
+      font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;
+      border:1px solid var(--border);color:var(--p2);background:rgba(124,58,237,.15)
+    }
+    .wrap{padding:14px 14px 110px;max-width:520px;margin:0 auto}
+    .hint{font-size:12px;color:var(--mut);line-height:1.45;margin-bottom:14px}
+    .seg{
+      display:flex;gap:8px;padding:4px;border-radius:16px;margin-bottom:16px;
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+    }
+    .seg button{
+      flex:1;border:none;border-radius:12px;padding:11px 8px;font-weight:700;font-size:13px;
+      background:transparent;color:var(--mut);cursor:pointer;transition:.2s;
+    }
+    .seg button.on{
+      background:linear-gradient(135deg,var(--p),#9333ea);color:#fff;
+      box-shadow:0 8px 24px rgba(124,58,237,.35);
+    }
+    .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{
+      flex:0 0 auto;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:600;
+      border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--mut);cursor:pointer;
+    }
+    .tab.on{background:rgba(124,58,237,.25);color:#fff;border-color:rgba(167,139,250,.45)}
+    .sec-title{
+      font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--p2);
+      margin:18px 0 10px;text-transform:uppercase;
+    }
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .card{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;
+      display:flex;flex-direction:column;
+    }
+    .thumb{
+      position:relative;aspect-ratio:1;background:linear-gradient(145deg,#1a1530,#0d0a18);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .thumb .ph{font-size:36px;opacity:.35}
+    .thumb .acts{position:absolute;top:6px;left:6px;right:6px;display:flex;justify-content:space-between;gap:6px}
+    .thumb .acts button{
+      width:30px;height:30px;border-radius:10px;border:none;cursor:pointer;
+      background:rgba(0,0,0,.55);color:#fff;font-size:13px;backdrop-filter:blur(6px);
+    }
+    .meta{padding:10px}
+    .meta .name{font-size:13px;font-weight:700;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meta .row{display:flex;gap:6px}
+    .meta .row button{
+      flex:1;border:none;border-radius:10px;padding:8px 6px;font-size:11px;font-weight:700;cursor:pointer;
+      background:rgba(124,58,237,.22);color:var(--p3);
+    }
+    .meta .row button.ghost{background:rgba(255,255,255,.06);color:var(--mut)}
+    .card.add{
+      border-style:dashed;border-color:rgba(167,139,250,.4);background:rgba(124,58,237,.06);
+      min-height:180px;align-items:center;justify-content:center;cursor:pointer;
+    }
+    .card.add .plus{font-size:32px;color:var(--p2);line-height:1}
+    .card.add span{font-size:12px;color:var(--mut);margin-top:6px;font-weight:600}
+    .cat-bar{
+      display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;
+    }
+    .cat-bar h3{font-size:14px;font-weight:700}
+    .cat-bar button{
+      border:1px solid var(--border);background:rgba(124,58,237,.2);color:var(--p3);
+      border-radius:10px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;
+    }
+    .toast{
+      position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+      background:rgba(20,16,36,.95);border:1px solid var(--border);color:#fff;
+      padding:10px 16px;border-radius:14px;font-size:13px;z-index:99;
+      opacity:0;pointer-events:none;transition:.25s;max-width:90%;
+    }
+    .toast.on{opacity:1}
+    #filePick{display:none}
+    .empty{text-align:center;padding:28px 12px;color:var(--mut);font-size:13px}
+    .foot{
+      position:fixed;left:0;right:0;bottom:0;padding:12px 14px 18px;
+      background:linear-gradient(transparent,rgba(7,6,12,.95) 30%);
+      display:flex;gap:10px;justify-content:center;z-index:30;
+    }
+    .foot button{
+      max-width:520px;width:100%;border:none;border-radius:16px;padding:14px;
+      font-weight:800;font-size:14px;cursor:pointer;
+      background:linear-gradient(135deg,var(--p),#9333ea);color:#fff;
+      box-shadow:0 10px 30px rgba(124,58,237,.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <button type="button" id="btnBack" aria-label="Back">←</button>
+    <h1>Owner Gallery</h1>
+    <span class="pill" id="stylePill">3D</span>
+  </div>
+
+  <div class="wrap">
+    <p class="hint">2D / 3D चुनो → Characters, Backgrounds या Poses की कैटेगरी में फोटो सेव करो। Create में कहानी के हिसाब से फोटो अपने आप यहीं से match होंगी। Browser में seed; बाद में cloud।</p>
+
+    <div class="seg" id="styleSeg">
+      <button type="button" data-s="2d">2D</button>
+      <button type="button" data-s="3d" class="on">3D</button>
+    </div>
+
+    <div class="tabs" id="typeTabs">
+      <button type="button" class="tab on" data-t="char">Characters</button>
+      <button type="button" class="tab" data-t="bg">Backgrounds</button>
+      <button type="button" class="tab" data-t="pose">Poses</button>
+    </div>
+
+    <div id="charView">
+      <div class="cat-bar">
+        <h3 id="catTitle">किसान</h3>
+        <button type="button" id="btnAddCat">+ कैटेगरी</button>
+      </div>
+      <div class="tabs" id="catTabs"></div>
+      <div class="grid" id="charGrid"></div>
+    </div>
+
+    <div id="bgView" style="display:none">
+      <div class="cat-bar">
+        <h3 id="bgCatTitle">गाँव / घर</h3>
+        <button type="button" id="btnAddBgCat">+ जगह</button>
+      </div>
+      <div class="tabs" id="bgCatTabs"></div>
+      <div class="grid" id="bgGrid"></div>
+    </div>
+
+    <div id="poseView" style="display:none">
+      <p class="hint" style="margin-bottom:10px">पोज़ = कैरेक्टर किसी काम में (खेत जोतना, बारिश, प्रार्थना…)। कैटेगरी का नाम कहानी के शब्द से match होता है, इसलिए नाम वैसा ही रखो। किसी पोज़ की फोटो न हो तो Create में वो कार्ड खाली दिखेगा, कोई दिक्कत नहीं।</p>
+      <div class="cat-bar">
+        <h3 id="poseCatTitle">खेत में काम</h3>
+        <button type="button" id="btnAddPoseCat">+ पोज़</button>
+      </div>
+      <div class="tabs" id="poseCatTabs"></div>
+      <div class="grid" id="poseGrid"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button type="button" id="btnDone">सेव · Home पर वापस</button>
+  </div>
+
+  <input type="file" id="filePick" accept="image/*" />
+  <div class="toast" id="toast"></div>
+
+  <script>
+(function () {
+  var OWNER_EMAIL = "seemadvi1213@gmail.com";
+  var KEY = "VX_OWNER_GALLERY";
+  /* Cloudinary — unsigned preset only (secret HTML में नहीं) */
+  var CLOUD_NAME = "omabfae6";
+  var UPLOAD_PRESET = "Velorix Ai";
+
+  var DEFAULT_CHAR_CATS = ["किसान", "नॉर्मल", "महिला", "बच्चा", "बुज़ुर्ग", "खलनायक"];
+  var DEFAULT_BG_CATS = ["गाँव / घर", "खेत", "शहर", "जंगल", "रात", "स्कूल"];
+  var DEFAULT_POSE_CATS = ["खेत में काम", "बारिश", "प्रार्थना", "उदास / रोना", "खुश / मुस्कान", "भागना", "बात करना", "खाना / भूख"];
+
+  var state = {
+    style: "3d",
+    type: "char",
+    charCat: "किसान",
+    bgCat: "गाँव / घर",
+    poseCat: "खेत में काम",
+    data: null,
+    pick: null
+  };
+
+  function toast(m) {
+    var el = document.getElementById("toast");
+    el.textContent = m;
+    el.classList.add("on");
+    setTimeout(function () { el.classList.remove("on"); }, 2200);
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var j = JSON.parse(raw);
+        if (j && j.chars && j.bgs) {
+          if (!j.poses) j.poses = { "2d": {}, "3d": {} };
+          return j;
+        }
+      }
+    } catch (e) {}
+    return {
+      chars: { "2d": {}, "3d": {} },
+      bgs: { "2d": {}, "3d": {} },
+      poses: { "2d": {}, "3d": {} }
+    };
+  }
+
+  function ensureCats(data) {
+    DEFAULT_CHAR_CATS.forEach(function (c) {
+      if (!data.chars["2d"][c]) data.chars["2d"][c] = [];
+      if (!data.chars["3d"][c]) data.chars["3d"][c] = [];
+    });
+    DEFAULT_BG_CATS.forEach(function (c) {
+      if (!data.bgs["2d"][c]) data.bgs["2d"][c] = [];
+      if (!data.bgs["3d"][c]) data.bgs["3d"][c] = [];
+    });
+    if (!data.poses) data.poses = { "2d": {}, "3d": {} };
+    if (!data.poses["2d"]) data.poses["2d"] = {};
+    if (!data.poses["3d"]) data.poses["3d"] = {};
+    DEFAULT_POSE_CATS.forEach(function (c) {
+      if (!data.poses["2d"][c]) data.poses["2d"][c] = [];
+      if (!data.poses["3d"][c]) data.poses["3d"][c] = [];
+    });
+    return data;
+  }
+
+  function save(silent) {
+    try {
+      /* सिर्फ URL/meta — base64 नहीं, इसलिए limit नहीं भरेगी */
+      localStorage.setItem(KEY, JSON.stringify(state.data));
+      if (!silent) toast("सेव · " + countItems() + " फोटो (cloud)");
+      return true;
+    } catch (e) {
+      toast("Meta सेव fail · पुरानी बड़ी entries 🗑 करो");
+      return false;
+    }
+  }
+
+  function uploadCloudinary(file, cb) {
+    var fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", UPLOAD_PRESET);
+    fd.append("folder", "velorix/owner");
+    fetch("https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/image/upload", {
+      method: "POST",
+      body: fd
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.secure_url) cb(null, j.secure_url, j.public_id || "");
+        else cb((j && j.error && j.error.message) || "Cloudinary upload fail");
+      })
+      .catch(function (e) { cb(String(e && e.message || e)); });
+  }
+
+  function countItems() {
+    var n = 0;
+    try {
+      ["2d", "3d"].forEach(function (s) {
+        Object.keys(state.data.chars[s] || {}).forEach(function (c) {
+          n += (state.data.chars[s][c] || []).length;
+        });
+        Object.keys(state.data.bgs[s] || {}).forEach(function (c) {
+          n += (state.data.bgs[s][c] || []).length;
+        });
+        Object.keys((state.data.poses || {})[s] || {}).forEach(function (c) {
+          n += (state.data.poses[s][c] || []).length;
+        });
+      });
+    } catch (e) {}
+    return n;
+  }
+
+  function compressDataUrl(dataUrl, maxSide, quality, cb) {
+    var img = new Image();
+    img.onload = function () {
+      var w = img.width, h = img.height;
+      var scale = Math.min(1, maxSide / Math.max(w, h));
+      var cw = Math.max(1, Math.round(w * scale));
+      var ch = Math.max(1, Math.round(h * scale));
+      var canvas = document.createElement("canvas");
+      canvas.width = cw;
+      canvas.height = ch;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, cw, ch);
+      var out = canvas.toDataURL("image/jpeg", quality || 0.72);
+      cb(out);
+    };
+    img.onerror = function () { cb(dataUrl); };
+    img.src = dataUrl;
+  }
+
+  function goHome() {
+    save(true);
+    location.href = "home.html";
+  }
+
+  function checkOwner() {
+    var email = (localStorage.getItem("velorix_email") || localStorage.getItem("VX_EMAIL") || "").toLowerCase();
+    if (email && email !== OWNER_EMAIL.toLowerCase()) {
+      toast("सिर्फ Owner");
+    }
+  }
+
+  var KINDS = {
+    char: { branch: "chars", cat: "charCat", tabs: "catTabs", title: "catTitle", grid: "charGrid", view: "charView", defaults: DEFAULT_CHAR_CATS, ph: "👤" },
+    bg: { branch: "bgs", cat: "bgCat", tabs: "bgCatTabs", title: "bgCatTitle", grid: "bgGrid", view: "bgView", defaults: DEFAULT_BG_CATS, ph: "🌄" },
+    pose: { branch: "poses", cat: "poseCat", tabs: "poseCatTabs", title: "poseCatTitle", grid: "poseGrid", view: "poseView", defaults: DEFAULT_POSE_CATS, ph: "🧍" }
+  };
+
+  function listFor() {
+    var K = KINDS[state.type];
+    if (!state.data[K.branch]) state.data[K.branch] = { "2d": {}, "3d": {} };
+    var branch = state.data[K.branch];
+    if (!branch[state.style]) branch[state.style] = {};
+    var cat = state[K.cat];
+    if (!branch[state.style][cat]) branch[state.style][cat] = [];
+    return branch[state.style][cat];
+  }
+
+  function catNames(kind) {
+    var K = KINDS[kind];
+    var branch = (state.data[K.branch] || {})[state.style];
+    var keys = Object.keys(branch || {});
+    K.defaults.forEach(function (d) {
+      if (keys.indexOf(d) < 0) keys.push(d);
+    });
+    return keys;
+  }
+
+  function renderCatTabs() {
+    var kind = state.type, K = KINDS[kind];
+    var tabs = document.getElementById(K.tabs);
+    var title = document.getElementById(K.title);
+    var cur = state[K.cat];
+    var names = catNames(kind);
+    tabs.innerHTML = "";
+    names.forEach(function (n) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tab" + (n === cur ? " on" : "");
+      b.textContent = n;
+      b.onclick = function () {
+        state[K.cat] = n;
+        render();
+      };
+      tabs.appendChild(b);
+    });
+    title.textContent = cur;
+  }
+
+  function renderGrid() {
+    var grid = document.getElementById(KINDS[state.type].grid);
+    var list = listFor();
+    grid.innerHTML = "";
+
+    list.forEach(function (item, idx) {
+      var card = document.createElement("div");
+      card.className = "card";
+      var img = item.url
+        ? '<img src="' + item.url + '" alt=""/>'
+        : '<div class="ph">' + KINDS[state.type].ph + "</div>";
+      card.innerHTML =
+        '<div class="thumb">' +
+          img +
+          '<div class="acts">' +
+            '<button type="button" data-act="del" data-i="' + idx + '" title="Delete">🗑</button>' +
+            '<button type="button" data-act="dl" data-i="' + idx + '" title="Download">↓</button>' +
+          "</div>" +
+        "</div>" +
+        '<div class="meta">' +
+          '<div class="name">' + (item.name || ("Photo " + (idx + 1))) + "</div>" +
+          '<div class="row">' +
+            '<button type="button" class="ghost" data-act="rename" data-i="' + idx + '">नाम</button>' +
+            '<button type="button" data-act="replace" data-i="' + idx + '">बदलो</button>' +
+          "</div>" +
+        "</div>";
+      grid.appendChild(card);
+    });
+
+    var add = document.createElement("div");
+    add.className = "card add";
+    add.innerHTML = '<div class="plus">+</div><span>फोटो जोड़ो</span>';
+    add.onclick = function () {
+      state.pick = { mode: "add" };
+      document.getElementById("filePick").click();
+    };
+    grid.appendChild(add);
+
+    grid.onclick = function (e) {
+      var btn = e.target.closest("button[data-act]");
+      if (!btn) return;
+      var act = btn.getAttribute("data-act");
+      var i = parseInt(btn.getAttribute("data-i"), 10);
+      var list2 = listFor();
+      if (act === "del") {
+        list2.splice(i, 1);
+        save();
+        render();
+      } else if (act === "dl") {
+        var a = document.createElement("a");
+        a.href = list2[i].url;
+        a.download = (list2[i].name || "velorix") + ".jpg";
+        a.click();
+      } else if (act === "rename") {
+        var n = prompt("नाम", list2[i].name || "");
+        if (n != null && n.trim()) {
+          list2[i].name = n.trim();
+          save();
+          render();
+        }
+      } else if (act === "replace") {
+        state.pick = { mode: "replace", index: i };
+        document.getElementById("filePick").click();
+      }
+    };
+  }
+
+  function render() {
+    document.getElementById("stylePill").textContent = state.style.toUpperCase();
+    Object.keys(KINDS).forEach(function (k) {
+      document.getElementById(KINDS[k].view).style.display = state.type === k ? "block" : "none";
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#styleSeg button"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-s") === state.style);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#typeTabs .tab"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-t") === state.type);
+    });
+    renderCatTabs();
+    renderGrid();
+  }
+
+  document.getElementById("styleSeg").onclick = function (e) {
+    var b = e.target.closest("button[data-s]");
+    if (!b) return;
+    state.style = b.getAttribute("data-s");
+    render();
+  };
+
+  document.getElementById("typeTabs").onclick = function (e) {
+    var b = e.target.closest(".tab");
+    if (!b) return;
+    state.type = b.getAttribute("data-t");
+    render();
+  };
+
+  document.getElementById("btnAddCat").onclick = function () {
+    var n = prompt("नई character कैटेगरी (जैसे: डॉक्टर)");
+    if (!n || !n.trim()) return;
+    n = n.trim();
+    state.data.chars["2d"][n] = state.data.chars["2d"][n] || [];
+    state.data.chars["3d"][n] = state.data.chars["3d"][n] || [];
+    state.charCat = n;
+    save();
+    render();
+  };
+
+  document.getElementById("btnAddBgCat").onclick = function () {
+    var n = prompt("नई background जगह (जैसे: मंदिर)");
+    if (!n || !n.trim()) return;
+    n = n.trim();
+    state.data.bgs["2d"][n] = state.data.bgs["2d"][n] || [];
+    state.data.bgs["3d"][n] = state.data.bgs["3d"][n] || [];
+    state.bgCat = n;
+    save();
+    render();
+  };
+
+  document.getElementById("btnAddPoseCat").onclick = function () {
+    var n = prompt("नया पोज़ (जैसे: हल जोतना)");
+    if (!n || !n.trim()) return;
+    n = n.trim();
+    if (!state.data.poses) state.data.poses = { "2d": {}, "3d": {} };
+    state.data.poses["2d"][n] = state.data.poses["2d"][n] || [];
+    state.data.poses["3d"][n] = state.data.poses["3d"][n] || [];
+    state.poseCat = n;
+    save();
+    render();
+  };
+
+  document.getElementById("filePick").onchange = function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    ev.target.value = "";
+    if (!f) return;
+    if (f.size > 12 * 1024 * 1024) {
+      toast("फोटो बहुत बड़ी · 12MB से कम");
+      return;
+    }
+    toast("Cloudinary पर अपलोड…");
+    uploadCloudinary(f, function (err, url, publicId) {
+      if (err) {
+        toast("Upload fail: " + err);
+        return;
+      }
+      var list = listFor();
+      var item = {
+        id: "og_" + Date.now(),
+        url: url,
+        publicId: publicId || "",
+        name: (f.name || "photo").replace(/\.[^.]+$/, "").slice(0, 40),
+        style: state.style,
+        cat: state[KINDS[state.type].cat],
+        type: state.type,
+        ts: Date.now()
+      };
+      if (state.pick && state.pick.mode === "replace" && list[state.pick.index]) {
+        item.name = list[state.pick.index].name || item.name;
+        list[state.pick.index] = item;
+      } else {
+        list.push(item);
+      }
+      state.pick = null;
+      if (save()) render();
+    });
+  };
+
+  document.getElementById("btnBack").onclick = function () { goHome(); };
+  document.getElementById("btnDone").onclick = function () { goHome(); };
+
+  state.data = ensureCats(load());
+  checkOwner();
+  render();
+})();
+  </script>
+</body>
+</html>
